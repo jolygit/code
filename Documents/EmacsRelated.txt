@@ -1,0 +1,7 @@
+1. To debug python code do: 
+   a. Open the sourse code in buffer i.e ~/code/python/test1.py
+   b. Run M-x pdb
+   c. Type pdb test1.py
+P.s (pdb is a shell script that is located in /home/alex/bin/)
+
+2. To comment selected code in python mode do M-; Use same command to uncomment

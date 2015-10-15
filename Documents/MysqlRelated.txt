@@ -1,0 +1,4 @@
+1. To start mysql server do in shell: service mysqld start ; 
+1a.To kill it do: pkill mysqld;
+2. To start entering mysql commands do: mysql -u root -p (psw me cartulad)
+3. Useful Link http://www.rackspace.com/knowledge_center/article/mysql-resetting-a-lost-mysql-root-password

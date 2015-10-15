@@ -1,0 +1,5 @@
+#!/bin/bash
+find /home/alex/code -name "*.h" -o -name "*.cpp" -print|etags -o /home/alex/TAGS -;
+find /usr/include/ -name "*.[ch]" -print|etags -ao /home/alex/TAGS -;
+find /home/alex/code -name "*.pl" -print|etags -ao /home/alex/TAGS -;
+find /home/alex/code -name "*.pm" -print|etags -ao /home/alex/TAGS -;

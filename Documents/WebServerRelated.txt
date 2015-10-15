@@ -1,0 +1,5 @@
+1. To veiw the error logs go to /var/log/httpd/error_log
+
+2. html code goes to /var/www/html
+
+3. Cgi code goes to  /var/www/cgi-bin # this is usially code in python or php that handles different events.

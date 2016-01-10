@@ -2,7 +2,7 @@
 use strict;
 use Getopt::Std;
 my %opt=();
-getopts("obc", \%opt);
+getopts("obct", \%opt);
 my $makefile="/home/alex/code/makefile";
 my @files = </home/alex/code/*\.*>; 
 my @cppFiles;
@@ -11,6 +11,11 @@ sub makeFile($$);
 my @oFiles;
 my @debugFiles;
 my @releaseFiles;
+if($opt{t}){
+my $cmd="cd /home/alex/code ; etags /home/alex/code/*/*.{h,cpp,sh,pl,py}"; #{c++/*.{h,cpp},shellScripts/*.sh,perl/*.pl,python/*.py}
+system($cmd);
+exit;
+}
 foreach $file (@files) {
     if($file=~m/(.cpp$)/){
 	$file =~ s/\/home\/alex\/code\///;
@@ -22,7 +27,7 @@ foreach $file (@files) {
     }
 }
 open FILE, ">$makefile" or die $!; print FILE "av"; close FILE;
-my $cmd="cd /home/alex/code;make;rm makefile; rm *.o";
+my $cmd="cd /home/alex/code;make;"; #rm makefile; rm *.o
 for (my $index=0;$index<@debugFiles;$index++)
 {
     if($opt{b}){

@@ -55,9 +55,14 @@ void derived1_init(struct derived1 *d,int dd)
     /* init derived1 members d->foo */
 }
 
+namespace kki{
+    int kk=0;
+}
 
 int main(void)
 {
+  
+  printf("%d",kk);
     /* OK!  We're done with our declarations, now we can finally do some
        polymorphism in C */
     struct derived1 d;

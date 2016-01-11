@@ -2,15 +2,16 @@
 (require 'grep)
 (setq comment-style 'extra-line)
 (defun xx ()
-  "setting up grep-command using current word under currsor as a search string"
+  "setting up grep-command using current word under cursor as a search string"
   (interactive)
-  (setq curWord (thing-at-point 'word))
-  (setq VALUE   (concat "grep -nH -r --exclude='TAGS' --include='*.h' --include='*.cpp' --include='*.pl' --include='*.c' -e " curWord " /home/alex/code/") )
-   (grep-apply-setting 'grep-command VALUE)
-     )
+  (let* ((cur-word (thing-at-point 'word))
+         (cmd (concat "grep -nH -r --exclude='TAGS' --include='*.h' --include='*.cpp' --include='*.pl' --include='*.c' -e " cur-word " ~/code")))
+    (grep-apply-setting 'grep-command cmd)
+    (grep cmd)))
+
 (global-set-key (kbd "<f1>")  'mark-whole-buffer)
 (global-set-key (kbd "<f3>")  'xx)
-(global-set-key (kbd "<f4>") 'grep )
+;(global-set-key (kbd "<f4>") 'grep )
 (defun select-next-window ()
   "Switch to the next window" 
   (interactive)
@@ -47,7 +48,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (setq tags-table-list
            '("/home/alex/code"))
-(global-set-key [C-tab] '(lambda () (interactive) (bury-buffer "*Buffer List*")(switch-to-buffer (other-buffer))))
+(global-set-key [C-tab] '(lambda () (interactive) (switch-to-buffer (other-buffer (get-buffer "*Buffer List*")))))
 ;git setup
 (add-to-list 'load-path "~/code/git-emacs")
 (require 'git-emacs)

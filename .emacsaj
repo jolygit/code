@@ -1,15 +1,17 @@
 (require 'thingatpt)
 (require 'grep)
+(setq comment-style 'extra-line)
 (defun xx ()
-  "setting up grep-command using current word under currsor as a search string"
+  "setting up grep-command using current word under cursor as a search string"
   (interactive)
-  (setq curWord (thing-at-point 'word))
-  (setq VALUE   (concat "grep -nH -r --exclude='TAGS' --include='*.h' --include='*.cpp' --include='*.pl' --include='*.c' -e " curWord " /home/alex/code/") )
-   (grep-apply-setting 'grep-command VALUE)
-     )
+  (let* ((cur-word (thing-at-point 'word))
+         (cmd (concat "grep -nH -r --exclude='TAGS' --include='*.h' --include='*.cpp' --include='*.pl' --include='*.c' -e " cur-word " ~/code")))
+    (grep-apply-setting 'grep-command cmd)
+    (grep cmd)))
+
 (global-set-key (kbd "<f1>")  'mark-whole-buffer)
 (global-set-key (kbd "<f3>")  'xx)
-(global-set-key (kbd "<f4>") 'grep )
+;(global-set-key (kbd "<f4>") 'grep )
 (defun select-next-window ()
   "Switch to the next window" 
   (interactive)
@@ -46,15 +48,15 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (setq tags-table-list
            '("/home/alex/code"))
-(global-set-key [C-tab] '(lambda () (interactive) (bury-buffer "*Buffer List*")(switch-to-buffer (other-buffer))))
+(global-set-key [C-tab] '(lambda () (interactive) (switch-to-buffer (other-buffer (get-buffer "*Buffer List*")))))
 ;git setup
-(add-to-list 'load-path "/home/data/3rd_party/git-emacs")
+(add-to-list 'load-path "~/code/git-emacs")
 (require 'git-emacs)
 (global-set-key "\M-s\M-s" 'git-status)
-(load-file "/usr/lib/gabrielelanaro-emacs-for-python-2f284d1/epy-init.el")
-(setq jde-help-remote-file-exists-function '("beanshell"))
+;(load-file "/usr/lib/gabrielelanaro-emacs-for-python-2f284d1/epy-init.el")
+;(setq jde-help-remote-file-exists-function '("beanshell"))
 (add-to-list 'load-path "~/.emacs.d/jdee-2.4.1/lisp")
-(load "~/.emacs.d/jdee-2.4.1/lisp/jde.el")
+;(load "~/.emacs.d/jdee-2.4.1/lisp/jde.el")
 
 ;bookmark setup
 (load "~/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")

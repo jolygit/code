@@ -1,5 +1,6 @@
 (require 'thingatpt)
 (require 'grep)
+(setq comment-style 'extra-line)
 (defun xx ()
   "setting up grep-command using current word under currsor as a search string"
   (interactive)
@@ -48,13 +49,13 @@ Repeated invocations toggle between the two most recently open buffers."
            '("/home/alex/code"))
 (global-set-key [C-tab] '(lambda () (interactive) (bury-buffer "*Buffer List*")(switch-to-buffer (other-buffer))))
 ;git setup
-(add-to-list 'load-path "/home/data/3rd_party/git-emacs")
+(add-to-list 'load-path "~/code/git-emacs")
 (require 'git-emacs)
 (global-set-key "\M-s\M-s" 'git-status)
-(load-file "/usr/lib/gabrielelanaro-emacs-for-python-2f284d1/epy-init.el")
-(setq jde-help-remote-file-exists-function '("beanshell"))
+;(load-file "/usr/lib/gabrielelanaro-emacs-for-python-2f284d1/epy-init.el")
+;(setq jde-help-remote-file-exists-function '("beanshell"))
 (add-to-list 'load-path "~/.emacs.d/jdee-2.4.1/lisp")
-(load "~/.emacs.d/jdee-2.4.1/lisp/jde.el")
+;(load "~/.emacs.d/jdee-2.4.1/lisp/jde.el")
 
 ;bookmark setup
 (load "~/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")

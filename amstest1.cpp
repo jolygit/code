@@ -3,6 +3,7 @@
 #include "my.h"
 struct base;
 struct base_vtable
+
 {
   void (*dance)(struct base*); //the pointer to base is necessery to be able to access data members of the derived class
 };

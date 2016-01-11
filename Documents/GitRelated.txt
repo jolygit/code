@@ -20,4 +20,12 @@ That is it!
    g. Link remote git (on the server sonacharlie@dreamsculpture.org:/home/sonacharlie/git) to local git in dream dir on your machine by (git remote add origin sonacharlie@dreamsculpture.org:/home/sonacharlie/git)
    h. Now you are ready to push your first commit to the remote by (joli:dream aj$ git push origin master) when asked for pswd enter same as in a.
    k. You can read also https://git-scm.com/book/en/v2/Git-on-the-Server-Setting-Up-the-Server
+
+------------------------------
+
+Git commands:
+
+1. git checkout --orphan NEWBRANCHName ; to create new branch from scratch
+2. git branch -a ; to list all the branches
+3. git checkout brName ; to move to brName
  

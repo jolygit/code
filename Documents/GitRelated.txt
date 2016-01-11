@@ -28,4 +28,8 @@ Git commands:
 1. git checkout --orphan NEWBRANCHName ; to create new branch from scratch
 2. git branch -a ; to list all the branches
 3. git checkout brName ; to move to brName
+4. git remote -v ; to see all the remotes and links to web
+5. git remote add pb https://github.com/paulboone/ticgitv ; to add remote to the local repo
+6. git diff master origin/master ; to see the difference from origin/master, useful after fetch before merge
+7. git remote rm remName ; to remove the remote
  

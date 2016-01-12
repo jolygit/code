@@ -53,4 +53,4 @@ s8. git stash; to put local uncommitted chages on stack and make the branch clea
 25. git reset --soft [commit] ;resets the head of the branch to the commit (default is head) without changing index or the tree.
 25. git reset ; resets the index but not the working tree
 26. git reset --hard [commit] ; resets index and the working tree all uncommited changes are lost
-27. 
+27. git merge

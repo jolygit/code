@@ -48,5 +48,5 @@ s8. git stash; to put local uncommitted chages on stack and make the branch clea
 21. Git working tree consists of files that you are currently working on.
 22. Git index is the staging area that actually gets commited. see for pictures https://backlogtool.com/git-guide/en/intro/intro1_4.html and https://www.google.com/imgres?imgurl=http://i.stack.imgur.com/caci5.png&imgrefurl=http://stackoverflow.com/questions/3689838/difference-between-head-working-tree-index-in-git&h=455&w=481&tbnid=0DKH6b5EpHVM6M:&tbnh=160&tbnw=169&docid=RzTHKDRnZs3TtM&usg=__KbB8eM19cBvatGC51XTTBQxe5vs=&sa=X&ved=0ahUKEwjfxo7nk6PKAhVGFR4KHfbjB4oQ9QEIIDAA 
 
- 23. git rm --cached <fileName> ; to remove file from the index but to leave it alone in the working tree
+ 23. git rm --cached <fileName> ; to remove file from the index but to leave it alone in the working tree, this way you can commit deleted file to repo while keeping it in your local working tree. Without --cached it will remove from working tree as well
 24. git pull origin master ; to pull from remote named origin and branch called master

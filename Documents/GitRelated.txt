@@ -32,4 +32,18 @@ Git commands:
 5. git remote add pb https://github.com/paulboone/ticgitv ; to add remote to the local repo
 6. git diff master origin/master ; to see the difference from origin/master, useful after fetch before merge
 7. git remote rm remName ; to remove the remote
+s8. git stash; to put local uncommitted chages on stack and make the branch clean
+9. git stash apply ; to bring stashed changes back
+10. git stash apply stash@{number} ; to bring back stashed stuff from number stashes before. Note that latest stash is number 0 
+11. git stash list ; show the list of stashes
+12. git clean -d -f ; removes all the changes and all the untracked files git stash --all does the same but stashing it first
+13. git clean -d -n ; to show what would happened without actually deleting anyting
+14. git merge origin/master ; to merge origin/master with master branch
+15. git status -u no ; supress untracked files
+16. git config --list ; to list git config entries
+17. git config --global user.name "Alex Joly" ; to set up a user name
+18. git clone https://github.com/jolygit/code.git ; clones my code to the code dir 
+19 ~/.gitconfig /etc/gitconfig ~/.config/git/config  or .git/config in your dir are the config files for git
+20. man git-commit ; to show the man page on a commit for example
+21
  

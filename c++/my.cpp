@@ -1,3 +1,5 @@
+
+
 #include "my.h"
 #include <stdio.h>
 int Alex::bb(int  c){

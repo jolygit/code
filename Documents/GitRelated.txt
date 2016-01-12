@@ -52,5 +52,6 @@ s8. git stash; to put local uncommitted chages on stack and make the branch clea
 24. git pull origin master ; to pull from remote named origin and branch called master
 25. git reset --soft [commit] ;resets the head of the branch to the commit (default is head) without changing index or the tree.
 25. git reset ; resets the index but not the working tree this is useful when you need to pull from remote while having some files added and the following is important you have made commits to the local repo. Because when you have commits on your local repo and you pull at merging stage new commit will be created which will include the added files as well as a side effect. To avaid the side effect merge will fail. On the other had if you have no commits from last pull or merge but your tree and or the index is dirty with files not affected by the merge then pull or merge will succeed and the dirty files in tree and index, will stay that way. Finally if the same file is dirty localy and changed remotely pull/merge will fail.
-26. git reset --hard [commit] ; resets index and the working tree all uncommited changes are lost
+26. git reset --hard [commit] ; resets index and the working tree all uncommited changes are lost; In order to fast forward you have to know the SHA1 ID and then you can git reset --soft <sha1 key>
 27. git merge
+27. git reset --soft HEAD@{1} ; to go where head use to be before where it is now. git reflog ;prints the log of past head states.

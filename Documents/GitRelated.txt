@@ -63,4 +63,10 @@ s8. git stash; to put local uncommitted chages on stack and make the branch clea
 29. git reset --hard HEAD~3 ; remove 3 commits permanently
 30. git reset --merge ORIG_HEAD; Undo a merge or pull inside a dirty working tree. Even if you may have local modifications in your working tree, you can safely say "git pull" when you know that the change in the other branch does not overlap with them. After inspecting the result of the merge, you may find that the change in the other branch is unsatisfactory. Running "git reset --hard ORIG_HEAD" will let you go back to where you were, but it will discard your local changes, which you do not want. "git reset --merge" keeps your local changes.
 31. git reset -- fname; remove singele file from index.
-32. 
+32. git reset --keep <commit>; reset index and working tree to <commit>. If file that is reset has dirty work tree rest is aborted.
+33. git log --pretty=oneline ; to show the list of past commits
+34. git tag -a <tagname> <commit>
+35. git tag ; list tags
+36. git checkout -b [branchname] [tagname] ; to start a new branch from the tag
+37. git push origin tagname ; to push tag 
+38. git push origin --tags

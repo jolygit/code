@@ -88,3 +88,5 @@ s8. git stash; to put local uncommitted chages on stack and make the branch clea
 36. git checkout -b [branchname] [tagname] ; to start a new branch from the tag
 37. git push origin tagname ; to push tag 
 38. git push origin --tags
+39. git merge -s recursive -Xours origin/master ; to merge with origin/master and choose automaticaly our changes when there are conflicts.
+40. git merge -s recursive -Xtheirs origin/master ; to merge with origin/master and choose automaticaly thier changes when there are conflicts.

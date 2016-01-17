@@ -90,3 +90,14 @@ s8. git stash; to put local uncommitted chages on stack and make the branch clea
 38. git push origin --tags
 39. git merge -s recursive -Xours origin/master ; to merge with origin/master and choose automaticaly our changes when there are conflicts.
 40. git merge -s recursive -Xtheirs origin/master ; to merge with origin/master and choose automaticaly thier changes when there are conflicts.
+41. git branch -D <branch name> ; to delete branch 
+42. git ls-remote; show remote branches
+43. git checkout -b serverfix origin/serverfix; to start a local branch from thepoint where origin/severfix is now.
+44.git checkout --track origin/serverfix ;
+Branch serverfix set up to track remote branch serverfix from origin.
+Switched to a new branch 'serverfix'
+45. git branch -u origin/serverfix ; Branch serverfix set up to track remote branch serverfix from origin.
+46.git merge @{u} is the same as git merge origin/master
+47. git branch -vv ; to see what remotes are being tracked by local branches
+48. git push origin --delete <brname> ; to delete a branch called brname on server
+49. git rebase master ; assumig you are on exp branch you can in a way merge with master but in sequantial way, not parallel like merge would do.

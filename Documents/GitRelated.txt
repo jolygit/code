@@ -121,3 +121,5 @@ will give the names of the files that have both frotz and nitfol somewhere in th
 66. git log --all-match --grep=frotz --author=Linus;
 This will show commits that mention frotz and written by Linus.
 67. git log --grep=^#[1-5].$ ; grep regexp of the commit log.
+68. git checkout HEAD~1 ; go to the previous commit i.e all the tree is rest to previous commit, now head is detached. To go back say git checkout master.
+69. git checkout <commit> <filename>; only reset given file to commit. 

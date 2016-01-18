@@ -101,3 +101,23 @@ Switched to a new branch 'serverfix'
 47. git branch -vv ; to see what remotes are being tracked by local branches
 48. git push origin --delete <brname> ; to delete a branch called brname on server
 49. git rebase master ; assumig you are on exp branch you can in a way merge with master but in sequantial way, not parallel like merge would do.
+50. git diff master...contrib ; This command shows you only the work your current topic branch has introduced since its common ancestor with master. That is a very useful syntax to remember.
+51. git cherry-pick <sha1Id> ; this is basically brings one particular commit with sha1Id to the current branch. It is like git rebase for just one commit.
+52. git log --pretty=format:'%h %s' --graph ; to show the tree
+53. git show d921970^2 ; show the second parent of the d921970 key. This is useful when d921970 is a merge commit, because it will have several parents in that case.
+54. git show HEAD~3; this is the grand grand parant on the main branch. I.e this goes back on the current branch HEAD^^^ is the same. HEAD~3^2  gets you the second parent of the previous reference (assuming it was a merge commit)
+55. git log master..experiment ; all commits reachable by experiment that aren’t reachable by master
+56. git log remotes/origin/master..HEAD ; to see the commits that will be added to remote
+57. git log refA refB ^refC ; to see the commits that are reachable from refA or refB but not from refC. same as git log refA refB --not refC
+58. git log --left-right master...experiment ; this shows the commits that are reachable from either master or experiment but not both.
+59. git stash --keep-index ; to stash the tree but leave the index
+60. git stash -u ; to stash untracked files allong the way
+61. git stash branch <brName> ; to start a new branch from the commit that the stash took place. This is useful if you have made changes to the brach after stashing. This avoids potential conflicts
+62. git grep --count <word> ; to summarize the output by just showing you which files matched <word> and how many matches there were in each file 
+63. git grep --break --heading     -n -e '22' --and  \( -e '.' -e 'git' \) tagtest ; to search commit taged with tagtest, for lines that contain 22 and . or git. 
+64. git log -S "string you want to search" --oneline ; Look for differences that introduce or remove an instance of "string you want to search"
+65. git grep -l --all-match -e frotz -e nitfol;
+will give the names of the files that have both frotz and nitfol somewhere in them. The matches do not have to be on the same line; they can be anywhere in the same file.
+66. git log --all-match --grep=frotz --author=Linus;
+This will show commits that mention frotz and written by Linus.
+67. git log --grep=^#[1-5].$ ; grep regexp of the commit log.

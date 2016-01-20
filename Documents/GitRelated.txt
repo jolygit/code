@@ -123,3 +123,7 @@ This will show commits that mention frotz and written by Linus.
 67. git log --grep=^#[1-5].$ ; grep regexp of the commit log.
 68. git checkout HEAD~1 ; go to the previous commit i.e all the tree is rest to previous commit, now head is detached. To go back say git checkout master.
 69. git checkout <commit> <filename>; only reset given file to commit. 
+70. git revert  master~3..master~2 ; to revert a range of commits.
+71. git revert -m 1 HEAD ; to revert the merge and keep the changes introduced by the first parent, usualy the master.
+72. git diff HEAD HEAD~; to see the diff for two commits
+73. git blame -L startLine:EndLine <filename> ; To see all the changes introduced to a given file for a given line range.

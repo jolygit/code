@@ -3,75 +3,36 @@
 #include "libs/mpl/book/chapter1/binary.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_convertible.hpp"
+#include "boost/type_traits/is_reference.hpp"
+#include "boost/type_traits/is_pointer.hpp"
 #include <iostream>
+#include <cassert>
+#include <boost/type_traits/remove_reference.hpp>
 
-template <class C, class X, class Y>
-struct replace_type;
-template <class C, class X, class Y, bool same>
-struct replace_type_impl;
-template <class C, class X, class Y>
-struct replace_type_impl<C,X,Y,true>
+template <class target,class source>
+inline target polymorphic_downcast(source* x)
 {
-typedef Y type;
+  assert(dynamic_cast<target>(x)==x);
+  return static_cast<target>(x);
 };
-template <class C, class X, class Y>
-struct replace_type_impl<C,X,Y,false>
+template <class target,class source>
+inline target polymorphic_downcast1(source& x)
 {
-typedef C type;
+  typedef typename boost::remove_reference<target>::type noref;
+  assert(dynamic_cast<noref*>(&x) == &x);
+  return static_cast<target>(x);
 };
-template <class C, class X, class Y>
-struct replace_type_impl<C*,X,Y,false>
-{
-typedef typename replace_type<C,X,Y>::type * type;
-};
-template <class C, class X, class Y>
-struct replace_type_impl<C const,X,Y,false>
-{
-typedef typename replace_type<C,X,Y>::type const type;
-};
-template <class C, class X, class Y>
-struct replace_type_impl<C &,X,Y,false>
-{
-typedef typename replace_type<C,X,Y>::type & type;
-};
-template <class C, class X, class Y>
-struct replace_type_impl<C[],X,Y,false>
-{
-typedef typename replace_type<C,X,Y>::type type [];
-};
-template <class C, class X, class Y, int N>
-struct replace_type_impl<C[N],X,Y,false>
-{
-typedef typename replace_type<C,X,Y>::type type [N];
-};
-template <typename R, typename X, typename Y>
-struct replace_type_impl<R (), X, Y, false>
-{
-typedef typename replace_type<R, X, Y>::type return_type;
-typedef return_type type();
-};
-template <class X, class Y, class A, class B>
-struct replace_type_impl<A(*)(B),X,Y,false>
-{
-typedef typename replace_type<A,X,Y>::type (*type)(typename replace_type<B,X,Y>::type);
-};
-template <class X, class Y, class A, class B, class C>
-struct replace_type_impl<A(*)(B,C),X,Y,false>
-{
-typedef typename replace_type<A,X,Y>::type (*type)(typename replace_type<B,X,Y>::type, typename replace_type<C,X,Y>::type);
-};
-template <class C, class X, class Y>
-struct replace_type
-{
-static const bool is_same = boost::is_same<C, X>::value;
-typedef typename replace_type_impl<C,X,Y,is_same>::type type;
-};
+struct A{
+  virtual  ~A(){};};
+struct B: A{};
 using namespace std;
 int main()
 {
-bool test1=boost::is_same<replace_type<int* (*)(char),int,long>::type,long* (*)(int)>::value;
-
-cout<<test1<<endl;
-    return 0;
+  B b; 
+  A* pa=&b;
+  B* pb=polymorphic_downcast<B*>(pa);
+  A& ra=b;
+  B& rb=polymorphic_downcast1<B&>(ra);
+  return 0;
 }
 

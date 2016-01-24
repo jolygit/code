@@ -1,44 +1,77 @@
-/*
 
-    Copyright David Abrahams 2003-2004
-    Copyright Aleksey Gurtovoy 2003-2004
-
-    Distributed under the Boost Software License, Version 1.0. 
-    (See accompanying file LICENSE_1_0.txt or copy at 
-    http://www.boost.org/LICENSE_1_0.txt)
-            
-    This file was automatically extracted from the source of 
-    "C++ Template Metaprogramming", by David Abrahams and 
-    Aleksey Gurtovoy.
-
-    It was built successfully with GCC 3.4.2 on Windows using
-    the following command: 
-
-        g++ -I..\..\boost_1_32_0  -o%TEMP%\metaprogram-chapter1-example1.exe example1.cpp
-        
-
-*/
 
 #include "libs/mpl/book/chapter1/binary.hpp"
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/is_convertible.hpp"
 #include <iostream>
-template <class T,bool val> struct choose;
-template<class T> struct choose<T,true>{
-  typedef T Type_value;
-};
-template<class T> struct choose<T,false>{
-typedef T const& Type_value;
-};
 
-template<class T> class add_const_ref{
-static bool const val=boost::is_reference<T>::value;
-typedef typename choose<T,val>::Type_value Type_value;
+template <class C, class X, class Y>
+struct replace_type;
+template <class C, class X, class Y, bool same>
+struct replace_type_impl;
+template <class C, class X, class Y>
+struct replace_type_impl<C,X,Y,true>
+{
+typedef Y type;
+};
+template <class C, class X, class Y>
+struct replace_type_impl<C,X,Y,false>
+{
+typedef C type;
+};
+template <class C, class X, class Y>
+struct replace_type_impl<C*,X,Y,false>
+{
+typedef typename replace_type<C,X,Y>::type * type;
+};
+template <class C, class X, class Y>
+struct replace_type_impl<C const,X,Y,false>
+{
+typedef typename replace_type<C,X,Y>::type const type;
+};
+template <class C, class X, class Y>
+struct replace_type_impl<C &,X,Y,false>
+{
+typedef typename replace_type<C,X,Y>::type & type;
+};
+template <class C, class X, class Y>
+struct replace_type_impl<C[],X,Y,false>
+{
+typedef typename replace_type<C,X,Y>::type type [];
+};
+template <class C, class X, class Y, int N>
+struct replace_type_impl<C[N],X,Y,false>
+{
+typedef typename replace_type<C,X,Y>::type type [N];
+};
+template <typename R, typename X, typename Y>
+struct replace_type_impl<R (), X, Y, false>
+{
+typedef typename replace_type<R, X, Y>::type return_type;
+typedef return_type type();
+};
+template <class X, class Y, class A, class B>
+struct replace_type_impl<A(*)(B),X,Y,false>
+{
+typedef typename replace_type<A,X,Y>::type (*type)(typename replace_type<B,X,Y>::type);
+};
+template <class X, class Y, class A, class B, class C>
+struct replace_type_impl<A(*)(B,C),X,Y,false>
+{
+typedef typename replace_type<A,X,Y>::type (*type)(typename replace_type<B,X,Y>::type, typename replace_type<C,X,Y>::type);
+};
+template <class C, class X, class Y>
+struct replace_type
+{
+static const bool is_same = boost::is_same<C, X>::value;
+typedef typename replace_type_impl<C,X,Y,is_same>::type type;
 };
 using namespace std;
 int main()
 {
-bool test=boost::is_same<add_const_ref<int>::Type_value,int&>::value;
-cout<<test<<endl;
+bool test1=boost::is_same<replace_type<int* (*)(char),int,long>::type,long* (*)(int)>::value;
+
+cout<<test1<<endl;
     return 0;
 }
+

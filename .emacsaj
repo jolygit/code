@@ -11,7 +11,7 @@
 
 (global-set-key (kbd "<f1>")  'mark-whole-buffer)
 (global-set-key (kbd "<f3>")  'xx)
-;(global-set-key (kbd "<f4>") 'grep )
+(global-set-key (kbd "<f4>") 'grep )
 (defun select-next-window ()
   "Switch to the next window" 
   (interactive)

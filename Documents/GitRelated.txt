@@ -127,3 +127,5 @@ This will show commits that mention frotz and written by Linus.
 71. git revert -m 1 HEAD ; to revert the merge and keep the changes introduced by the first parent, usualy the master.
 72. git diff HEAD HEAD~; to see the diff for two commits
 73. git blame -L startLine:EndLine <filename> ; To see all the changes introduced to a given file for a given line range.
+74. git commit -a -m "some message" # commits all the modified but tracked files
+75. git add -A # stages all the modified and tracked files for commit

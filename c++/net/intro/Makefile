@@ -1,43 +1,43 @@
 include ../Make.defines
 
-PROGS =	daytimetcpcli daytimetcpcli1 daytimetcpcli2 daytimetcpcli3 \
-		daytimetcpsrv daytimetcpsrv1 daytimetcpsrv2 daytimetcpsrv3 \
-		daytimetcpcliv6 daytimetcpsrvv6 \
-		byteorder
+PROGS =	daytimetcpcli-x64 daytimetcpcli1-x64 daytimetcpcli2-x64 daytimetcpcli3-x64 \
+		daytimetcpsrv-x64 daytimetcpsrv1-x64 daytimetcpsrv2-x64 daytimetcpsrv3-x64 \
+		daytimetcpcliv6-x64 daytimetcpsrvv6-x64 \
+		byteorder-x64
 
 all:	${PROGS}
 
-daytimetcpcli:	daytimetcpcli.o
+daytimetcpcli-x64:	daytimetcpcli.o
 		${CC} ${CFLAGS} -o $@ daytimetcpcli.o ${LIBS}
 
-daytimetcpcli1:	daytimetcpcli1.o
+daytimetcpcli1-x64:	daytimetcpcli1.o
 		${CC} ${CFLAGS} -o $@ daytimetcpcli1.o ${LIBS}
 
-daytimetcpcli2:	daytimetcpcli2.o
+daytimetcpcli2-x64:	daytimetcpcli2.o
 		${CC} ${CFLAGS} -o $@ daytimetcpcli2.o ${LIBS}
 
-daytimetcpcli3:	daytimetcpcli3.o
+daytimetcpcli3-x64:	daytimetcpcli3.o
 		${CC} ${CFLAGS} -o $@ daytimetcpcli3.o ${LIBS}
 
-daytimetcpsrv:	daytimetcpsrv.o
+daytimetcpsrv-x64:	daytimetcpsrv.o
 		${CC} ${CFLAGS} -o $@ daytimetcpsrv.o ${LIBS}
 
-daytimetcpsrv1:	daytimetcpsrv1.o
+daytimetcpsrv1-x64:	daytimetcpsrv1.o
 		${CC} ${CFLAGS} -o $@ daytimetcpsrv1.o ${LIBS}
 
-daytimetcpsrv2:	daytimetcpsrv2.o
+daytimetcpsrv2-x64:	daytimetcpsrv2.o
 		${CC} ${CFLAGS} -o $@ daytimetcpsrv2.o ${LIBS}
 
-daytimetcpsrv3:	daytimetcpsrv3.o
+daytimetcpsrv3-x64:	daytimetcpsrv3.o
 		${CC} ${CFLAGS} -o $@ daytimetcpsrv3.o ${LIBS}
 
-daytimetcpcliv6:	daytimetcpcliv6.o
+daytimetcpcliv6-x64:	daytimetcpcliv6.o
 		${CC} ${CFLAGS} -o $@ daytimetcpcliv6.o ${LIBS}
 
-daytimetcpsrvv6:	daytimetcpsrvv6.o
+daytimetcpsrvv6-x64:	daytimetcpsrvv6.o
 		${CC} ${CFLAGS} -o $@ daytimetcpsrvv6.o ${LIBS}
 
-byteorder:	byteorder.o
+byteorder-x64:	byteorder.o
 		${CC} ${CFLAGS} -o $@ byteorder.o ${LIBS}
 
 clean:

@@ -21,7 +21,15 @@ main(int argc, char **argv)
 
 	if (connect(sockfd, (SA *) &servaddr, sizeof(servaddr)) < 0)
 		err_sys("connect error");
-
+	//struct sockaddr_in locAdd;
+	//socklen_t* addrlen;
+	socklen_t		len;
+	struct sockaddr_in	cliaddr;
+	bzero(&cliaddr, sizeof(cliaddr));
+	len=sizeof(cliaddr); // this is very important spent 2 hours figuring out
+	if (getsockname(sockfd,(SA *) &cliaddr,&len)!=0)
+	  err_sys("connect error");
+	printf("connection from %s\n", Sock_ntop((SA *)&cliaddr, len));
 	while ( (n = read(sockfd, recvline, MAXLINE)) > 0) {
 		recvline[n] = 0;	/* null terminate */
 		if (fputs(recvline, stdout) == EOF)

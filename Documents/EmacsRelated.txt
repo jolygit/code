@@ -5,3 +5,4 @@
 P.s (pdb is a shell script that is located in /home/alex/bin/)
 
 2. To comment selected code in python mode do M-; Use same command to uncomment
+3. M-< to go to beginnnig of the buffer and M-> to go to end respectively

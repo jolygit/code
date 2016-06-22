@@ -47,3 +47,6 @@ it is restricted NAT + different destinations receive different mappings. I.e if
 30. netstat -anp tcp # to list all the open tcp connections
 31. sudo lsof -i :49194 # to list the process that opened the port # 49194
 32. SO_SNDBUF - buffer that holds data before it gets acked from the client.
+33. netstat -a # list all the listening and non listening sockets
+34. ps -t /dev/pts/1 -o pid,ppid,tty,stat,args,wchan # to examine relationships of the processes that started on /dev/pts/1
+35. tty # to print file name of the terminal connected to stdout

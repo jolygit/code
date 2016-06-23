@@ -1,0 +1,49 @@
+1.
+NAT recommendations: RFC5382, RFC4787
+1a. NAT
+(local ip, and port number)-->(public ip, and new port)
+2. Full cone NAT:
+packets comming to (public ip, and new port) from 2. will be forwarded to (local ip, and port number)
+3. Restricted come NAT
+ as in 2. except the sorce ip address has to match to the original destination ip that the host behind the NAT have sent at the beginning.
+4. Port restricted NAT
+ as in 3 + port has to match the original port the packet was sent to.
+5. Symmetrict NAT (considered really bad in RFC)
+it is restricted NAT + different destinations receive different mappings. I.e if destination  port or ip address changes the source port will be different too.
+6. NAT allows connections out, not connections in. That poses various complications to applications.
+7. In order new transport protocol to be usable it needs to be translated by NAT but NAT developers will write software for it only if it is very popular. For that reason there is a chicken and egg problem with NAT and new protocols. That is why we are stuck with TCP, UDP, and ICMP.
+8. RFC recommends that NAT's be full cone in terms of TCP
+9. telnet sing.stanford.edu 80 followed by GET /fullduplex/index.html HTTP/1.0 <ENTER> <ENTER>
+10. DNS specifiend in RFC 1035
+11. dig is the tool to explore DNS
+12. dig  stanford.edu
+13. to check DHCP in wireshark do enter in filter: tcp.port==68 and eth.addr==28:cf:da:04:c3:2b
+14. Multipath- spreading packets to destination across multiple path of the internet.
+15. Multicast- sending packets to multiple destinations.
+16. Flooding- packets are sent through every possible path.
+17. Autonomus System - basic units of hierarcy of the internet. Between the As's we have to use BGP-4 protocol. Inside the AS the protocol can be chosen by the operators.
+18. To find AS number of lets say dreamsculpture.org do: 
+    a. dig dreamsculpture.org
+    b. joli:code aj$ nc whois.cymru.com 43
+    c. paste the ip address from a. and press enter
+19. To establish connection btwn two terminals do:
+    a. joli:code aj$ nc -l 1234 # listen on port 1234
+    b. joli:code aj$ nc 127.0.0.1 1234 # connect from another terminal. Now you can type in one terminal and it will be displied in the other.
+20. or you can use your the listening comps ip to connect to it
+21. Interior routing protocols. OSPF, IS-IS 
+22. To list all the devices on local network do:
+   1. ifconfig # to list your ip address lets say it is 192.168.1.100
+   2. ping 192.168.1.255
+   3. arp -a # you will get the list of all the devices on the network (local)
+
+23. Delay garantee protocol RSVP.
+24. ip as of 05.24.16 is 69.118.183.48
+25. cat /etc/resolv.conf # to see dns server ip address for your mac host
+26. joli:~ aj$ nslookup -type=A mit.edu # to look up ip for mit.edu domain name
+27. nslookup -type=A mit.edu 8.8.8.8 # to look up the ip from dns at 8.8.8.8
+28. nslookup -type=NS mit.edu 8.8.8.8 # to look up name servers for the domain mit.edu from 8.8.8.8 dns
+28. nslookup -type=NS mit.edu  # to look up name servers for the domain mit.edu from default dns
+29. nslookup –option1 –option2 host-to-find dns-server
+30. netstat -anp tcp # to list all the open tcp connections
+31. sudo lsof -i :49194 # to list the process that opened the port # 49194
+32. SO_SNDBUF - buffer that holds data before it gets acked from the client.

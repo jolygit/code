@@ -1,0 +1,4 @@
+1. to see terminl driver features do: stty -a
+
+
+

@@ -1,0 +1,15 @@
+1. to add keybinding in fedora do:
+   a. go to Activities
+   b. type in shearch keyboard
+   c. choose shortcuts
+   d. choose Custom Shortcuts
+   e. press +
+   f. enter name of the command and the actual command (command has to be correct) for example gnome-terminal and press add
+   g. press Disabled
+   f. press key combo that you want
+2. to disable Super key from showing overview of apps do:
+ [aj@localhost ~]$   gsettings set org.gnome.mutter overlay-key "" 
+3. to add existing user to a given group do:
+   sudo usermod -a -G grname username
+4. to add new user do: adduser <username>
+5. journalctl -r -p 3 # to check the system logs most recent first and up to priority 3

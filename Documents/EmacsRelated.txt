@@ -6,3 +6,5 @@ P.s (pdb is a shell script that is located in /home/alex/bin/)
 
 2. To comment selected code in python mode do M-; Use same command to uncomment
 3. M-< to go to beginnnig of the buffer and M-> to go to end respectively
+4. To start emacs press super+e to close a window press super+shft+c
+5. C-u M-x shell to start another shell in emacs.

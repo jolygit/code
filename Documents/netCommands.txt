@@ -48,5 +48,13 @@ it is restricted NAT + different destinations receive different mappings. I.e if
 31. sudo lsof -i :49194 # to list the process that opened the port # 49194
 32. SO_SNDBUF - buffer that holds data before it gets acked from the client.
 33. netstat -a # list all the listening and non listening sockets
-34. ps -t /dev/pts/1 -o pid,ppid,tty,stat,args,wchan # to examine relationships of the processes that started on /dev/pts/1
-35. tty # to print file name of the terminal connected to stdout
+34. netstat -at [u] # only tcp [udp] sockets
+35. netstat -ant [u] # only tcp [udp] sockets and suppress domain name lookup show only ip addr
+36. netstat -lnt [u] #  list only listening servers
+37. sudo netstat -antpe [u] # list process id of the listening socket as well as the user id
+38. netstat -s # show stat on packets sent and received etc if want for tcp only add t to options
+39. netstat -ni # display interfaces in readable format
+40. netstat -nct # display tcp connections continuesly
+41. netstat -antp |grep ESTA # to show all established tcp connections
+42. watch -d  "netstat -anpt |grep ESTA" # to run above command every 2 sec and show the diff
+

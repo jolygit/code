@@ -8,3 +8,72 @@ P.s (pdb is a shell script that is located in /home/alex/bin/)
 3. M-< to go to beginnnig of the buffer and M-> to go to end respectively
 4. To start emacs press super+e to close a window press super+shft+c
 5. C-u M-x shell to start another shell in emacs.
+6.	C-v	Move forward one screenful
+	M-v	Move backward one screenful
+	C-l	Clear screen and redisplay all the text,
+		 moving the text around the cursor
+		 to the center of the screen.
+		 (That's CONTROL-L, not CONTROL-1.)
+7.      C-f	Move forward a character
+	C-b	Move backward a character
+
+	M-f	Move forward a word
+	M-b	Move backward a word
+
+	C-n	Move to next line
+	C-p	Move to previous line
+
+	C-a	Move to beginning of line
+	C-e	Move to end of line
+
+	M-a	Move back to beginning of sentence
+	M-e	Move forward to end of sentence
+8. Try M-< now, to move to the beginning of the tutorial.
+   Then use C-v repeatedly to move back here.
+
+   Try M-> now, to move to the end of the tutorial.
+   Then use M-v repeatedly to move back here.
+9. If the computer crashes, you can recover your auto-saved editing by
+finding the file normally (the file you were editing, not the auto
+save file) and then typing M-x recover-file <Return>.  When it asks for
+confirmation, type yes<Return> to go ahead and recover the auto-save
+data.
+10.  Type M-x make-frame <Return>.
+   See a new frame appear on your screen.
+
+You can do everything you did in the original frame in the new frame.
+There is nothing special about the first frame.
+
+    Type M-x delete-frame <Return>.
+   This removes the selected frame.
+11. Frame Commands
+
+The following commands are used to delete and operate on frames:
+
+C-x 5 0
+Delete the selected frame (delete-frame). This signals an error if there is only one frame.
+
+C-z
+Minimize (or “iconify) the selected Emacs frame (suspend-frame). See Exiting.
+
+C-x 5 o
+Select another frame, and raise it. If you repeat this command, it cycles through all the frames on your terminal.
+
+C-x 5 1
+Delete all frames on the current terminal, except the selected one.
+
+M-<F10>
+Toggle the maximization state of the current frame. When a frame is maximized, it fills the screen.
+
+<F11>
+Toggle fullscreen mode for the current frame. (The difference between “fullscreen” and “maximized” is normally that the former hides window manager decorations, giving slightly more screen space to Emacs itself.)
+
+12.  Type M-x make-frame <Return>.
+   See a new frame appear on your screen.
+
+You can do everything you did in the original frame in the new frame.
+There is nothing special about the first frame.
+
+    Type M-x delete-frame <Return>.
+   This removes the selected frame.
+13. M-g M-g <line#> to go to that line 

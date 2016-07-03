@@ -7,9 +7,32 @@
    f. enter name of the command and the actual command (command has to be correct) for example gnome-terminal and press add
    g. press Disabled
    f. press key combo that you want
-2. to disable Super key from showing overview of apps do:
- [aj@localhost ~]$   gsettings set org.gnome.mutter overlay-key "" 
-3. to add existing user to a given group do:
-   sudo usermod -a -G grname username
-4. to add new user do: adduser <username>
-5. journalctl -r -p 3 # to check the system logs most recent first and up to priority 3
+2.  [aj@localhost ~]$   gsettings set org.gnome.mutter overlay-key "" #to disable Super key from showing overview of apps:
+3.  [aj@localhost ~]$   sudo usermod -a -G grname username #to add existing user to a given group 
+4.  [aj@localhost ~]$   adduser <username> # to add new user
+5.  [aj@localhost ~]$   journalctl -r -p 3 # to check the system logs most recent first and up to priority 3
+6.  [aj@localhost ~]$   ldd <pathto app> # to check library dependency
+7. to disable pasword entry during sudo command for allowed users (belonging to wheel grooup) go to /etc/sudoers, and uncomment the line:
+  %wheel  ALL=(ALL)       NOPASSWD: ALL
+
+8.  [aj@localhost ~]$   sudo gpasswd -d lan wheel # to remove the user lan from group wheel do this
+9.  [aj@localhost ~]$   who# to list the users and terminals on which they are loged in type
+10. to change the terminal do: ctrl+alt+F1,...F6
+11. [aj@localhost ~]$    startx # to start xterminal from texst terminal
+12. Ctrl-Alt-F2 to console mode
+    Ctrl-Alt-F7 to GUI mode.
+13. ps -o euid,ruid,pid,comm -t tty6 # to see processes if any on tty6
+14. who # to list all the ttys that are available.
+15. tty# to see the terminal you are on.
+16. whreis su# to find the program su
+17.  [aj@localhost ~]$ ls -la /proc/<pid>/fd # to see all the file descriptors for a given process id
+18. [aj@localhost ~]$ less -S /proc/net/tcp # to see all the open tcp sockets see http://www.onlamp.com/pub/a/linux/2000/11/16/LinuxAdmin.html for header note that ip addr is little endian but port is not. You can use socket:[###] i.e the ### from step 17. to find the entry in the table.
+19.When your system has configurable system limits, you can use the sysconf function to find out the value that applies to any particular machine. example:
+int myOPEN_MAX = sysconf (_SC_OPEN_MAX);
+	printf("%d\n",myOPEN_MAX);
+20. 
+[aj@localhost names]$ ls /etc/hosts
+21. [aj@localhost ~]$ strace -o tmp.strace.out ls # to see all the system calls that take place when ls is executed replace ls with your program.
+22. 
+
+

@@ -33,6 +33,51 @@ int myOPEN_MAX = sysconf (_SC_OPEN_MAX);
 20. 
 [aj@localhost names]$ ls /etc/hosts
 21. [aj@localhost ~]$ strace -o tmp.strace.out ls # to see all the system calls that take place when ls is executed replace ls with your program.
-22. 
+22.   [aj@localhost ~]$ grep -r "strings..." * # grep recursively in all files for string in ""
+23. [aj@localhost ~]$ find -iname "MyCProgram.c" #find MyCProgram.c anyware
 
+24.  [aj@localhost ~]$ find . -name "MyCProgram.c" #find MyCProgram.c in curr dir
+25.  [aj@localhost ~]$ diff  <fname1> <fname2> # < means in fname1 > means in fname2,
+31c31 means lines 31 are different and both are shown 
+< int myOPEN_MAX = sysconf (_SC_OPEN_MAX);
+---
+>   int myOPEN_MAX = sysconf (_SC_OPEN_MAX);
+37c37
+< 23. [aj@localhost ~]$ find -iname "MyCProgram.c" #find MyCProgram.c anyware
+---
+> 23. [aj@localhost ~]$ find -iname "MyCProgram.c" #find  MyCProgram.c anyware
+41a42,43 means in fname2 42, and 43 lines are added
+> 
+> wowthis is cool
+24. [aj@localhost ~]$ sort -t: -k 3n /etc/passwd | less
+25. [aj@localhost ~]$ find /tmp -name core -type f -print | xargs /bin/rm -f#
 
+       Find files named core in or below the directory /tmp and delete them.  Note that this will work incorrectly if there are any filenames containing newlines
+       or spaces.
+
+26. [aj@localhost ~]$ shutdown -h now# shud down system now
+27. [aj@localhost ~]$ shutdown -r now# shud down system now
+28. [aj@localhost ~]$ ps -efH # show the processes in tree hierarcy
+29. [aj@localhost ~]$ free -g # show free and used ram in gigs
+30. df -Th # display disk usage in gigs as well as the type of fs
+31. $ cat file1 file2 # open several files at the same time
+32. sudo passwd -d aj #remove password for user aj
+33. ifconfig eth0 up # turn interface up
+    ifconfig eth0 down #down
+34. lsof +D /home/aj/code/c++/ # list all the open files and directories in a specified dir
+35. lsof -u aj# list all open files by aj
+36. lsof -i TCP:22 #  list all the open processes on port 22
+37. lsof -ni 4 # list only ipv4 open files
+38. lsof  -u ^root|grep tcpserv # list all the open files except owned by root, and search for process called tcpserv
+39. lsof -i #  shows the list of all network connections ‘LISTENING & ESTABLISHED’.
+40. lsof -p 1# show open files for process id 1
+41. umask does the following:
+          file permisison 666 = 110 110 110 
+          unmask value    077 = 000 111 111
+	  will result in, 600 = 110 000 000
+   see http://www.cyberciti.biz/tips/understanding-linux-unix-umask-value-usage.html
+42. sudo find / -perm -4000 -print # to list all SUID files in linux
+43. ps $$ #to see wich shell you are runnig or echo $0
+44. $$ holds pid of the current shell running
+45. hexdump filename # to view binary file
+46. cat /dev/vcs3 # to see contents of the tty3 virtual terminal, but you need root privilages

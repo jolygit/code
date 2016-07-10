@@ -57,4 +57,5 @@ it is restricted NAT + different destinations receive different mappings. I.e if
 40. netstat -nct # display tcp connections continuesly
 41. netstat -antp |grep ESTA # to show all established tcp connections
 42. watch -d  "netstat -anpt |grep ESTA" # to run above command every 2 sec and show the diff
+43. 
 

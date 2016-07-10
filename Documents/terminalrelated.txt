@@ -1,5 +1,32 @@
 1. to see terminl driver features do: stty -a
 2. ps -t /dev/pts/1 -o pid,ppid,tty,stat,args,wchan # to examine relationships of the processes that started on /dev/pts/1
 3. tty # to print file name of the terminal connected to stdout
+4. !string	Execute the most recent command that begins with string.
+   !num	        Execute command that is number num in the command history.
+   !-num	Execute the command was run num commands previous in the history.
+   !!    	Execute the previous (most recently-executed) command.
+   !?string[?]	Execute the most recent command containing the string string. The   trailing ? may be omitted if string represents the end of the command in question.
+   ^string1^string2^	Repeat the previous command executed, replacing string1 with string2. The previous command must contain string1.
 
+5. history  10 # list last 10 history commands
+6. !ls # Executes the most recently executed command that begins with the letters ls.
+7. echo $HOSTTYPE # check machine type that you are running on
+8. echo $MACHTYPE # full system type
+9. echo $! # show the last comand run in background
+10. echo "hi" >/dev/pts/0 # to send message to different open terminal find the terminal name feirst by issuing tty and then redirect the stdout to that file note that the user that is loged in does not matter what matters is the terminal he is on, for example above could be
+ echo hi > /dev/tty3
+ 11. # this are to make emacs default editior in bash
+ VISUAL=/usr/bin/emacs; export VISUAL
+ EDITOR=/usr/bin/emacs; export EDITOR
+ 12. Bash starts up as a login shell (to be distinguished from a plain old interactive shell or a non-interactive shell).
+
+It looks for (and executes) startup scripts in the following order (provided that they exist):
+
+First /etc/profile
+
+Then the first of the following that it finds:
+
+~/.bash_profile
+~/.bash_login
+~/.profile
 

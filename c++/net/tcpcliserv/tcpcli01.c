@@ -13,12 +13,12 @@ main(int argc, char **argv)
 
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(SERV_PORT);
+	servaddr.sin_port = htons(19);
 	Inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
 
 	Connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
-
-	str_cli(stdin, sockfd);		/* do it all */
+	pause();
+	//str_cli(stdin, sockfd);		/* do it all */
 
 	exit(0);
 }

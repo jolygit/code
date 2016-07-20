@@ -30,3 +30,45 @@ Then the first of the following that it finds:
 ~/.bash_login
 ~/.profile
 
+13. stty -a # list all the terminal settings
+14. history # the .bash_history file is populated with new commands entered during given session after you exit the bash shell. Same file available for all the shells. Note that while in shell and issuing commands the cmmands issued after the start of the shell are not in history file yet. Only after you exit the shell the commands are added to the history file.
+15. ctl-r # to move back in history
+16. esc # complete the command or show list of possible completion options
+17. esc tab# attempt completion from previously used commands list make sure you press esc, release it and them press tab.
+18.ctl-v followed by special command like Enter will display the special caracter on the line
+19. esc-. # insert last word in previous command line at current cursor point
+example:
+first command: less mylongfile.txt
+second: cat esc-. # will insert mylongfile.txt
+20. fc -l 900 910 # show the commands in history from 900 to 910
+21. "\C-i": "this is macro you can insert text with key combo this way" # insert this line with desired key bindigs and text into ~/.inputrc. That wasy when pressing those keys the entered text will show up.
+22. bind -p # to show the current key bindings
+23. alias # list all the defined alias
+24. insert: alias codeaj='cd /home/aj/code' in .bash_profile  to create alias
+25. set -o. # list all the bash options
+26. declare -F # to see function definitions in shell use -f to see actual code
+27 type cdaj # to see what exctly a given comand or alias is do that.
+28. jhome () {
+  cd /home/tree/projects/java
+} # to define a function in shell. YOu can put it in .bash_profile to load at ligin
+29. x=5; echo $((x+5)) # arithmetic expressions in bash
+30. Functions go to ~/.bashrc;
+31. type -f # to list the functins defined or type fname;
+32. enable -a|wc -l # list all built in shell commands
+33. String Operators
+ 1. ${varname:-word} if varname exist and is not null return its value, else return word
+ 2. ${varname:=word} if varname exist and is not null return its value, set it to  word and return its value
+ 3. ${varname:+word} if varname exist and is not null return its value, else return null
+ 4. ${varname:offset:length} return substring starting from offset, length long
+ 34. eval sort -nr \$1 ${2:+"| head -\$2"} #
+ 35. set -- one two three #  sets $1 $2 $3
+ 36.
+ [aj@localhost shellScripts]$ n=1
+ [aj@localhost shellScripts]$ echo ${$n}  # attempt to echo $1
+ [aj@localhost shellScripts]$ ${$n}: bad substitution
+ [aj@localhost shellScripts]$ eval echo \${$n}
+ [aj@localhost shellScripts]$ one
+34. to move job into background C-z followed by bg
+35. jobs # to list the baground jobs
+36. kill -l # list all the signals with names
+37. echo $? # termination status of the last command executed

@@ -32,6 +32,7 @@ main(int argc, char **argv)
 		}
 
 		if ( (childpid = Fork()) == 0) {	/* child process */
+		  //		        sleep(20);
 			Close(listenfd);	/* close listening socket */
 			str_echo(connfd);	/* process the request */
 			exit(0);

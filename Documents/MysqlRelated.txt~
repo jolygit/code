@@ -1,2 +1,0 @@
-1. To start mysql server do in shell: service mysql start
-2. To start entering mysql commands do: mysql -u user

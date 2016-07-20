@@ -1,11 +1,30 @@
 /* include fig01 */
 #include	"unp.h"
-
+#include <sys/time.h> 
+#include <sys/resource.h> 
 int
 main(int argc, char **argv)
 {
+  struct rlimit rl; 
+     // First get the time limit on CPU 
+  getrlimit (RLIMIT_NOFILE, &rl); //RLIMIT_CORE
+  
+   printf("\n Default value is : %lld, hard value is : %lld\n", (long long int)rl.rlim_cur,(long long int)rl.rlim_max); 
+  
+   // Change the time limit 
+   rl.rlim_cur = rl.lim_max;//rl.rlim_max;
+  
+   // Now call setrlimit() to set the  
+   // changed value. 
+   setrlimit (RLIMIT_NOFILE, &rl); 
+  
+   // Again get the limit and check 
+   getrlimit (RLIMIT_NOFILE, &rl); 
+  
+   printf("\n Default value now is : %lld,%lld\n", (long long int)rl.rlim_cur,(long long int)rl.rlim_max);
+   int myFD_SETSIZE=rl.rlim_cur;
 	int					i, maxi, maxfd, listenfd, connfd, sockfd;
-	int					nready, client[FD_SETSIZE];
+	int					nready, client[myFD_SETSIZE];
 	ssize_t				n;
 	fd_set				rset, allset;
 	char				buf[MAXLINE];
@@ -25,7 +44,7 @@ main(int argc, char **argv)
 
 	maxfd = listenfd;			/* initialize */
 	maxi = -1;					/* index into client[] array */
-	for (i = 0; i < FD_SETSIZE; i++)
+	for (i = 0; i < myFD_SETSIZE; i++)
 		client[i] = -1;			/* -1 indicates available entry */
 	FD_ZERO(&allset);
 	FD_SET(listenfd, &allset);
@@ -45,12 +64,12 @@ main(int argc, char **argv)
 					ntohs(cliaddr.sin_port));
 #endif
 
-			for (i = 0; i < FD_SETSIZE; i++)
+			for (i = 0; i < myFD_SETSIZE; i++)
 				if (client[i] < 0) {
 					client[i] = connfd;	/* save descriptor */
 					break;
 				}
-			if (i == FD_SETSIZE)
+			if (i == myFD_SETSIZE)
 				err_quit("too many clients");
 
 			FD_SET(connfd, &allset);	/* add new descriptor to set */

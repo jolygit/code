@@ -39,7 +39,7 @@ main(int argc, char *argv[])
         errExit("getresuid");
     if (getresgid(&rgid, &egid, &sgid) == -1)
         errExit("getresgid");
-    //    setuid(ruid);
+    //    seteuid(1001);
     if (getresuid(&ruid, &euid, &suid) == -1)
         errExit("getresuid");
     //    setuid(suid);

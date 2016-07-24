@@ -57,5 +57,7 @@ it is restricted NAT + different destinations receive different mappings. I.e if
 40. netstat -nct # display tcp connections continuesly
 41. netstat -antp |grep ESTA # to show all established tcp connections
 42. watch -d  "netstat -anpt |grep ESTA" # to run above command every 2 sec and show the diff
-43. 
+43. dig +short myip.opendns.com @resolver1.opendns.com # resolve external ip address
+44. ssh alex@192.168.1.102 -p 8001 # passord is same with dot this is to connect to server in the basement
+
 

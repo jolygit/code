@@ -40,6 +40,7 @@ s8. git stash; to put local uncommitted chages on stack and make the branch clea
 13. git clean -d -n ; to show what would happened without actually deleting anyting
 14. git merge origin/master ; to merge origin/master with master branch
 15. git status -u no ; supress untracked files
+15a. echo "$(git status --porcelain | grep '^??' | cut -c4-)" > .gitignore # permananty ignores untracked files when do git status. Redo it when more untracked files accumulate
 16. git config --list ; to list git config entries
 17. git config --global user.name "Alex Joly" ; to set up a user name
 18. git clone https://github.com/jolygit/code.git ; clones my code to the code dir 

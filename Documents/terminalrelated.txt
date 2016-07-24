@@ -72,3 +72,7 @@ second: cat esc-. # will insert mylongfile.txt
 35. jobs # to list the baground jobs
 36. kill -l # list all the signals with names
 37. echo $? # termination status of the last command executed
+38. source .bash_profile # to validate new entries in bash_profile without relogin
+39. buildtags # shell script in ~/code that rebuilds tags
+40. ps -T -p 801 # show threads for given pid
+41. pstree -p # shows process tree structure with threads as well in {} 

@@ -59,5 +59,5 @@ it is restricted NAT + different destinations receive different mappings. I.e if
 42. watch -d  "netstat -anpt |grep ESTA" # to run above command every 2 sec and show the diff
 43. dig +short myip.opendns.com @resolver1.opendns.com # resolve external ip address
 44. ssh alex@192.168.1.102 -p 8001 # passord is same with dot this is to connect to server in the basement
-
+45. ip -s neigh # to see arp cache entries
 

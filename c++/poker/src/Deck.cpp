@@ -8,6 +8,8 @@ Deck::Deck(char _numPlayers):numPlayers(_numPlayers){
     ranks=std::vector<short> (_numPlayers);
     handFlushCards=std::vector<short>(7);
     playerHands=std::vector<std::pair<short,short> > (_numPlayers,std::pair<short,short>(-1,-1));
+    hand=std::vector<short>(7);
+    size=133784560; // C(52,7)
 }
 short Deck::createCardsMap(){
   for(short i=0;i<52;i++){
@@ -249,6 +251,44 @@ short Deck::Winners(){
   }
   return 0;
 }
+short Deck::WinnersFast(){
+  int maxRank=0;
+  int PlayerRank[numPlayers];
+  long index,ind;
+  for(int i=0;i<numPlayers;i++){
+    PlayerRank[i]=0;
+    hand[0]=cards[i*2+0];
+     hand[1]=cards[i*2+1];;
+     hand[2]=cards[numPlayers*2+0];
+     hand[3]=cards[numPlayers*2+1];
+     hand[4]=cards[numPlayers*2+2];
+     hand[5]=cards[numPlayers*2+3];
+     hand[6]=cards[numPlayers*2+4];
+     std::sort(hand.begin(),hand.end());// hand always in ascending order to compute index correcly below
+     index=HandToIndex();
+     ind=index%size;
+     bool found=false;
+     
+     for(int len=0;len<hashBinSizes[ind];len++){// max 15 is the length here
+       if(hashFinalKey[ind][len]==index){
+	 found=true;
+	 PlayerRank[i]=hashFinalValue[ind][len];
+	 break;
+       }
+     }
+     if(!found)
+       printf("could not find hand with index %ld\n",index);
+     if(PlayerRank[i]>=maxRank)
+       maxRank=PlayerRank[i];
+  }
+  for(int i=0;i<numPlayers;i++){
+    if(PlayerRank[i]==maxRank)
+      winners[i]=1;
+    else
+      winners[i]=0;
+  }
+  return 0;
+}
 int Deck::ConvertToInt(int h){
   int sum=0;
   for(int i=0;i<5;i++){
@@ -434,13 +474,12 @@ long index=0;
  return index;
 }
 short Deck::AllocateMemory(){
-    printf("Allocate memory\n");
-  int size=133784560;
+  printf("Allocate memory\n");
   long index=0,ind=0;
   hashBinSizes=(char*)calloc(size,sizeof(char));
   hashFinalValue=(int**)calloc(size,sizeof(int*));
   hashFinalKey=(long**)calloc(size,sizeof(long*));
-  for(int fi=0;fi<52-6;fi++){//52-6
+  for(int fi=0;fi<52-6;fi++){
     for(int se=fi+1;se<52-5;se++){
       for(int th=se+1;th<52-4;th++){
 	for(int fo=th+1;fo<52-3;fo++){
@@ -465,37 +504,29 @@ short Deck::AllocateMemory(){
     }
     printf("%d\n",fi);
   }
-  long maxbin=0,cnt=0;
   for(int fi=0;fi<size;fi++){
     int binSize=hashBinSizes[fi];
      if(binSize>0){
-       //printf("max bin %lld,%lld\n",binSize,fi);
-       cnt+=binSize*(sizeof(long));
        hashFinalKey[fi]=(long*)calloc(binSize,sizeof(long));
        hashFinalValue[fi]=(int*)calloc(binSize,sizeof(int));
      }
-    if(binSize>maxbin)
-      maxbin=binSize;
   }
-  printf("max bin %lld,%lld\n",maxbin,sizeof(long));
-  
   return 0;
 }
 	      
 short Deck::HandMap(){
   AllocateMemory();
-  printf("populate the arrays\n");
+  printf("Create hand Map\n");
    int cnt=0;
    numPlayers=1;
    long index=0,ind=0;
-   int size=133784560;
-   for(int fi=0;fi<52-6;fi++){//52-6
-     for(int se=fi+1;se<52-5;se++){//fi+1
+   for(int fi=0;fi<52-6;fi++){
+     for(int se=fi+1;se<52-5;se++){
        for(int th=se+1;th<52-4;th++){
    	for(int fo=th+1;fo<52-3;fo++){
    	  for(int fv=fo+1;fv<52-2;fv++){
-   	    for(int sx=fv+1;sx<52-1;sx++){//fv+1
-   	      for(int svn=sx+1;svn<52;svn++){//sx+1
+   	    for(int sx=fv+1;sx<52-1;sx++){
+   	      for(int svn=sx+1;svn<52;svn++){
    		 hand[0]=fi;
    	         hand[1]=se;
    		 hand[2]=th;
@@ -533,12 +564,11 @@ short Deck::HandMap(){
      }
      printf("%d\n",fi);
    }
-   printf("checking for errors\n");
-    CheckForErrors();
+   //printf("checking for errors\n");
+   // CheckForErrors();
   return 0;
 }
 short Deck::CheckForErrors(){
-  int size=133784560;
   long index=0,ind=0;
   for(int fi=0;fi<52-6;fi++){//52-6
      for(int se=fi+1;se<52-5;se++){

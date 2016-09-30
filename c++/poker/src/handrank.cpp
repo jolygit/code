@@ -27,17 +27,21 @@ int HandRank::CreateHandMap(){
 // (11,0) (11,1)  (11,2)  (11,3)  (11,4)  (11,5)  (11,6)  (11,7)  (11,8)  (11,9)  (11,10)  (11,11)  (11,12)s
 // (12,0) (12,1)  (12,2)  (12,3)  (12,4)  (12,5)  (12,6)  (12,7)  (12,8)  (12,9)  (12,10)  (12,11)  (12,12)
 int HandRank::BuildStat(){
-  for(int i=0;i<13;i++){
-    for(int j=0;j<13;j++){
-      stat[i][j]=0;
-      count[i][j]=0;
+  for(int numPl=2;numPl<11;numPl++){
+    deck.numPlayers=numPl;
+    printf("Number of Players: %d\n",numPl);
+    for(int i=0;i<13;i++){
+      for(int j=0;j<13;j++){
+	stat[i][j]=0;
+	count[i][j]=0;
+      }
     }
-  }
-  long long iter=10000000000;  
-  for(long long it=0;it<iter;it++){
-    deck.Permute();
-    deck.Winners();
-    for(int i=0;i<deck.numPlayers;i++){
+    long long iter=10000000;  
+    for(long long it=0;it<iter;it++){
+      // printf("iteration %ld\n",it);
+      deck.Permute();
+      deck.Winners();//deck.Winners()
+      for(int i=0;i<deck.numPlayers;i++){
         short first=deck.playerHands[i].first;
 	short second=deck.playerHands[i].second;
 	bool sute=false;
@@ -55,20 +59,21 @@ int HandRank::BuildStat(){
 	  else
 	    Fdesuted>=Sdesuted?stat[Fdesuted][Sdesuted]++:stat[Sdesuted][Fdesuted]++;
 	}
+      }
     }
-  }
-  float sum=0;
-  for(int i=0;i<13;i++){
-    for(int j=0;j<13;j++){
-      if(count[i][j])
-	stat[i][j]/=count[i][j];
-      else
-	stat[i][j]=0;
-      printf(" %2.0f",100*stat[i][j]);
+    float sum=0;
+    for(int i=0;i<13;i++){
+      for(int j=0;j<13;j++){
+	if(count[i][j])
+	  stat[i][j]/=count[i][j];
+	else
+	  stat[i][j]=0;
+	printf(" %2.0f",100*stat[i][j]);
+      }
+      printf("\n");
     }
     printf("\n");
   }
-  printf("\n");
   // for(int i=0;i<13;i++){
   //   for(int j=0;j<13;j++){
   //     double val=169*count[i][j]/(deck.numPlayers*iter);

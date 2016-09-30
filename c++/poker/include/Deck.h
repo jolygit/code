@@ -24,12 +24,12 @@ class Deck{
   short PrintHand(short i);
   short GetCard(short i){ return cards[i];}
   short Winners();
+  short WinnersFast();
   short ClasifyBoardFlush();
   short ClasifyBoardPairs();
   short bb(short  c);
   short HandPermute();
   short HandMap();// Precomputes rank and value of all possible pocker hands C(52,7) values
-  short hand[7]; // one of C(52,7) hands for HandMap() above
   std::vector<std::pair<short,short> > playerHands;
   short              winners[10]; // assumed that no more then 10 winners possible
   short numPlayers;
@@ -45,6 +45,8 @@ class Deck{
   short cards[52];
   std::vector<std::pair<std::string,char> > cardsMap;
   std::vector<short> handFlushCards;
+  std::vector<short> hand; // one of C(52,7) hands for HandMap() above
+
   short              flop[3];
   short              turn;
   short              river;
@@ -60,5 +62,6 @@ class Deck{
   int**         hashFinalValue;
   long**        hashFinalKey;
   char*         hashBinSizes;
+  int           size;
 };
 

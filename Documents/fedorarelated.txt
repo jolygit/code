@@ -103,3 +103,5 @@ just run /lib64/libc.so.6 and it will print the version of the glibc.
 58. aplay <filename.wav> # play the recorded file
 59. sudo mount -t tmpfs tmp1 /home/aj/tmp1 # mount tmpfs to the /home/aj/tmp1. The old files are not visible anymore
 60. sudo umount /home/aj/tmp1 # unmount the file system. Old file system files become visible again.
+61. sudo dnf update
+62. sudo dnf install gcc-c++

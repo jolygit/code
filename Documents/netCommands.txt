@@ -17,6 +17,7 @@ it is restricted NAT + different destinations receive different mappings. I.e if
 10. DNS specifiend in RFC 1035
 11. dig is the tool to explore DNS
 12. dig  stanford.edu
+12a. dig ns stanford.edu
 13. to check DHCP in wireshark do enter in filter: tcp.port==68 and eth.addr==28:cf:da:04:c3:2b
 14. Multipath- spreading packets to destination across multiple path of the internet.
 15. Multicast- sending packets to multiple destinations.
@@ -60,4 +61,8 @@ it is restricted NAT + different destinations receive different mappings. I.e if
 43. dig +short myip.opendns.com @resolver1.opendns.com # resolve external ip address
 44. ssh alex@192.168.1.102 -p 8001 # passord is same with dot this is to connect to server in the basement
 45. ip -s neigh # to see arp cache entries
-
+46. sudo dhclient -r # release old ip
+47. sudo dhclient # obtain new ip from dhcp server
+48. dig +norec www.stanford.edu @a.root-servers.net # ask nonrecursively to the root server a which are the servers for edu domain
+49. dig +norec www.stanford.edu @g.edu-servers.net # after getting response from root you can query one of the edu servers about nameservers for stanford, and so all the way to your destionation
+50. dig mx gmail.com # to query mail server for a given domain

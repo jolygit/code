@@ -1,4 +1,4 @@
-
+ll
 template<int N> struct fac{
   static long long const val=N*fac<N-1>::val;
 };

@@ -14,6 +14,10 @@
          (cmd (concat "grep -nH -r --exclude='TAGS' --include='*.h' --include='*.cpp' --include='*.pl' --include='*.c' -e " cur-word " ~/code")))
     (grep-apply-setting 'grep-command cmd)
     (grep cmd)))
+;find other cpp or h file
+(load "/home/aj/.emacs.d/find-file.el")
+(setq cc-search-directories '("../include" "../src" ))
+(global-set-key (kbd "C-`") 'ff-find-other-file)
 
 (global-set-key (kbd "<f1>")  'mark-whole-buffer)
 (global-set-key (kbd "<f3>")  'xx)
@@ -65,11 +69,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;(load "/home/aj/.emacs.d/jdee-2.4.1/lisp/jde.el")
 
 ;bookmark setup
-;(load "/home/aj/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")
-;(require 'bm)
-
-;(setq bm-highlight-style 'bm-highlight-only-line)
-
+(load "/home/aj/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")
+(require 'bm)
+(setq bm-highlight-style 'bm-highlight-only-line)
 ;(global-set-key (kbd "<f2>") 'bm-toggle)
 ;(global-set-key (kbd "<C-f2>") 'bm-next)
 

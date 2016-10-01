@@ -1,0 +1,23 @@
+1. Fast recovery algo.
+   1.  When the third duplicate ACK in a row is received, set ssthresh
+       to one-half the current congestion window, cwnd, but no less
+       than two segments.  Retransmit the missing segment.  Set cwnd to
+       ssthresh plus 3 times the segment size.  This inflates the
+       congestion window by the number of segments that have left the
+       network and which the other end has cached (3).
+
+   2.  Each time another duplicate ACK arrives, increment cwnd by the
+       segment size.  This inflates the congestion window for the
+       additional segment that has left the network.  Transmit a
+       packet, if allowed by the new value of cwnd.
+
+   3.  When the next ACK arrives that acknowledges new data, set cwnd
+       to ssthresh (the value set in step 1).  This ACK should be the
+       acknowledgment of the retransmission from step 1, one round-trip
+       time after the retransmission.  Additionally, this ACK should
+       acknowledge all the intermediate segments sent between the lost
+       packet and the receipt of the first duplicate ACK.  This step is
+       congestion avoidance, since TCP is down to one-half the rate it
+       was at when the packet was lost.
+
+P.s in a way this is the same as saying that after 3rd dup ack arrives we fast retransmit the missing packet and then, wait till half the packets in flight arrive and then start continue to send new packets on the remaining dup acks as in normal congestion avoidence...

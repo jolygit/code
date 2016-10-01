@@ -118,3 +118,11 @@ is created from /etc/sysctl.d/core-pattern.conf
 72. /proc/sysvipc/ # this directory lists all the ipc in the system
 73. ipcs # lists ipc but for the once that user has read permission.
 74. find -L /proc/6813/fd -maxdepth 1 -inum 32374949 -exec readlink {} \; # to find file name by pid and inode #
+75. lsusb # list all usb devices
+76. arecord <filename.wav> # record with microphone and save it in the filename.wav in home dir
+77. aplay <filename.wav> # play the recorded file
+78. sudo mount -t tmpfs tmp1 /home/aj/tmp1 # mount tmpfs to the /home/aj/tmp1. The old files are not visible anymore
+79. sudo umount /home/aj/tmp1 # unmount the file system. Old file system files become visible again.
+80. sudo dnf update
+81. sudo dnf install gcc-c++
+

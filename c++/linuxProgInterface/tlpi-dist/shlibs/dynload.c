@@ -63,13 +63,10 @@ main(int argc, char *argv[])
     if (err != NULL)
         fatal("dlsym: %s", err);
 
-    /* If the address returned by dlsym() is non-NULL, try calling it
-       as a function that takes no arguments */
+    /* Try calling the address returned by dlsym() as a function
+       that takes no arguments */
 
-    if (funcp == NULL)
-        printf("%s is NULL\n", argv[2]);
-    else
-        (*funcp)();
+    (*funcp)();
 
     dlclose(libHandle);                         /* Close the library */
 

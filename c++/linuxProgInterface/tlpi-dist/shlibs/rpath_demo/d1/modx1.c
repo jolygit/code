@@ -12,7 +12,7 @@
 
 void
 x1(void) {
-    void x2(void);
+    extern void x2(void);
 
     x2();
 }

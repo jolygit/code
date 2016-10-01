@@ -39,12 +39,6 @@ main(int argc, char *argv[])
         errExit("getresuid");
     if (getresgid(&rgid, &egid, &sgid) == -1)
         errExit("getresgid");
-    //    seteuid(1001);
-    if (getresuid(&ruid, &euid, &suid) == -1)
-        errExit("getresuid");
-    //    setuid(suid);
-    if (getresuid(&ruid, &euid, &suid) == -1)
-      errExit("getresuid");
 
     /* Attempts to change the file-system IDs are always ignored
        for unprivileged processes, but even so, the following

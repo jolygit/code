@@ -31,7 +31,7 @@ main(int argc, char *argv[])
     struct timespec ts;
 
     if (argc != 3 || strcmp(argv[1], "--help") == 0)
-        usageErr("%s sem-name nsecs\n", argv[0]);
+        usageErr("%s sem-name num-secs\n", argv[0]);
 
     sem = sem_open(argv[1], 0);
     if (sem == SEM_FAILED)

@@ -263,6 +263,9 @@ main(int argc, char *argv[])
             (map_zero && (uid_map != NULL || gid_map != NULL)))
         usage(argv[0]);
 
+    if (optind >= argc)
+        usage(argv[0]);
+
     args.argv = &argv[optind];
 
     /* We use a pipe to synchronize the parent and child, in order to

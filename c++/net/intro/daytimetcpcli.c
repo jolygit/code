@@ -1,5 +1,5 @@
 #include	"unp.h"
-
+static int vova;
 int
 main(int argc, char **argv)
 {

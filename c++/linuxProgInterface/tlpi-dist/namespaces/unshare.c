@@ -40,7 +40,7 @@ usage(char *pname)
     fprintf(stderr, "Usage: %s [options] cmd [arg...]\n", pname);
     fprintf(stderr, "Options can be:\n");
     fprintf(stderr, "    -f   fork() before executing cmd "
-            "(useful when unsharing IPC namespace)\n");
+            "(useful when unsharing PID namespace)\n");
     fprintf(stderr, "    -C   unshare cgroup namespace\n");
     fprintf(stderr, "    -i   unshare IPC namespace\n");
     fprintf(stderr, "    -m   unshare mount namespace\n");

@@ -98,3 +98,23 @@ Note that if the other has no execute permission he will not be able to run exac
 	/lib64/ld-linux-x86-64.so.2 (0x0000563d46e70000)
 
 just run /lib64/libc.so.6 and it will print the version of the glibc.
+57.    sudo cp /lib/firmware/iwlwifi-7265D-10.ucode /lib/firmware/iwlwifi-3165-10.ucode;
+       sudo cp /lib/firmware/iwlwifi-7265D-12.ucode /lib/firmware/iwlwifi-3165-12.ucode;
+   ls /lib/firmware/|grep wifi;lspci -nnk | grep -iA2 net;reboot # if wifi netowr not working after installing fedora on HP computer basicaly in firmare files with 3165 names are missing so cp helps.
+58./usr/bin/gnome-terminal # to start terminal with key shortcuts add this command to the command filed in custom keyshortcuts
+59. systemctl list-units|less -S # list all the units that are run at system boot
+60. systemctl disable abrt-xorg.service # to permanently disable one of the abrt services. you can see all the systemd services at /lib/systemd/system/
+61. sudo echo "core.%e.%p" > /etc/sysctl.d/core-pattern.conf # to make core dumps in the current directory instead of default that sends it to the program. Make sure to disable services of abrt as in 60. Note that /proc/sys/kernel/core_pattern
+is created from /etc/sysctl.d/core-pattern.conf
+62. lsblk # to list all the block devices on the system
+63. any file system mentioned in /etc/fstab is part of the boot process64. c-z to suspend the job.
+65. jobs # to list all the gackground and suspended jobs
+66. fg %1 # to bring the job %1 to foreground
+67. bg %1 # 
+68. sudo setcap "cap_sys_time=pe" date
+69. nm -A daytimetcpcli.o 2> /dev/null # to list all the simbols defined in the object file.
+70. nm -A /lib64/libc.so.6 2> /dev/null |grep strcmp # search for strcmp in c library
+71. man 2 chmod # check man pages for chmod(2)
+72. /proc/sysvipc/ # this directory lists all the ipc in the system
+73. ipcs # lists ipc but for the once that user has read permission.
+74. find -L /proc/6813/fd -maxdepth 1 -inum 32374949 -exec readlink {} \; # to find file name by pid and inode #

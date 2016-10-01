@@ -36,6 +36,12 @@ main(int argc, char *argv[])
     /* Construct server socket address, bind socket to it,
        and make this a listening socket */
 
+    /* For an explanation of the following check, see the errata notes for
+       pages 1168 and 1172 at http://www.man7.org/tlpi/errata/. */
+
+    if (strlen(SV_SOCK_PATH) > sizeof(addr.sun_path) - 1)
+        fatal("Server socket path too long: %s", SV_SOCK_PATH);
+
     if (remove(SV_SOCK_PATH) == -1 && errno != ENOENT)
         errExit("remove-%s", SV_SOCK_PATH);
 

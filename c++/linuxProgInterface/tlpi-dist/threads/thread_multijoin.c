@@ -84,7 +84,7 @@ main(int argc, char *argv[])
     int s, idx;
 
     if (argc < 2 || strcmp(argv[1], "--help") == 0)
-        usageErr("%s nsecs...\n", argv[0]);
+        usageErr("%s num-secs...\n", argv[0]);
 
     thread = calloc(argc - 1, sizeof(*thread));
     if (thread == NULL)

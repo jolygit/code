@@ -15,6 +15,10 @@ CFLAGS = ${IMPL_CFLAGS} ${IMPL_THREAD_FLAGS}
 LDLIBS = ${IMPL_LDLIBS} ${IMPL_THREAD_FLAGS}
 	# POSIX semaphores need the NPTL thread library on Linux
 
+# psem_timedwait uses clock_gettime() which is in librt
+psem_timedwait: psem_timedwait.o
+	${CC} -o $@ psem_timedwait.o ${CFLAGS} ${LDLIBS} ${LINUX_LIBRT}
+
 clean : 
 	${RM} ${EXE} *.o
 

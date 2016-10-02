@@ -60,6 +60,38 @@ short Deck::Permute(){
   river=cards[numPlayers*2+4];
   return 0;
 }
+short Deck::FixOneHandPermute(){
+  river=-1;
+  turn=-1;
+  flop[0]=-1;
+  flop[1]=-1;
+  flop[2]=-1;
+  std::srand(std::time(0));
+  for(short i=0;i<52;i++){
+    float rand=float(std::rand())/RAND_MAX;
+    short index=rand*(52-i)+i;
+    std::swap(cards[i],cards[index]);
+  }
+  int cnt=0;
+  for(short i=0;i<52;i++){ // create pair of duces for pl #1
+    if(cards[i]%13==0){
+      std::swap(cards[i],cards[cnt]);
+      cnt++;
+    }
+    if(cnt==2)
+      break;
+  }
+  for(short i=0;i<numPlayers;i++){
+    playerHands[i].first=cards[i*2];
+    playerHands[i].second=cards[i*2+1];
+  }
+  flop[0]=cards[numPlayers*2];
+  flop[1]=cards[numPlayers*2+1];
+  flop[2]=cards[numPlayers*2+2];
+  turn=cards[numPlayers*2+3];
+  river=cards[numPlayers*2+4];
+  return 0;
+}
 /////////////////////////Cards Map/////////////////////////////////////
 // \ S   H  D  C
 //2  0   13 26 39 
@@ -216,6 +248,7 @@ short Deck::Winners(){
   for(int i=0;i<numPlayers;i++){
     ranks[i]=0; // for repeated permutations needed
     RankHand(i);
+    // RankHand(i);
     if(ranks[i]>=maxRank)
       maxRank=ranks[i];
   }
@@ -348,7 +381,7 @@ short Deck::RankHand(int h){
   DeSutedHand[hand.first%13]++;
   DeSutedHand[hand.second%13]++;
   ////////////////////////// Four of a kind test///////////////////////////////
-  short fourOfaKind=0;
+  short fourOfaKind=-1;
   short prevMax=-1;
   short max=-1;
   for(int j=0;j<13;j++){
@@ -360,40 +393,40 @@ short Deck::RankHand(int h){
       fourOfaKind=j;
     }
   }
-  if(!ranks[h] && fourOfaKind){
+  if(!ranks[h] && fourOfaKind>-1){
     for(int j=0;j<4;j++)
       bestHands[h][j]=fourOfaKind;
     bestHands[h][4]=(max==fourOfaKind)?prevMax:max; // in case four of a kind is max choose prev max
     ranks[h]=8;
   }
   ////////////////////////// Full house test ///////////////////////////////
-  short threeOfaKind=0;
-  short twoOfaKindHigh=0;
-  short twoOfaKindLow=0;
-  short kickerh=0; // will use for two pairs
-  short kickerm=0; // will use for two pairs
-  short kickerl=0; // will use for two pairs
-  short kickerll=0; // will use for two pairs
-  short kickerlll=0; // will use for two pairs
+  short threeOfaKind=-1;
+  short twoOfaKindHigh=-1;
+  short twoOfaKindLow=-1;
+  short kickerh=-1; // will use for two pairs
+  short kickerm=-1; // will use for two pairs
+  short kickerl=-1; // will use for two pairs
+  short kickerll=-1; // will use for two pairs
+  short kickerlll=-1; // will use for two pairs
   for(int j=0;j<13;j++){
     if(DeSutedHand[12-j]==3)
       threeOfaKind=12-j;
-    if(DeSutedHand[12-j]==2 && twoOfaKindHigh==0)
+    if(DeSutedHand[12-j]==2 && twoOfaKindHigh==-1)
       twoOfaKindHigh=12-j;
-    else if(DeSutedHand[12-j]==2 && twoOfaKindHigh) // will use for two pairs
+    else if(DeSutedHand[12-j]==2 && twoOfaKindHigh>-1) // will use for two pairs
       twoOfaKindLow=12-j;
-    if(DeSutedHand[12-j]==1 && !kickerh)
+    if(DeSutedHand[12-j]==1 && kickerh==-1)
       kickerh=12-j;
-    else if(DeSutedHand[12-j]==1 && kickerh && !kickerm)
+    else if(DeSutedHand[12-j]==1 && kickerh>-1 && kickerm==-1)
       kickerm=12-j;
-    else if(DeSutedHand[12-j]==1 && kickerm && !kickerl)
+    else if(DeSutedHand[12-j]==1 && kickerm>-1 && kickerl==-1)
       kickerl=12-j;
-    else if(DeSutedHand[12-j]==1 && kickerl && !kickerll)
+    else if(DeSutedHand[12-j]==1 && kickerl>-1 && kickerll==-1)
       kickerll=12-j;
-    else if(DeSutedHand[12-j]==1 && kickerll && !kickerlll)
+    else if(DeSutedHand[12-j]==1 && kickerll>-1 && kickerlll==-1)
       kickerlll=12-j;
   }
-  if(ranks[h]<7 && threeOfaKind && twoOfaKindHigh){
+  if(ranks[h]<7 && threeOfaKind>-1 && twoOfaKindHigh>-1){
     for(int j=0;j<3;j++)
       bestHands[h][j]=threeOfaKind;
     for(int j=0;j<2;j++)
@@ -421,7 +454,7 @@ short Deck::RankHand(int h){
     }
   }
   ////////////////////////// Is three of a kind test ///////////////////////////////
-  if(!ranks[h] && threeOfaKind && !twoOfaKindHigh){
+  if(!ranks[h] && threeOfaKind>-1 && twoOfaKindHigh==-1){
     for(int j=0;j<3;j++)
       bestHands[h][j]=threeOfaKind;
     short max=-1;
@@ -437,7 +470,7 @@ short Deck::RankHand(int h){
     ranks[h]=4;
   }
   ////////////////////////// Is two pair ///////////////////////////////
-  if(!ranks[h] && twoOfaKindHigh && twoOfaKindLow){
+  if(!ranks[h] && twoOfaKindHigh>-1 && twoOfaKindLow>-1){
     bestHands[h][0]=twoOfaKindHigh;
     bestHands[h][1]=twoOfaKindHigh;
     bestHands[h][2]=twoOfaKindLow;
@@ -446,7 +479,7 @@ short Deck::RankHand(int h){
     ranks[h]=3;
   }
   ////////////////////////// Is one pair ///////////////////////////////
-  if(!ranks[h] && twoOfaKindHigh && !twoOfaKindLow && !threeOfaKind && !fourOfaKind){
+  if(!ranks[h] && twoOfaKindHigh>-1 && twoOfaKindLow==-1 && threeOfaKind==-1 && fourOfaKind==-1){
     bestHands[h][0]=twoOfaKindHigh;
     bestHands[h][1]=twoOfaKindHigh;
     bestHands[h][2]=kickerh;
@@ -455,7 +488,7 @@ short Deck::RankHand(int h){
     ranks[h]=2;
   }
   ////////////////////////// Worst hand ///////////////////////////////
-  if(!ranks[h] && !twoOfaKindHigh && !twoOfaKindLow && !threeOfaKind && !fourOfaKind){
+  if(!ranks[h] && twoOfaKindHigh==-1 && twoOfaKindLow==-1 && threeOfaKind==-1 && fourOfaKind==-1){
     bestHands[h][0]=kickerh;
     bestHands[h][1]=kickerm;
     bestHands[h][2]=kickerl;

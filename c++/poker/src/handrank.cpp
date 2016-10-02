@@ -36,7 +36,7 @@ int HandRank::BuildStat(){
 	count[i][j]=0;
       }
     }
-    long long iter=10000000;  
+    long long iter=1000000000;  
     for(long long it=0;it<iter;it++){
       // printf("iteration %ld\n",it);
       deck.Permute();
@@ -84,14 +84,64 @@ int HandRank::BuildStat(){
   // }
   //  printf(" %1.4f\n",sum/deck.numPlayers);
 }
+int HandRank::BuildSingleStat(){
+  for(int numPl=2;numPl<11;numPl++){
+    deck.numPlayers=numPl;
+    printf("Number of Players: %d\n",numPl);
+    for(int i=0;i<13;i++){
+      for(int j=0;j<13;j++){
+	stat[i][j]=0;
+	count[i][j]=0;
+      }
+    }
+    long long iter=1000;  
+    for(long long it=0;it<iter;it++){
+      // printf("iteration %ld\n",it);
+      deck.FixOneHandPermute();
+      deck.Winners();//deck.Winners()
+      for(int i=0;i<1;i++){
+        short first=deck.playerHands[i].first;
+	short second=deck.playerHands[i].second;
+	bool sute=false;
+	if(first/13==second/13)
+	  sute=true;
+	short Fdesuted=first%13;
+	short Sdesuted=second%13;
+	if(sute)
+	  Fdesuted<Sdesuted?count[Fdesuted][Sdesuted]++:count[Sdesuted][Fdesuted]++;
+	else
+	  Fdesuted>=Sdesuted?count[Fdesuted][Sdesuted]++:count[Sdesuted][Fdesuted]++;
+	if(deck.winners[i]==1){
+	  if(sute)
+	    Fdesuted<Sdesuted?stat[Fdesuted][Sdesuted]++:stat[Sdesuted][Fdesuted]++;
+	  else
+	    Fdesuted>=Sdesuted?stat[Fdesuted][Sdesuted]++:stat[Sdesuted][Fdesuted]++;
+	}
+      }
+    }
+    float sum=0;
+    for(int i=0;i<13;i++){
+      for(int j=0;j<13;j++){
+	if(count[i][j])
+	  stat[i][j]/=count[i][j];
+	else
+	  stat[i][j]=0;
+	printf(" %2.0f",100*stat[i][j]);
+      }
+      printf("\n");
+    }
+    printf("\n");
+  }
+  return 0;
+}
 int HandRank::PrintGame(){
-  for(int i=0;i<1000000;i++){
-    deck.Permute();
+  for(int i=0;i<1000;i++){
+    deck.FixOneHandPermute();//Permute
     deck.Winners();
-    // deck.PrintAll();
+     deck.PrintAll();
   }
   //deck.HandPermute();
-  deck.PrintAll();
+  // deck.PrintAll();
   return 0;
 }
 int HandRank::CheckDistrib(){

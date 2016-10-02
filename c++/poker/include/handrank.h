@@ -6,6 +6,7 @@ class HandRank{
   double  stat[13][13];
   double  count[13][13];
   int  BuildStat();
+  int  BuildSingleStat();
   int  PrintHand();
   int  CreateHandMap();
   int  PrintGame();

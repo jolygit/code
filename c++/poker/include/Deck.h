@@ -20,6 +20,7 @@ class Deck{
   short River();
   int   SingleRank(int h);
   short Permute();
+  short FixOneHandPermute();
   short PrintAll(); // prints all player hands as well as flop turn and river
   short PrintHand(short i);
   short GetCard(short i){ return cards[i];}

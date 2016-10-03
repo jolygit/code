@@ -1,7 +1,13 @@
 #include "handrank.h"
 #include <stdio.h>
 HandRank::HandRank(int pl){
+  flopHandSize=FlopHandSize();
   deck=Deck(pl);
+  hand=std::vector<short>(5,0);
+  flashChance=1;
+  flashChance<<=20;
+  flopWinners=std::vector<int>(flopHandSize,0);
+  flopAll=std::vector<int>(flopHandSize,0);
 }
 int HandRank::PrintHand(){
     deck.Permute();
@@ -27,7 +33,7 @@ int HandRank::CreateHandMap(){
 // (11,0) (11,1)  (11,2)  (11,3)  (11,4)  (11,5)  (11,6)  (11,7)  (11,8)  (11,9)  (11,10)  (11,11)  (11,12)s
 // (12,0) (12,1)  (12,2)  (12,3)  (12,4)  (12,5)  (12,6)  (12,7)  (12,8)  (12,9)  (12,10)  (12,11)  (12,12)
 int HandRank::BuildStat(){
-  for(int numPl=2;numPl<11;numPl++){
+  for(int numPl=2;numPl<3;numPl++){
     deck.numPlayers=numPl;
     printf("Number of Players: %d\n",numPl);
     for(int i=0;i<13;i++){
@@ -44,6 +50,8 @@ int HandRank::BuildStat(){
       for(int i=0;i<deck.numPlayers;i++){
         short first=deck.playerHands[i].first;
 	short second=deck.playerHands[i].second;
+	  int index=HandAndFlopIndex(i);
+	 flopAll[index]++;
 	bool sute=false;
 	if(first/13==second/13)
 	  sute=true;
@@ -58,6 +66,7 @@ int HandRank::BuildStat(){
 	    Fdesuted<Sdesuted?stat[Fdesuted][Sdesuted]++:stat[Sdesuted][Fdesuted]++;
 	  else
 	    Fdesuted>=Sdesuted?stat[Fdesuted][Sdesuted]++:stat[Sdesuted][Fdesuted]++;
+	  flopWinners[index]++;
 	}
       }
     }
@@ -74,15 +83,51 @@ int HandRank::BuildStat(){
     }
     printf("\n");
   }
-  // for(int i=0;i<13;i++){
-  //   for(int j=0;j<13;j++){
-  //     double val=169*count[i][j]/(deck.numPlayers*iter);
-  //     sum+=val;
-  //     printf(" %1.4f",val);
-  //   }
-  //   printf("\n");
-  // }
-  //  printf(" %1.4f\n",sum/deck.numPlayers);
+   int cnt=0;
+   for(int i=0;i<flopHandSize;i++){
+     if(flopAll[i]){
+       cnt++;
+       printf("%d,%d,%d\n",cnt,flopAll[i],flopWinners[i]);
+     }
+   }
+}
+int HandRank::HandAndFlopIndex(int i){
+  int index=0;
+  hand[0]=deck.playerHands[i].first;
+  hand[1]=deck.playerHands[i].second;
+  hand[2]=deck.flop[0];
+  hand[3]=deck.flop[1];
+  hand[4]=deck.flop[2];
+  std::sort(hand.begin(),hand.end(),std::greater<short>());
+  for(int i=0;i<4;i++){
+    tmpFlash[i]=0;
+  }
+  for(int i=0;i<5;i++){
+    tmpFlash[hand[i]/13]++;
+    if(tmpFlash[hand[i]/13]==3){
+      index+=flashChance; //flash is possible bit
+      break;
+    }
+  }
+  for(int i=0;i<5;i++){
+    int tmph=hand[i]%13;
+    tmph<<=(4-i)*4;
+    index+=tmph;
+  }
+  return index;
+}
+int HandRank::FlopHandSize(){
+  int size=0;
+  int tmp=1;
+  tmp<<=20;
+  size+=tmp;
+  for(int i=0;i<5;i++){
+    tmp=12;
+    tmp<<=(4-i)*4;
+    size+=tmp;
+  }
+  size++;// to be able to access the highest index
+  return size;
 }
 int HandRank::BuildSingleStat(){
   for(int numPl=2;numPl<11;numPl++){

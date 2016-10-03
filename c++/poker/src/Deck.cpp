@@ -43,16 +43,20 @@ short Deck::Permute(){
   flop[0]=-1;
   flop[1]=-1;
   flop[2]=-1;
-  std::srand(std::time(0));
-  for(short i=0;i<52;i++){
+  short tmp;
+   std::srand(std::time(0));
+  for(short i=0;i<25;i++){//for 10 players 25 cards are used
     float rand=float(std::rand())/RAND_MAX;
-    short index=rand*(52-i)+i;
+    short index=rand*(52-i)+i;//rand*(52-i)+i;
     std::swap(cards[i],cards[index]);
-  }
-  for(short i=0;i<numPlayers;i++){
-    playerHands[i].first=cards[i*2];
-    playerHands[i].second=cards[i*2+1];
-  }
+     // tmp=cards[index];
+     // cards[index]=cards[i];
+     // cards[i]=tmp;
+   }
+   for(short i=0;i<numPlayers;i++){
+     playerHands[i].first=cards[i*2];
+     playerHands[i].second=cards[i*2+1];
+   }
   flop[0]=cards[numPlayers*2];
   flop[1]=cards[numPlayers*2+1];
   flop[2]=cards[numPlayers*2+2];
@@ -297,20 +301,15 @@ short Deck::WinnersFast(){
      hand[4]=cards[numPlayers*2+2];
      hand[5]=cards[numPlayers*2+3];
      hand[6]=cards[numPlayers*2+4];
-     std::sort(hand.begin(),hand.end());// hand always in ascending order to compute index correcly below
+     std::sort(hand.begin(),hand.end());// hand always in ascending order to compute index correctly below
      index=HandToIndex();
      ind=index%size;
-     bool found=false;
-     
      for(int len=0;len<hashBinSizes[ind];len++){// max 15 is the length here
        if(hashFinalKey[ind][len]==index){
-	 found=true;
 	 PlayerRank[i]=hashFinalValue[ind][len];
 	 break;
        }
      }
-     if(!found)
-       printf("could not find hand with index %ld\n",index);
      if(PlayerRank[i]>=maxRank)
        maxRank=PlayerRank[i];
   }
@@ -636,5 +635,17 @@ short Deck::CheckForErrors(){
      }
      printf("%d\n",fi);
    }
+  return 0;
+}
+short Deck::CountDesutedFiveTuples(){
+  
+  int cnt=4356;
+  // cnt+=12*11; // four of a kind
+  // cnt+=12*11*10/2; // three of a kind div by 2 cos 11123 same as 11132
+  // cnt+=12*11; // full house
+  // cnt+=12*11*10/2; // two pairs
+  // cnt+=12*11*10*9/(3*2); // one pair
+  // cnt+=12*11*10*9*8/(120); // no pair
+  printf("%d\n",cnt);
   return 0;
 }

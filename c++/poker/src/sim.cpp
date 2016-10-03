@@ -6,7 +6,7 @@ int main()
     ///     hr.PrintHand();
     //     hr.CheckDistrib();
   // hr.PrintGame();
-   //	 hr.BuildSingleStat();
-  hr.BuildStat();
+   	 hr.BuildStat();
+  //  hr.deck.CountDesutedFiveTuples();//BuildStat();
   return 0;
 }

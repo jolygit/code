@@ -30,10 +30,14 @@ class Deck{
   short ClasifyBoardPairs();
   short bb(short  c);
   short HandPermute();
+  short CountDesutedFiveTuples();
   short HandMap();// Precomputes rank and value of all possible pocker hands C(52,7) values
   std::vector<std::pair<short,short> > playerHands;
   short              winners[10]; // assumed that no more then 10 winners possible
   short numPlayers;
+  short              flop[3];
+  short              turn;
+  short              river;
  private:
   short CheckForErrors();
   long HandToIndex();
@@ -47,10 +51,6 @@ class Deck{
   std::vector<std::pair<std::string,char> > cardsMap;
   std::vector<short> handFlushCards;
   std::vector<short> hand; // one of C(52,7) hands for HandMap() above
-
-  short              flop[3];
-  short              turn;
-  short              river;
   short              boardCardsDeSuted[13]; 
   bool               isFlushPossibleFlop;
   bool               isFlushPossibleTurn;

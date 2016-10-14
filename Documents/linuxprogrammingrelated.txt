@@ -1,0 +1,8 @@
+1. When dealing with file permissions and various access permissions it is important to realize that when exec file is owned by say root which grants execute permissions, like in:
+[aj@localhost proccred]$ ls -l
+-rwsrwxr-x. 1 root aj 26104 Jul 20 07:03 idshow
+if you say user aj run this program, process credentials will be set as follows:
+UID: real=aj (1000); eff=root (0); saved=root (0); fs=root (0);
+in other words real user id of the process is aj, not the owner of the executable.
+
+2. When linking c library against c++ code you have to use extern "C"{ func()} pattern; see ~/code/c++/IM/src/server.cpp

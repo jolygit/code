@@ -1,26 +1,22 @@
+include ../Make.defines
 IDIR =../include
-CC=g++ -g
-CFLAGS=-I$(IDIR)
-
 ODIR=../obj
-LDIR =../lib
-
-LIBS=-lm
-
-_DEPS = Deck.h handrank.h
+_DEPS = unp.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = sim.o handrank.o Deck.o 
+_OBJ = server.o 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+PROGS =	server-x64 
 
+all:	${PROGS}
 
-$(ODIR)/%.o: %.cpp $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+$(ODIR)/%.o: %.cpp $(DEPS) 
+	$(CC) -c -o $@ $< $(CFLAGS) 
 
-sim-x64: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) 
+server-x64: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)  ${LIBS}
 
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ ${PROGS}

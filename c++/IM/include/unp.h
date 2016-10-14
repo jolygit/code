@@ -119,10 +119,12 @@
 #endif
 
 /* The structure returned by recvfrom_flags() */
-struct in_pktinfo {
-  struct in_addr	ipi_addr;	/* dst IPv4 address */
-  int				ipi_ifindex;/* received interface index */
-};
+/* 
+ * struct in_pktinfo {
+ *   struct in_addr	ipi_addr;	/\* dst IPv4 address *\/
+ *   int				ipi_ifindex;/\* received interface index *\/
+ * };
+ */
 /* $$.It in_pktinfo$$ */
 /* $$.Ib ipi_addr$$ */
 /* $$.Ib ipi_ifindex$$ */
@@ -396,7 +398,7 @@ int		 Writable_timeo(int, int);
 
 			/* prototypes for our Unix wrapper functions: see {Sec errors} */
 void	*Calloc(size_t, size_t);
-void	 Close(int);
+//void	 Close(int);
 void	 Dup2(int, int);
 int		 Fcntl(int, int, int);
 void	 Gettimeofday(struct timeval *, void *);
@@ -431,16 +433,16 @@ FILE	*Fopen(const char *, const char *);
 void	 Fputs(const char *, FILE *);
 
 			/* prototypes for our socket wrapper functions: see {Sec errors} */
-int		 Accept(int, SA *, socklen_t *);
-void	 Bind(int, const SA *, socklen_t);
+//int		 Accept(int, SA *, socklen_t *);
+//void	 Bind(int, const SA *, socklen_t);
 void	 Connect(int, const SA *, socklen_t);
 void	 Getpeername(int, SA *, socklen_t *);
 void	 Getsockname(int, SA *, socklen_t *);
 void	 Getsockopt(int, int, int, void *, socklen_t *);
 int		 Isfdtype(int, int);
-void	 Listen(int, int);
+//svoid	 Listen(int, int);
 #ifdef	HAVE_POLL
-int		 Poll(struct pollfd *, unsigned long, int);
+//int		 Poll(struct pollfd *, unsigned long, int);
 #endif
 ssize_t	 Readline(int, void *, size_t);
 ssize_t	 Readn(int, void *, size_t);
@@ -454,14 +456,14 @@ void	 Sendmsg(int, const struct msghdr *, int);
 void	 Setsockopt(int, int, int, const void *, socklen_t);
 void	 Shutdown(int, int);
 int		 Sockatmark(int);
-int		 Socket(int, int, int);
+//int		 Socket(int, int, int);
 void	 Socketpair(int, int, int, int *);
-void	 Writen(int, void *, size_t);
+//void	 Writen(int, void *, size_t);
 
 void	 err_dump(const char *, ...);
 void	 err_msg(const char *, ...);
-void	 err_quit(const char *, ...);
+//void	 err_quit(const char *, ...);
 void	 err_ret(const char *, ...);
-void	 err_sys(const char *, ...);
+//void	 err_sys(const char *, ...);
 
 #endif	/* __unp_h */

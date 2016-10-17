@@ -12,7 +12,7 @@ main(int argc, char **argv)
    printf("\n Default value is : %lld, hard value is : %lld\n", (long long int)rl.rlim_cur,(long long int)rl.rlim_max); 
   
    // Change the time limit 
-   rl.rlim_cur = rl.lim_max;//rl.rlim_max;
+   rl.rlim_cur = rl.rlim_max;//rl.rlim_max;
   
    // Now call setrlimit() to set the  
    // changed value. 

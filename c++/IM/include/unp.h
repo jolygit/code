@@ -232,7 +232,7 @@ struct timespec {
 /* end unph */
 
 			/* prototypes for our own library functions */
-int		 connect_nonb(int, const SA *, socklen_t, int);
+//int		 connect_nonb(int, const SA *, socklen_t, int);
 int		 connect_timeo(int, const SA *, socklen_t, int);
 void	 daemon_init(const char *, int);
 void	 daemon_inetd(const char *, int);
@@ -265,7 +265,7 @@ char	*sock_ntop(const SA *, socklen_t);
 char	*sock_ntop_host(const SA *, socklen_t);
 int		 sockfd_to_family(int);
 void	 str_echo(int);
-void	 str_cli(FILE *, int);
+//void	 str_cli(FILE *, int);
 int		 tcp_connect(const char *, const char *);
 int		 tcp_listen(const char *, const char *, socklen_t *);
 void	 tv_sub(struct timeval *, struct timeval *);
@@ -373,7 +373,7 @@ void	 Connect_timeo(int, const SA *, socklen_t, int);
 int		 Family_to_level(int);
 struct addrinfo *Host_serv(const char *, const char *, int, int);
 const char		*Inet_ntop(int, const void *, char *, size_t);
-void			 Inet_pton(int, const char *, void *);
+//void			 Inet_pton(int, const char *, void *);
 char			*If_indextoname(unsigned int, char *);
 unsigned int		 If_nametoindex(const char *);
 struct if_nameindex	*If_nameindex(void);
@@ -435,7 +435,7 @@ void	 Fputs(const char *, FILE *);
 			/* prototypes for our socket wrapper functions: see {Sec errors} */
 //int		 Accept(int, SA *, socklen_t *);
 //void	 Bind(int, const SA *, socklen_t);
-void	 Connect(int, const SA *, socklen_t);
+//void	 Connect(int, const SA *, socklen_t);
 void	 Getpeername(int, SA *, socklen_t *);
 void	 Getsockname(int, SA *, socklen_t *);
 void	 Getsockopt(int, int, int, void *, socklen_t *);
@@ -453,7 +453,7 @@ int		 Select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
 void	 Send(int, const void *, size_t, int);
 void	 Sendto(int, const void *, size_t, int, const SA *, socklen_t);
 void	 Sendmsg(int, const struct msghdr *, int);
-void	 Setsockopt(int, int, int, const void *, socklen_t);
+//void	 Setsockopt(int, int, int, const void *, socklen_t);
 void	 Shutdown(int, int);
 int		 Sockatmark(int);
 //int		 Socket(int, int, int);

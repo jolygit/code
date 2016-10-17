@@ -8,7 +8,7 @@
 #
 # System = x86_64-unknown-linux-gnu
 
-CC = gcc
+CC = gcc -g
 CFLAGS = -I../lib -g  -D_REENTRANT -Wall
 LIBS = ../libunp.a -lpthread
 LIBS_XTI = ../libunpxti.a ../libunp.a -lpthread

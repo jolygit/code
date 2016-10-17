@@ -4,9 +4,9 @@ ODIR=../obj
 _DEPS = unp.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = server.o 
+_OBJ = server.o client.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
-PROGS =	server-x64 
+PROGS =	server-x64 client-x64
 
 all:	${PROGS}
 
@@ -14,7 +14,9 @@ $(ODIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) 
 
 server-x64: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)  ${LIBS}
+	$(CC) -o $@ $(ODIR)/server.o $(CFLAGS)  ${LIBS}
+client-x64: $(OBJ)
+	$(CC) -o $@ $(ODIR)/client.o $(CFLAGS)  ${LIBS}
 
 .PHONY: clean
 

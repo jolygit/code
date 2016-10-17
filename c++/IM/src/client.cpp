@@ -1,5 +1,19 @@
 #include	"unp.h"
-
+extern "C"{
+  int Socket(int, int, int);
+  void Bind(int, sockaddr const*, unsigned int);
+  void Listen(int, int);
+  int Poll(pollfd*, unsigned long, int);
+  int Accept(int, sockaddr*, unsigned int*);
+  void err_quit(char const*, ...);
+  void Close(int);
+  void err_sys(char const*, ...);
+  void Writen(int, void*, unsigned long);
+  void	 Connect(int, const SA *, socklen_t);
+  void	 Inet_pton(int, const char *, void *);
+  void	 str_cli(FILE *, int);
+  void	 Setsockopt(int, int, int, const void *, socklen_t);
+}
 int
 main(int argc, char **argv)
 {

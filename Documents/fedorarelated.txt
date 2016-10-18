@@ -125,4 +125,23 @@ is created from /etc/sysctl.d/core-pattern.conf
 79. sudo umount /home/aj/tmp1 # unmount the file system. Old file system files become visible again.
 80. sudo dnf update
 81. sudo dnf install gcc-c++
-
+82. To install mangodb on fedora do:
+    a. create file under root as: [root@aj1 src]# emacs /etc/yum.repos.d/mongodb-org-3.2.repo
+    b. paste the following for fedora 23 at least:
+       [mongodb-org-3.2]
+       name=MongoDB Repository
+       baseurl=https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64/
+       gpgcheck=1
+       enabled=1
+       gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc
+    c. dnf install mongodb-org --nogpgcheck
+83. To start server: sudo service mongod start
+    https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/#configure-the-package-management-system-yum
+    sudo service mongod stop
+    sudo service mongod restart
+84. sudo yum install libtool
+85. git clone https://github.com/mongodb/mongo-c-driver.git
+85a. cd mongo-c-driver/
+85b. ./autogen.sh --with-libbson=bundled
+85c. make;
+85d. sudo make install

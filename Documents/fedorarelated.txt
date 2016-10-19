@@ -127,7 +127,7 @@ is created from /etc/sysctl.d/core-pattern.conf
 81. sudo dnf install gcc-c++
 82. To install mangodb on fedora do:
     a. create file under root as: [root@aj1 src]# emacs /etc/yum.repos.d/mongodb-org-3.2.repo
-    b. paste the following for fedora 23 at least:
+    b. paste the following for fedora 23 at least: (remove white space from begining)
        [mongodb-org-3.2]
        name=MongoDB Repository
        baseurl=https://repo.mongodb.org/yum/redhat/7/mongodb-org/3.2/x86_64/

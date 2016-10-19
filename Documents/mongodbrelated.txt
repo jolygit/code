@@ -1,0 +1,73 @@
+1. db.restaurants.insert(
+   {
+      "address" : {
+         "street" : "4 Avenue",
+         "zipcode" : "10075",
+         "building" : "1480",
+         "coord" : [ -73.9557413, 40.7720266 ]
+      },
+      "borough" : "brooklyn",
+      "cuisine" : "Italian",
+      "grades" : [
+         {
+            "date" : ISODate("2014-10-01T00:00:00Z"),
+            "grade" : "A",
+            "score" : 11
+         },
+         {
+            "date" : ISODate("2014-01-16T00:00:00Z"),
+            "grade" : "B",
+            "score" : 17
+         }
+      ],
+      "name" : "Vcafe",
+      "restaurant_id" : "41704620"
+   }
+)
+2. db.restaurants.find()
+3. db.restaurants.find( { "borough": "Manhattan" } )
+4. db.restaurants.find( { "address.zipcode": "10075" } )
+5. db.restaurants.find( { "grades.grade": "B" } )
+6. db.restaurants.find( { "grades.score": { $gt: 30 } } )
+7. db.restaurants.find( { "cuisine": "Italian", "address.zipcode": "10075" } ) # combine condition
+8. db.restaurants.find(
+   { $or: [ { "cuisine": "Italian" }, { "address.zipcode": "10075" } ] }
+)
+9. db.restaurants.find().sort( { "borough": 1, "address.zipcode": 1 } ) # return results in ascending order use -1 for descending
+10. db.restaurants.update(
+    { "name" : "Vcafe" },
+    {
+      $set: { "cuisine": "American (New)" },
+      $currentDate: { "lastModified": true }
+    }
+)
+11. db.restaurants.update(
+  { "restaurant_id" : "41156888" },
+  { $set: { "address.street": "East 31st Street" } }
+)
+12. to update multiple documents
+  db.restaurants.update(
+  { "address.zipcode": "10016", cuisine: "Other" },
+  {
+    $set: { cuisine: "Category To Be Determined" },
+    $currentDate: { "lastModified": true }
+  },
+  { multi: true}
+)
+13. to completely replce the document
+db.restaurants.update(
+   { "restaurant_id" : "41704620" },
+   {
+     "name" : "Vella 2",
+     "address" : {
+              "coord" : [ -73.9557413, 40.7720266 ],
+              "building" : "1480",
+              "street" : "2 Avenue",
+              "zipcode" : "10075"
+     }
+   }
+)
+14. db.restaurants.remove( { "borough": "Manhattan" } ) #remove document that matches the criteria.
+15. db.restaurants.remove( { } ) # reomoves all the documents
+16. db.restaurants.drop() # drop entire collection
+17. https://docs.mongodb.com/manual/reference/operator/update/pull/ to see all the operators

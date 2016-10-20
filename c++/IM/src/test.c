@@ -36,22 +36,19 @@ main (int   argc,
    database = mongoc_client_get_database (client, "users");
    collection = mongoc_client_get_collection (client, "users", "users");
 
-   /* 
-    * insert = BCON_NEW ("username", BCON_UTF8 ("givi"));
-    * 
-    * if (!mongoc_collection_insert (collection, MONGOC_INSERT_NONE, insert, NULL, &error)) {
-    *    fprintf (stderr, "%s\n", error.message);
-    * }
-    * bson_oid_init (&oid, NULL);
-    * doc = BCON_NEW ("_id", BCON_OID (&oid),
-    * 		   "username", BCON_UTF8 ("vova"));
-    */
+   
+     insert = BCON_NEW ("username", BCON_UTF8 ("givi"));
+     
+     if (!mongoc_collection_insert (collection, MONGOC_INSERT_NONE, insert, NULL, &error)) {
+        fprintf (stderr, "%s\n", error.message);
+     }
+   
    //bson_destroy (insert);
  
    // query particular user name, change the value of the username and add more fields
     
      query = bson_new ();
-     BSON_APPEND_UTF8 (query, "username", "alex");
+     BSON_APPEND_UTF8 (query, "username", "givi");
       // to change/add key value pair for "username":"vova_valueval"
      /* 
       * update = BCON_NEW ("$set", "{",
@@ -66,19 +63,21 @@ main (int   argc,
       * 		      "}");
       */
       // to add to an array
-     /* 
-      * update = BCON_NEW ("$push", "{",
-      * 			"friends","{",
-      * 			             "username","alex",
-      * 			          "}",
-      * 		               	"}");
-      */
-     // to remove particular elemet of an array
-       update = BCON_NEW ("$pull", "{",
+      
+       update = BCON_NEW ("$push", "{",
        			"friends","{",
-       			             "username","aj476",
+       			             "username","alex",
        			          "}",
        		               	"}");
+      
+     // to remove particular elemet of an array
+       /* 
+        * update = BCON_NEW ("$pull", "{",
+        * 			"friends","{",
+        * 			             "username","aj476",
+        * 			          "}",
+        * 		               	"}");
+        */
        
      if (!mongoc_collection_update (collection, MONGOC_UPDATE_NONE, query, update, NULL, &error)) {
        printf ("%s\n", error.message);

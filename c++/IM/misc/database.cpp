@@ -12,10 +12,10 @@
 //   mongoc_cursor_destroy (cursor);
 // }
 extern "C"{
-  mongoc_init ();
-  mongoc_client_t mongoc_client_new (char*);
-  mongoc_database_t mongoc_client_get_database (mongoc_client_t,char*);
-  mongoc_collection_t mongoc_client_get_collection (mongoc_client_t ,char*,char*);
+  void mongoc_init(void);
+  mongoc_client_t               *mongoc_client_new(const char*uri_string);
+  mongoc_database_t* mongoc_client_get_database(mongoc_client_t*, const char*);
+  mongoc_collection_t* mongoc_client_get_collection (mongoc_client_t* ,const char*,const char*);
   bool mongoc_collection_insert (mongoc_collection_t          *collection,
                                  mongoc_insert_flags_t         flags,
                                  const bson_t                 *document,
@@ -34,10 +34,10 @@ extern "C"{
                                  uint32_t                   batch_size,
                                  const bson_t              *query,
                                  const bson_t              *fields,
-                                 const mongoc_read_prefs_t *read_prefs)
+				 const mongoc_read_prefs_t *read_prefs);
   
 }
-int DataBase::ConnectToCollection(char* dbName="users",char* collName="users"){
+int DataBase::ConnectToCollection(char const* dbName,char const* collName){
   /*
    * Required to initialize libmongoc's internals
    */
@@ -56,7 +56,7 @@ int DataBase::ConnectToCollection(char* dbName="users",char* collName="users"){
   return 0;
 }
 
-int AddKeyValueToNewDocument(char* key,char* value){
+int DataBase::AddKeyValueToNewDocument(char const* key,char const* value){
   insert = BCON_NEW (key,value);
   if (!mongoc_collection_insert (collection, MONGOC_INSERT_NONE, insert, NULL, &error)) {
     fprintf (stderr, "%s\n", error.message);
@@ -64,7 +64,7 @@ int AddKeyValueToNewDocument(char* key,char* value){
   bson_destroy (insert);
   return 0;
 }
-int AddKeyValueToExistingDocument(char* key,char* value,char* key_add,char* value_add){
+int DataBase::AddKeyValueToExistingDocument(char const* key,char const* value,char const* key_add,char const* value_add){
   query = bson_new ();
   BSON_APPEND_UTF8 (query, key, value);
   // to change/add key value pair for "username":"vova_valueval"
@@ -76,7 +76,7 @@ int AddKeyValueToExistingDocument(char* key,char* value,char* key_add,char* valu
   }
   return 0;
 }
-int AddArrayKeyValueToDocument(char* key,char* value,char* arrayName,char* key_add,char* value_add){
+int DataBase::AddArrayKeyValueToDocument(char const* key,char const* value,char const* arrayName,char const* key_add,char const* value_add){
   query = bson_new ();
   BSON_APPEND_UTF8 (query, key, value);
   update = BCON_NEW ("$push", "{",
@@ -89,12 +89,12 @@ int AddArrayKeyValueToDocument(char* key,char* value,char* arrayName,char* key_a
   }
   return 0;
 }
-int RemoveArrayKeyValueFromDocument(char* key,char* value,char* arrayName,char* key,char* value){
+int DataBase::RemoveArrayKeyValueFromDocument(char const* key,char const* value,char const* arrayName,char const* key_rm,char const* value_rm){
   query = bson_new ();
   BSON_APPEND_UTF8 (query, key, value);
   update = BCON_NEW ("$pull", "{",
 		     arrayName,"{",
-		     key_add,value_add,
+		     key_rm,value_rm,
 		     "}",
 		     "}");
   if (!mongoc_collection_update (collection, MONGOC_UPDATE_NONE, query, update, NULL, &error)) {
@@ -102,14 +102,17 @@ int RemoveArrayKeyValueFromDocument(char* key,char* value,char* arrayName,char* 
   }
   return 0;
 }
-bool FindKeyValueInArrayOfDocument(char* arrayName,char* key,char* value){
-  std::string str=arrayName;
-  str+="."+key;
-  query = bson_new ();
-  BSON_APPEND_UTF8 (query,str.c_str(),value);
-  cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
-  if (mongoc_cursor_next (cursor, &doc)) 
-     return true;
-  else
-    return false;
+bool DataBase::FindKeyValueInArrayOfDocument(char const* key,char const* value,char const* arrayName,char const* key_find,char const* value_find){
+  std::string str;
+  str=arrayName;
+   str+=".";
+   str+=key;
+   query = bson_new ();
+   BSON_APPEND_UTF8 (query,str.c_str(),value);
+   cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+   if (mongoc_cursor_next (cursor, &doc)) 
+      return true;
+   else
+     return false;
+  return 0;
 }

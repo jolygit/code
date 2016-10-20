@@ -2,14 +2,17 @@
 #include <bcon.h>
 #include <mongoc.h>
 #include <string>
+#include <iostream>
+#include <cstring>
+
 class DataBase{
  public:
-  int ConnectToCollection(char* dbName="users",char* collName="users");
-  int AddKeyValueToNewDocument(char* key,char* value);
-  int AddKeyValueToExistingDocument(char* key,char* value,char* key_add,char* value_add);
-  int AddArrayKeyValueToDocument(char* key,char* value,char* arrayName,char* key_add,char* value_add);
-  int RemoveArrayKeyValueFromDocument(char* key,char* value,char* arrayName,char* key,char* value);
-  int FindKeyValueInArrayOfDocument(char* key,char* value,char* arrayName,char* key,char* value);
+  int ConnectToCollection(char const* dbName,char const* collName);
+  int AddKeyValueToNewDocument(char const* key,char const* value);
+  int AddKeyValueToExistingDocument(char const* key,char const* value,char const* key_add,char const* value_add);
+  int AddArrayKeyValueToDocument(char const* key,char const* value,char const* arrayName,char const* key_add,char const* value_add);
+  int RemoveArrayKeyValueFromDocument(char const* key,char const* value,char const* arrayName,char const* key_remove,char const* value_remove);
+  bool FindKeyValueInArrayOfDocument(char const* key,char const* value,char const* arrayName,char const* key_find,char const* value_find);
  private:
    mongoc_client_t      *client;
    mongoc_database_t    *database;

@@ -117,5 +117,14 @@ bool DataBase::FindKeyValueInArrayOfDocument(char const* key,char const* value,c
     return true;
   else
     return false;
-  return 0;
+ }
+bool DataBase::Find2KeyValuePair(char const* key,char const* value,char const* key2,char const* value2){
+  query = bson_new ();
+  // BSON_APPEND_UTF8 (query,key,value);
+  BSON_APPEND_UTF8 (query,key2,value2);
+  cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+  if (mongoc_cursor_next (cursor, &doc)) 
+    return true;
+  else
+    return false;
 }

@@ -14,6 +14,7 @@ class DataBase{
   int AddArrayKeyValueToDocument(char const* key,char const* value,char const* arrayName,char const* key_add,char const* value_add);
   int RemoveArrayKeyValueFromDocument(char const* key,char const* value,char const* arrayName,char const* key_remove,char const* value_remove);
   bool FindKeyValueInArrayOfDocument(char const* key,char const* value,char const* arrayName,char const* key_find,char const* value_find);
+   bool Find2KeyValuePair(char const* key,char const* value,char const* key2,char const* value2);
  private:
    mongoc_client_t      *client;
    mongoc_database_t    *database;

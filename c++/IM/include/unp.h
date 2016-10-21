@@ -385,7 +385,7 @@ ssize_t	 Recvfrom_flags(int, void *, size_t, int *, SA *, socklen_t *,
 Sigfunc *Signal(int, Sigfunc *);
 Sigfunc *Signal_intr(int, Sigfunc *);
 int		 Sock_bind_wild(int, int);
-char	*Sock_ntop(const SA *, socklen_t);
+//char	*Sock_ntop(const SA *, socklen_t);
 char	*Sock_ntop_host(const SA *, socklen_t);
 int		 Sockfd_to_family(int);
 int		 Tcp_connect(const char *, const char *);
@@ -409,7 +409,7 @@ int	 Mkstemp(char *);
 void	*Mmap(void *, size_t, int, int, int, off_t);
 int		 Open(const char *, int, mode_t);
 void	 Pipe(int *fds);
-ssize_t	 Read(int, void *, size_t);
+//ssize_t	 Read(int, void *, size_t);
 void	 Sigaddset(sigset_t *, int);
 void	 Sigdelset(sigset_t *, int);
 void	 Sigemptyset(sigset_t *);
@@ -428,7 +428,7 @@ void	 Write(int, void *, size_t);
 			/* prototypes for our stdio wrapper functions: see {Sec errors} */
 void	 Fclose(FILE *);
 FILE	*Fdopen(int, const char *);
-char	*Fgets(char *, int, FILE *);
+//char	*Fgets(char *, int, FILE *);
 FILE	*Fopen(const char *, const char *);
 void	 Fputs(const char *, FILE *);
 
@@ -445,7 +445,7 @@ int		 Isfdtype(int, int);
 //int		 Poll(struct pollfd *, unsigned long, int);
 #endif
 ssize_t	 Readline(int, void *, size_t);
-ssize_t	 Readn(int, void *, size_t);
+//ssize_t	 Readn(int, void *, size_t);
 ssize_t	 Recv(int, void *, size_t, int);
 ssize_t	 Recvfrom(int, void *, size_t, int, SA *, socklen_t *);
 ssize_t	 Recvmsg(int, struct msghdr *, int);

@@ -7,6 +7,7 @@
 
 class DataBase{
  public:
+  ~DataBase();
   int ConnectToCollection(char const* dbName,char const* collName);
   int AddKeyValueToNewDocument(char const* key,char const* value);
   int AddKeyValueToExistingDocument(char const* key,char const* value,char const* key_add,char const* value_add);

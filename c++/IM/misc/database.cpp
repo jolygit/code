@@ -3,14 +3,14 @@
 #include <mongoc.h>
 #include "database.h"
 
-// DataBase::~DataBase(){
-//   mongoc_collection_destroy (collection);
-//   mongoc_database_destroy (database);
-//   mongoc_client_destroy (client);
-//   mongoc_cleanup ();
-//   bson_destroy (query);
-//   mongoc_cursor_destroy (cursor);
-// }
+ DataBase::~DataBase(){
+   mongoc_collection_destroy (collection);
+   mongoc_database_destroy (database);
+   mongoc_client_destroy (client);
+   mongoc_cleanup ();
+   bson_destroy (query);
+   mongoc_cursor_destroy (cursor);
+ }
 extern "C"{
   void mongoc_init(void);
   mongoc_client_t               *mongoc_client_new(const char*uri_string);
@@ -103,16 +103,19 @@ int DataBase::RemoveArrayKeyValueFromDocument(char const* key,char const* value,
   return 0;
 }
 bool DataBase::FindKeyValueInArrayOfDocument(char const* key,char const* value,char const* arrayName,char const* key_find,char const* value_find){
-  std::string str;
-  str=arrayName;
-   str+=".";
-   str+=key;
-   query = bson_new ();
-   BSON_APPEND_UTF8 (query,str.c_str(),value);
-   cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
-   if (mongoc_cursor_next (cursor, &doc)) 
-      return true;
-   else
-     return false;
+  query = bson_new ();
+  if(arrayName && key_find && value_find){
+    std::string str;
+    str=arrayName;
+    str+=".";
+    str+=key_find;
+    BSON_APPEND_UTF8 (query,str.c_str(),value_find);
+  }
+  BSON_APPEND_UTF8 (query,key,value);
+  cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+  if (mongoc_cursor_next (cursor, &doc)) 
+    return true;
+  else
+    return false;
   return 0;
 }

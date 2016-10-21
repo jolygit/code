@@ -36,10 +36,10 @@ main(int argc, char **argv)
 	db.ConnectToCollection("users","users");
 	db.AddArrayKeyValueToDocument("username","givi","friends","username","aj476");
 	db.RemoveArrayKeyValueFromDocument("username","givi","friends","username","aj476");
-	if(db.FindKeyValueInArrayOfDocument("username","givi","friends","username","aj476"))
-	  printf("found\n");
-	if(!db.FindKeyValueInArrayOfDocument("username","givi","friends","username1","aj476"))
-	  printf("not found\n");
+	if(db.FindKeyValueInArrayOfDocument("username","givi","friends","username","alex"))
+	  printf("found alex\n");
+	if(db.FindKeyValueInArrayOfDocument("username","alex","friends","username","alex"))
+	  printf("found alex\n");
 	if(!db.FindKeyValueInArrayOfDocument("username1","givi","friends","username","aj476"))
 	  printf("not found\n");
 	if(!db.FindKeyValueInArrayOfDocument("username","givi1","friends","username","aj476"))

@@ -37,18 +37,18 @@ main (int   argc,
    collection = mongoc_client_get_collection (client, "users", "users");
 
    
-     insert = BCON_NEW ("username", BCON_UTF8 ("givi"));
+     /* insert = BCON_NEW ("username", BCON_UTF8 ("vova")); */
      
-     if (!mongoc_collection_insert (collection, MONGOC_INSERT_NONE, insert, NULL, &error)) {
-        fprintf (stderr, "%s\n", error.message);
-     }
+     /* if (!mongoc_collection_insert (collection, MONGOC_INSERT_NONE, insert, NULL, &error)) { */
+     /*    fprintf (stderr, "%s\n", error.message); */
+     /* } */
    
    //bson_destroy (insert);
  
    // query particular user name, change the value of the username and add more fields
     
      query = bson_new ();
-     BSON_APPEND_UTF8 (query, "username", "givi");
+     BSON_APPEND_UTF8 (query, "username", "alex");
       // to change/add key value pair for "username":"vova_valueval"
      /* 
       * update = BCON_NEW ("$set", "{",
@@ -64,11 +64,11 @@ main (int   argc,
       */
       // to add to an array
       
-       update = BCON_NEW ("$push", "{",
-       			"friends","{",
-       			             "username","alex",
-       			          "}",
-       		               	"}");
+       /* update = BCON_NEW ("$push", "{", */
+       /* 			"friends","{", */
+       /* 			             "username","alex", */
+       /* 			          "}", */
+       /* 		               	"}"); */
       
      // to remove particular elemet of an array
        /* 
@@ -79,15 +79,15 @@ main (int   argc,
         * 		               	"}");
         */
        
-     if (!mongoc_collection_update (collection, MONGOC_UPDATE_NONE, query, update, NULL, &error)) {
-       printf ("%s\n", error.message);
-     }
+     /* if (!mongoc_collection_update (collection, MONGOC_UPDATE_NONE, query, update, NULL, &error)) { */
+     /*   printf ("%s\n", error.message); */
+     /* } */
     
     
   
    //find all the docs in colleciton
-   query = bson_new ();
-   BSON_APPEND_UTF8 (query, "friends.username", "vova");
+   //query = bson_new ();
+   BSON_APPEND_UTF8 (query, "friends.username", "alex");
    cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
 
    while (mongoc_cursor_next (cursor, &doc)) {

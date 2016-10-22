@@ -58,7 +58,6 @@ main(int argc, char **argv)
 		  nready = Poll(client, maxi+1, INFTIM);
 
 		  if (client[0].revents & POLLRDNORM) {	/* new client connection */
-		    clLogin[i]=false;
 		    clilen = sizeof(cliaddr);
 		    connfd = Accept(listenfd, (SA *) &cliaddr, &clilen);
 		    //#ifdef	NOTDEF

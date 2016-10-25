@@ -77,3 +77,4 @@ There is nothing special about the first frame.
     Type M-x delete-frame <Return>.
    This removes the selected frame.
 13. M-g M-g <line#> to go to that line 
+14. M-x customize-variable RET visible-bell RET # and turn it on to blink the screen instead of alarm sound

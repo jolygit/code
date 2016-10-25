@@ -17,6 +17,7 @@ main (int   argc,
    bool                  retval;
    const bson_t          *doc;
    bson_t                *query;
+   bson_t                *fields;
    mongoc_cursor_t       *cursor;
    bson_oid_t            oid;
    bson_t                *update = NULL;
@@ -87,15 +88,36 @@ main (int   argc,
   
    //find all the docs in colleciton
    //query = bson_new ();
-   BSON_APPEND_UTF8 (query, "friends.username", "alex");
-   cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL);
+   /* BSON_APPEND_UTF8 (query, "friends.username", "alex"); */
+   /* cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query, NULL, NULL); */
 
-   while (mongoc_cursor_next (cursor, &doc)) {
-     str = bson_as_json (doc, NULL);
-     printf ("%s\n", str);
-     bson_free (str);
-   }
-   
+   /* while (mongoc_cursor_next (cursor, &doc)) { */
+   /*   str = bson_as_json (doc, NULL); */
+   /*   printf ("%s\n", str); */
+   /*   bson_free (str); */
+   /* } */
+
+     //  BSON_APPEND_UTF8 (query, "lastName", "1");
+     fields = bson_new ();
+     BSON_APPEND_UTF8 (fields, "lastName", "1");
+     cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query,fields, NULL);
+     while (mongoc_cursor_next (cursor, &doc)) { 
+       str = bson_as_json (doc, NULL); 
+       printf ("%s\n", str); 
+       bson_free (str); 
+     }
+     //  cursor = mongo_find(&client, “db.users”, query, fields, 0, 0, 0);
+     // fprintf(stderr, “cursor:%p\n”, cursor);
+     
+  
+  
+   /* printf ("%s\n", str); */
+   /*  while (mongoc_cursor_next (cursor, &doc)) { */
+   /*    str=doc.get("lastName").toString(); */
+   /*    // str = bson_as_json (doc, NULL);  */
+   /*    printf ("%s\n", str);  */
+   /*    bson_free (str);  */
+   /*  }  */
    
    /*
     * Release our handles and clean up libmongoc

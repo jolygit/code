@@ -15,6 +15,7 @@ class DataBase{
   int RemoveArrayKeyValueFromDocument(char const* key,char const* value,char const* arrayName,char const* key_remove,char const* value_remove);
   bool FindKeyValueInArrayOfDocument(char const* key,char const* value,char const* arrayName,char const* key_find,char const* value_find);
    bool Find2KeyValuePair(char const* key,char const* value,char const* key2,char const* value2);
+   bool RetreiveValueForUsernameByKey(char const* uname,char const* key,std::string& val);
  private:
    mongoc_client_t      *client;
    mongoc_database_t    *database;
@@ -27,6 +28,7 @@ class DataBase{
    bool                  retval;
    const bson_t          *doc;
    bson_t                *query;
+   bson_t                *fields;
    mongoc_cursor_t       *cursor;
    bson_oid_t            oid;
    bson_t                *update = NULL;

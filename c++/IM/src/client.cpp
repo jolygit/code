@@ -51,7 +51,7 @@ int Commands(int sockfd){
     
   }
   else{
-    printf("supported commands are:allfriends;requestfriend,onlinefriends;connectto <friendname>. Try again\n");
+    printf("supported commands are:allfriends;requestfriend;onlinefriends;connectto <friendname>. Try again\n");
   }
   Commands(sockfd);
   return 0;

@@ -1,3 +1,5 @@
+;disable amarm sound
+(setq ring-bell-function 'ignore)
 ;To disable the menu bar, place the following line in your .emacs file:
 (menu-bar-mode -1) 
 ;To disable the scrollbar, use the following line:

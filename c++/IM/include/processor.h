@@ -3,6 +3,7 @@
 #include        "database.h"
 #include        <boost/algorithm/string.hpp>
 #include        <vector>
+#include        <set>
 extern "C"{
   int Socket(int, int, int);
   void Bind(int, sockaddr const*, unsigned int);
@@ -34,4 +35,5 @@ public:
   string                  clUID[myOPEN_MAX];
  private:
   DataBase db;
+  set<string>      userSet;
 };

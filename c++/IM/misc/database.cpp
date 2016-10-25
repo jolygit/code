@@ -130,22 +130,35 @@ bool DataBase::Find2KeyValuePair(char const* key,char const* value,char const* k
   else
     return false;
 }
-bool DataBase::RetreiveValueForUsernameByKey(char const* uname,char const* key,std::string& value){
+bool DataBase::RetreiveValueForUsernameByKey(char const* uname,char const* key,std::vector<std::string>& value){
   query = bson_new ();
   BSON_APPEND_UTF8 (query,"username",uname);
   fields = bson_new ();
   BSON_APPEND_UTF8 (fields, key, "1");
   cursor = mongoc_collection_find (collection, MONGOC_QUERY_NONE, 0, 0, 0, query,fields, NULL);
-  mongoc_cursor_next (cursor, &doc);
-  str = bson_as_json (doc, NULL);
-  // std::string tmpval=str;
-  // bson_free (str);
-  // vector<string> vals;
-  // boost::split(vals,tmpval,boost::is_any_of(","));
-  // tmpval=vals[1];
-  // boost::split(vals,tmpval,boost::is_any_of("\""));
-  // value=vals[3];
-  value=str;
-  bson_free (str);
-  return true;
+  if(mongoc_cursor_next (cursor, &doc)){
+    str = bson_as_json (doc, NULL);
+    string tmpval=str;
+    vector<string> vals;
+    boost::split(vals,tmpval,boost::is_any_of("[]"));
+    if(vals.size()<2)
+      return false;
+    tmpval=vals[1];
+    boost::split(vals,tmpval,boost::is_any_of("\""));
+    if(vals.size()<2)
+      return false;
+    else{
+      vector<string> vals;
+      boost::split(vals,tmpval,boost::is_any_of("\""));
+      if(((vals.size()-1)%4)!=0) {// no friends
+	printf("unexpected value field %s\n",tmpval.c_str());
+	return 0;
+      }
+      for (size_t i = 0; i < vals.size()/4; i++){
+	value.push_back(vals[4*(i+1)-1]);
+      }
+      return true;
+    }
+  }
+  return false;
 }

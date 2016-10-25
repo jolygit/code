@@ -25,29 +25,29 @@ int Processor::Send_int(int num, int fd)
     return 0;
 }
 int Processor::GetFriends(string& friends,int i,string& value){
+  userSet.clear();
+  for (size_t ii = 0; ii < myOPEN_MAX; ii++){
+    if(ii!=i && clUID[ii].size()>0)
+      userSet.insert(clUID[ii]);
+  }
   string uid=clUID[i];
-  string tmpval;
+  vector<string> tmpval;
   db.RetreiveValueForUsernameByKey(uid.c_str(),"friends",tmpval);
-  vector<string> vals;
-  boost::split(vals,tmpval,boost::is_any_of("[]"));
-  if(vals.size()<=1) // no requests
-    return 0;
-  tmpval=vals[1];
-  boost::split(vals,tmpval,boost::is_any_of(","));
-  for (size_t i = 0; i < vals.size(); i++){
-    vector<string> reqs;
-    boost::split(reqs,vals[i],boost::is_any_of("\""));
-    string user=reqs[3];
-    if(friends==string("friends")){
-      value+=user;
-      if(i<vals.size()-1)
+  for (size_t i = 0; i < tmpval.size(); i++){
+    string user=tmpval[i];
+    if(friends==string("allfriends")){
+      if(value.size())
 	value+=",";
+      value+=user;
     }
     else{
+      if(userSet.count(user)){
+	if(value.size())
+	  value+=",";
+	value+=user;
+      }
     }
-   
   }
-  
   return 0;
 }
 int Processor::GetOnlineFriends(string& friends,string& uid,string& value){
@@ -58,7 +58,7 @@ int Processor::FriendRequest(string& fromUsername,string& toUsername){
     if(!db.FindKeyValueInArrayOfDocument("username",toUsername.c_str(),"friends","username",fromUsername.c_str()))
       if(!db.FindKeyValueInArrayOfDocument("username",toUsername.c_str(),"friendRequests","username",fromUsername.c_str()))
 	db.AddArrayKeyValueToDocument("username",toUsername.c_str(),"friendRequests","username",fromUsername.c_str());
-     printf ("request from %s to be friends with %s failed because either they are friends already or request is pending\n",fromUsername.c_str(),toUsername.c_str(),toUsername.c_str());
+     printf ("request filed successfully\n");
   }
   else{
     printf ("request from %s to be friends with %s failed because %s does not exist\n",fromUsername.c_str(),toUsername.c_str(),toUsername.c_str());
@@ -67,18 +67,11 @@ int Processor::FriendRequest(string& fromUsername,string& toUsername){
   return 0;
 }
 int Processor::ProcessFriendRequests(string& clUID){
-  string tmpval;
-  db.RetreiveValueForUsernameByKey(clUID.c_str(),"friendRequests",tmpval);
-  vector<string> vals;
-  boost::split(vals,tmpval,boost::is_any_of("[]"));
-  if(vals.size()<=1) // no requests
+  vector<string> tmpval;
+  if(!db.RetreiveValueForUsernameByKey(clUID.c_str(),"friendRequests",tmpval))
     return 0;
-  tmpval=vals[1];
-  boost::split(vals,tmpval,boost::is_any_of(","));
-  for (size_t i = 0; i < vals.size(); i++){
-    vector<string> reqs;
-    boost::split(reqs,vals[i],boost::is_any_of("\""));
-    string user=reqs[3];
+  for (size_t i = 0; i < tmpval.size(); i++){
+    string user=tmpval[i];
     CreateFrinds(clUID,user);
     CreateFrinds(user,clUID);
   }

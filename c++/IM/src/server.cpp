@@ -101,7 +101,7 @@ main(int argc, char **argv)
 			}
 			if(strcmp(buf,"allfriends")==0 && proc.clUID[i]!=""){
 			  int len=0;
-			  string friendreq="friends";
+			  string friendreq="allfriends";
 			  string value;
 			  proc.GetFriends(friendreq,i,value);
 			  printf("sending this many bytes%d\n",value.length()+1);

@@ -75,6 +75,14 @@ int ServerProcessor::ProcessFriendRequests(string& clUID){
   }
   return 0;
 }
+int ServerProcessor::GetAddress(string& fruid,string& address){
+  if(RetreiveValueForUsernameByKeySimple(fruid.c_str(),"address",address)==0)
+    return 0;
+  else{
+    printf("could not retreive address for uid %s\n",fruid.c_str());
+    return 1;
+  }
+}
 int ServerProcessor::CreateFrinds(string& clUID,string& user){
   if(!db.FindKeyValueInArrayOfDocument("username",clUID.c_str(),"friends","username",user.c_str())){
     db.AddArrayKeyValueToDocument("username",clUID.c_str(),"friends","username",user.c_str());
@@ -114,7 +122,8 @@ int ServerProcessor::Register(vector<string> &strs,string & msg,char* clAddress)
     db.AddKeyValueToExistingDocument("username",username.c_str(),"firstName",firstName.c_str());
     db.AddKeyValueToExistingDocument("username",username.c_str(),"lastName",lastName.c_str());
     db.AddKeyValueToExistingDocument("username",username.c_str(),"email",email.c_str());
-    db.AddKeyValueToExistingDocument("ip",ip.c_str(),"port",port.c_str());
+    db.AddKeyValueToExistingDocument("username",username.c_str(),"address",clAddress);
+    // db.AddKeyValueToExistingDocument("ip",ip.c_str(),"port",port.c_str());
   }
   return 0;
 }
@@ -135,8 +144,9 @@ int ServerProcessor::Login(vector<string> &strs,string & msg,char* clAddress){
     return 1;
   }
   else{
-    db.AddKeyValueToExistingDocument("username",username.c_str(),"ip",ip.c_str());
-    db.AddKeyValueToExistingDocument("username",username.c_str(),"port",port.c_str());
+    db.AddKeyValueToExistingDocument("username",username.c_str(),"address",clAddress);
+    // db.AddKeyValueToExistingDocument("username",username.c_str(),"ip",ip.c_str());
+    // db.AddKeyValueToExistingDocument("username",username.c_str(),"port",port.c_str());
   }
   return 0;
 }

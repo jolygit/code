@@ -5,6 +5,7 @@
 #include <ctype.h>
 //#include "tlpi_hdr.h"
 #include        <vector>
+#include        <string>
 #define printable(ch) (isprint((unsigned char) ch) ? ch : '#')
 using namespace std;
 extern "C"{
@@ -29,13 +30,14 @@ extern "C"{
 }
 class ClientProcessor{
  public:
-int ConnectToFriend(char*);
+int ConnectToFriend(string frienduid);
+int TcpSimulteniousOpen(string frienduid);
 int Commands(int sockfd);
 int receive_int(int *num, int fd);
-int ListFriends(char* req,int sockfd);
+int ListFriends(char* req,int sockfd,vector<string>& strs);
 int RequestFriend(string& req,int sockfd);
 int Register(int sockfd,bool registering);
-int PortFromSocketFd(int socketFd);
+int PortFromSocketFd(int socketFd,string& port,string& addr);
 int ClientServer(int ownsockfd);
  private:
  

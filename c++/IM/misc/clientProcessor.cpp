@@ -2,28 +2,94 @@
 
 int ClientProcessor::Commands(int sockfd){
   string nextCommand;
+  vector<string> strs;
   printf("next command: ");
   cin >> nextCommand;
   // scanf("%s", nextCommand);
   if(nextCommand==string("allfriends")){
-    ListFriends("allfriends",sockfd);
+    ListFriends("allfriends",sockfd,strs);
+    for (size_t i = 0; i < strs.size(); i++)
+      cout << strs[i] << endl;
   }
   else if(nextCommand==string("onlinefriends")){
-    ListFriends("onlinefriends",sockfd);
+    ListFriends("onlinefriends",sockfd,strs);
+    for (size_t i = 0; i < strs.size(); i++)
+      cout << strs[i] << endl;
   }
   else if(nextCommand==string("requestfriend")){
     printf("friend username: ");
     cin >> nextCommand;
     RequestFriend(nextCommand,sockfd);
   }
-  else if(nextCommand==string("connectto")){
-    //ConnectToFriend();
-    
+  else if(string(nextCommand).compare(0,10,"connectto:")==0){
+    string frienduid;
+    vector<string> tmp;
+    boost::split(tmp,string(nextCommand),boost::is_any_of(":"));
+    if(tmp.size()!=2)
+      printf("wrong command %s\n",nextCommand);
+    frienduid=tmp[1];
+    ConnectToFriend(frienduid,sockfd);
   }
   else{
-    printf("supported commands are:allfriends;requestfriend;onlinefriends;connectto <friendname>. Try again\n");
+    printf("supported commands are:allfriends;requestfriend;onlinefriends;connectto:<frienduid>. Try again\n");
   }
   Commands(sockfd);
+  return 0;
+}
+int ClientProcessor::ConnectToFriend(string frienduid,int fd){
+  vector<string> strs;
+  ListFriends("onlinefriends",sockfd,strs);
+  for (size_t i = 0; i < strs.size(); i++){
+    if(strs[i]==frienduid){
+      TcpSimulteniousOpen(frienduid,fd);
+      break;
+    }
+  }
+  return 0;
+}
+int ClientProcessor::TcpSimultaneousOpen(string frienduid,int fd){
+  string selfport,selfaddr;
+  string friendport,friendaddr;
+  PortFromSocketFd(fd,port,addr);
+  RequestFriendAddr(frienduid,fd,friendport,friendaddr);
+  Close(fd);// close the connection to the server to be able to reuse the ip and port for another client
+  struct sockaddr_in	fraddress, selfaddress;
+  int			sockfd;
+  sockfd = Socket(AF_INET, SOCK_STREAM, 0);
+  bzero(&selfaddress, sizeof(selfaddress));
+  selfaddress.sin_family      = AF_INET;
+  Inet_pton(AF_INET, selfaddr.c_str(), &selfaddress.sin_addr);
+  selfaddress.sin_port        = htons(atoi(selfport));
+  Bind(sockfd, (SA *) &selfaddress, sizeof(selfaddress));
+  bzero(&fraddress, sizeof(fraddress));
+  fraddress.sin_family      = AF_INET;
+  Inet_pton(AF_INET, friendaddr.c_str(), &fraddress.sin_addr);
+  fraddress.sin_port        = htons(atoi(friendport));
+  Connect(sockfd, (SA *) &fraddress, sizeof(fraddress));
+  return 0;
+}
+int ClientProcessor::RequestFriendAddr(string frienduid,int fd,string& friendport,string& friendaddr){
+  string request("friendAddress:");
+  request+=frienduid;
+  Writen(sockfd, (void*)request.c_str(),request.length()+1);
+  int repLenght;
+  if(receive_int(&repLenght,sockfd)!=0)
+    printf("could not read lenght\n");
+  char reply[repLenght];
+  int len=0;
+  if ((len=Readn(sockfd, reply,repLenght)) >0){
+    string  str(reply);
+    vector<string> strs;
+    boost::split(strs,str,boost::is_any_of(":"));
+    if(repLenght==len){
+      friendaddr=strs[0];
+      friendport=strs[1];
+    }
+    else{
+      printf("something is wrong\n");
+      return 1;
+    }
+  }
   return 0;
 }
 int ClientProcessor::receive_int(int *num, int fd)
@@ -51,7 +117,8 @@ int ClientProcessor::receive_int(int *num, int fd)
     *num = ntohl(ret);
     return 0;
 }
-int ClientProcessor::ListFriends(char* req,int sockfd){
+int ClientProcessor::ListFriends(char* req,int sockfd,vector<string>& strs;
+){
   string request(req);
   Writen(sockfd, (void*)request.c_str(),request.length()+1);
   int repLenght;
@@ -61,11 +128,9 @@ int ClientProcessor::ListFriends(char* req,int sockfd){
   int len=0;
   if ((len=Readn(sockfd, reply,repLenght)) >0){
     string  str(reply);
-    vector<string> strs;
     boost::split(strs,str,boost::is_any_of(","));
     if(repLenght==len){
-     for (size_t i = 0; i < strs.size(); i++)
-        cout << strs[i] << endl;
+    
     }
     else{
       printf("something is wrong\n");
@@ -132,7 +197,7 @@ int ClientProcessor::Register(int sockfd,bool registering){
 //     fprintf(stderr, "Usage: %s [-p arg] [-x]\n", progName);
 //     exit(EXIT_FAILURE);
 // }
-int ClientProcessor::PortFromSocketFd(int socketFd){
+int ClientProcessor::PortFromSocketFd(int socketFd,string& port,string& addr){
   struct sockaddr ownAddr;
   socklen_t len;
   len=sizeof(ownAddr);
@@ -141,11 +206,11 @@ int ClientProcessor::PortFromSocketFd(int socketFd){
   vector<string> ip_port;
   boost::split(ip_port,ownAddress,boost::is_any_of(":"));
   string ip;
-  string port;
-  ip=ip_port[0];
+  string prt;
+  addr=ip_port[0];
   port=ip_port[1];
-  printf("parsed ip and port of client %s %s\n",ip.c_str(),port.c_str());
-  return atoi(port.c_str());
+  printf("parsed ip and port of client %s %s\n",ip.c_str(),prt.c_str());
+  return 0;
 }
 int ClientProcessor::ClientServer(int ownsockfd){
         int				nready,i, maxi, listenfd, connfd, sockfd;
@@ -153,7 +218,8 @@ int ClientProcessor::ClientServer(int ownsockfd){
 	char				buf[MAXLINE];
 	socklen_t			clilen;
 	int myOPEN_MAX = sysconf (_SC_OPEN_MAX);
-	int port=PortFromSocketFd(ownsockfd);
+	string port,addr;
+	PortFromSocketFd(ownsockfd,port,addr);
 	  //	printf("%d\n",myOPEN_MAX);
 	struct pollfd		client[myOPEN_MAX];
  	client[0].fd = ownsockfd;

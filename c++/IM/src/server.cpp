@@ -108,6 +108,17 @@ main(int argc, char **argv)
 			  if(proc.Send_int(value.length()+1,sockfd)==0)
 			    Writen(sockfd,(void*)value.c_str(),value.length()+1);
 			}
+			if(str.compare(0,14,"friendAddress:")==0){
+			  vector<string> strs;
+			  boost::split(strs,str,boost::is_any_of(":"));
+			  string fruid=strs[1];
+			  int len=0;
+			  string address;
+			  proc.GetAddress(fruid,address);
+			  printf("sending this many bytes%d\n",address.length()+1);
+			  if(proc.Send_int(address.length()+1,sockfd)==0)
+			    Writen(sockfd,(void*)address.c_str(),address.length()+1);
+			}
 			if(strcmp(buf,"onlinefriends")==0 && proc.clUID[i]!=""){
 			  int len=0;
 			  string friendreq="onlinefriends";

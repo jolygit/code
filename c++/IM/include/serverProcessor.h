@@ -31,6 +31,7 @@ public:
   int Register(vector<string> &strs,string & msg,char* clAddress);
   int Login(vector<string> &strs,string & msg,char* clAddress);
   int CreateFrinds(string& clUID,string& user);
+  int GetAddress(string& fruid,string& address);
   bool                    clLogin[myOPEN_MAX];
   string                  clUID[myOPEN_MAX];
  private:

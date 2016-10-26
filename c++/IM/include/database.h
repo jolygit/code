@@ -17,6 +17,7 @@ class DataBase{
   bool FindKeyValueInArrayOfDocument(char const* key,char const* value,char const* arrayName,char const* key_find,char const* value_find);
    bool Find2KeyValuePair(char const* key,char const* value,char const* key2,char const* value2);
    bool RetreiveValueForUsernameByKey(char const* uname,char const* key,std::vector<std::string>& val);
+   bool RetreiveValueForUsernameByKeySimple(char const* uname,char const* key,string& val);
  private:
    mongoc_client_t      *client;
    mongoc_database_t    *database;

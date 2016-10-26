@@ -1,6 +1,6 @@
-#include        "processor.h"
+#include        "serverProcessor.h"
 
-int Processor::Send_int(int num, int fd)
+int ServerProcessor::Send_int(int num, int fd)
 {
     int32_t conv = htonl(num);
     char *data = (char*)&conv;
@@ -24,7 +24,7 @@ int Processor::Send_int(int num, int fd)
     while (left > 0);
     return 0;
 }
-int Processor::GetFriends(string& friends,int i,string& value){
+int ServerProcessor::GetFriends(string& friends,int i,string& value){
   userSet.clear();
   for (size_t ii = 0; ii < myOPEN_MAX; ii++){
     if(ii!=i && clUID[ii].size()>0)
@@ -50,10 +50,8 @@ int Processor::GetFriends(string& friends,int i,string& value){
   }
   return 0;
 }
-int Processor::GetOnlineFriends(string& friends,string& uid,string& value){
- return 0;
-}
-int Processor::FriendRequest(string& fromUsername,string& toUsername){
+
+int ServerProcessor::FriendRequest(string& fromUsername,string& toUsername){
   if(db.FindKeyValueInArrayOfDocument("username",toUsername.c_str(),NULL,NULL,NULL)){
     if(!db.FindKeyValueInArrayOfDocument("username",toUsername.c_str(),"friends","username",fromUsername.c_str()))
       if(!db.FindKeyValueInArrayOfDocument("username",toUsername.c_str(),"friendRequests","username",fromUsername.c_str()))
@@ -66,7 +64,7 @@ int Processor::FriendRequest(string& fromUsername,string& toUsername){
   }
   return 0;
 }
-int Processor::ProcessFriendRequests(string& clUID){
+int ServerProcessor::ProcessFriendRequests(string& clUID){
   vector<string> tmpval;
   if(!db.RetreiveValueForUsernameByKey(clUID.c_str(),"friendRequests",tmpval))
     return 0;
@@ -77,7 +75,7 @@ int Processor::ProcessFriendRequests(string& clUID){
   }
   return 0;
 }
-int Processor::CreateFrinds(string& clUID,string& user){
+int ServerProcessor::CreateFrinds(string& clUID,string& user){
   if(!db.FindKeyValueInArrayOfDocument("username",clUID.c_str(),"friends","username",user.c_str())){
     db.AddArrayKeyValueToDocument("username",clUID.c_str(),"friends","username",user.c_str());
     if(db.FindKeyValueInArrayOfDocument("username",clUID.c_str(),"friendRequests","username",user.c_str()))
@@ -90,7 +88,7 @@ int Processor::CreateFrinds(string& clUID,string& user){
   }
   return 0;
 }
-int Processor::Register(vector<string> &strs,string & msg,char* clAddress){
+int ServerProcessor::Register(vector<string> &strs,string & msg,char* clAddress){
   vector<string> ip_port;
   boost::split(ip_port,clAddress,boost::is_any_of(":"));
   string ip;
@@ -120,7 +118,7 @@ int Processor::Register(vector<string> &strs,string & msg,char* clAddress){
   }
   return 0;
 }
-int Processor::Login(vector<string> &strs,string & msg,char* clAddress){
+int ServerProcessor::Login(vector<string> &strs,string & msg,char* clAddress){
   vector<string> ip_port;
   boost::split(ip_port,clAddress,boost::is_any_of(":"));
   string ip;
@@ -142,7 +140,7 @@ int Processor::Login(vector<string> &strs,string & msg,char* clAddress){
   }
   return 0;
 }
-int Processor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,char* clAddress){
+int ServerProcessor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,char* clAddress){
   string  str(buf);
   vector<string> strs;
   if(str.compare(0,11,"Register::,")==0){//Register:

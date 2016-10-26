@@ -14,7 +14,7 @@ $(ODIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) 
 
 server-x64: $(OBJ)
-	$(CC) -o $@ $(ODIR)/server.o $(ODIR)/database.o $(ODIR)/processor.o $(CFLAGS)  ${LIBS}
+	$(CC) -o $@ $(ODIR)/server.o $(ODIR)/database.o $(ODIR)/serverProcessor.o $(CFLAGS)  ${LIBS}
 client-x64: $(OBJ)
 	$(CC) -o $@ $(ODIR)/client.o $(CFLAGS)  ${LIBS}
 test-x64:

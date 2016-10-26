@@ -19,9 +19,9 @@ extern "C"{
 using namespace std;
 static const int  myOPEN_MAX = 10000;//sysconf (_SC_OPEN_MAX);
 
-class Processor{
+class ServerProcessor{
 public:
-  Processor(){db.ConnectToCollection("users","users");}
+  ServerProcessor(){db.ConnectToCollection("users","users");}
   int RegisterOrLogin(int sockfd,string& clUID,char const* buf,char* clAddress);
   int Send_int(int num, int fd);
   int GetFriends(string& friends,int uid,string& value);

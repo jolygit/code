@@ -1,5 +1,5 @@
 /* include fig01 */
-#include        "processor.h"
+#include        "serverProcessor.h"
 int
 main(int argc, char **argv)
 {
@@ -12,7 +12,7 @@ main(int argc, char **argv)
 	printf("%d\n",myOPEN_MAX);
 	struct pollfd		client[myOPEN_MAX];
 	struct sockaddr_in	cliaddr, servaddr;
-       	Processor proc;
+       	ServerProcessor proc;
 	listenfd = Socket(AF_INET, SOCK_STREAM, 0);
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family      = AF_INET;

@@ -130,7 +130,7 @@ bool DataBase::Find2KeyValuePair(char const* key,char const* value,char const* k
   else
     return false;
 }
-bool RetreiveValueForUsernameByKeySimple(char const* uname,char const* key,string& val){
+bool DataBase::RetreiveValueForUsernameByKeySimple(char const* uname,char const* key,string& val){ // THIS ASSUMES THAT  " is not part of the key value
   query = bson_new ();
   BSON_APPEND_UTF8 (query,"username",uname);
   fields = bson_new ();
@@ -140,21 +140,13 @@ bool RetreiveValueForUsernameByKeySimple(char const* uname,char const* key,strin
     str = bson_as_json (doc, NULL);
     string tmpval=str;
     vector<string> vals;
-    boost::split(vals,tmpval,boost::is_any_of("[]"));
-    if(vals.size()<2)
-      return false;
-    tmpval=vals[1];
     boost::split(vals,tmpval,boost::is_any_of("\""));
-    if(vals.size()<2)
+    if(vals.size()!=11){
+      printf("unexpected value field %s\n",tmpval.c_str());
       return false;
+    }
     else{
-      vector<string> vals;
-      boost::split(vals,tmpval,boost::is_any_of("\""));
-      if(((vals.size()-1)%4)!=0) {// no friends
-	printf("unexpected value field %s\n",tmpval.c_str());
-	return 0;
-      }
-	val=vals[1]);
+      val=vals[9];
       return true;
     }
   }

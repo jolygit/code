@@ -24,7 +24,8 @@ int ClientProcessor::Commands(int sockfd){
   else if(string(nextCommand).compare(0,10,"connectto:")==0){
     string frienduid;
     vector<string> tmp;
-    boost::split(tmp,string(nextCommand),boost::is_any_of(":"));
+    string strtmp=nextCommand;
+    boost::split(tmp,strtmp,boost::is_any_of(":"));
     if(tmp.size()!=2)
       printf("wrong command %s\n",nextCommand);
     frienduid=tmp[1];
@@ -38,10 +39,13 @@ int ClientProcessor::Commands(int sockfd){
 }
 int ClientProcessor::ConnectToFriend(string frienduid,int fd){
   vector<string> strs;
-  ListFriends("onlinefriends",sockfd,strs);
+  if(ListFriends("onlinefriends",fd,strs)){
+    printf("friend %s is not online",frienduid.c_str());
+    return 1;//friend is not online
+  }
   for (size_t i = 0; i < strs.size(); i++){
     if(strs[i]==frienduid){
-      TcpSimulteniousOpen(frienduid,fd);
+      TcpSimultaneousOpen(frienduid,fd);
       break;
     }
   }
@@ -50,34 +54,39 @@ int ClientProcessor::ConnectToFriend(string frienduid,int fd){
 int ClientProcessor::TcpSimultaneousOpen(string frienduid,int fd){
   string selfport,selfaddr;
   string friendport,friendaddr;
-  PortFromSocketFd(fd,port,addr);
+  PortFromSocketFd(fd,selfport,selfaddr);
   RequestFriendAddr(frienduid,fd,friendport,friendaddr);
-  Close(fd);// close the connection to the server to be able to reuse the ip and port for another client
+  //Close(fd);// close the connection to the server to be able to reuse the ip and port for another client
   struct sockaddr_in	fraddress, selfaddress;
   int			sockfd;
   sockfd = Socket(AF_INET, SOCK_STREAM, 0);
+  int on=1;
+  if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof (on)) < 0)
+    err_sys("setsockopt of SO_REUSEADDR error");
+  if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof (on)) < 0)
+    err_sys("setsockopt of SO_REUSEPORT error");
   bzero(&selfaddress, sizeof(selfaddress));
   selfaddress.sin_family      = AF_INET;
   Inet_pton(AF_INET, selfaddr.c_str(), &selfaddress.sin_addr);
-  selfaddress.sin_port        = htons(atoi(selfport));
+  selfaddress.sin_port        = htons(atoi(selfport.c_str()));
   Bind(sockfd, (SA *) &selfaddress, sizeof(selfaddress));
   bzero(&fraddress, sizeof(fraddress));
   fraddress.sin_family      = AF_INET;
   Inet_pton(AF_INET, friendaddr.c_str(), &fraddress.sin_addr);
-  fraddress.sin_port        = htons(atoi(friendport));
+  fraddress.sin_port        = htons(atoi(friendport.c_str()));
   Connect(sockfd, (SA *) &fraddress, sizeof(fraddress));
   return 0;
 }
 int ClientProcessor::RequestFriendAddr(string frienduid,int fd,string& friendport,string& friendaddr){
   string request("friendAddress:");
   request+=frienduid;
-  Writen(sockfd, (void*)request.c_str(),request.length()+1);
+  Writen(fd, (void*)request.c_str(),request.length()+1);
   int repLenght;
-  if(receive_int(&repLenght,sockfd)!=0)
+  if(receive_int(&repLenght,fd)!=0)
     printf("could not read lenght\n");
   char reply[repLenght];
   int len=0;
-  if ((len=Readn(sockfd, reply,repLenght)) >0){
+  if ((len=Readn(fd, reply,repLenght)) >0){
     string  str(reply);
     vector<string> strs;
     boost::split(strs,str,boost::is_any_of(":"));
@@ -117,8 +126,7 @@ int ClientProcessor::receive_int(int *num, int fd)
     *num = ntohl(ret);
     return 0;
 }
-int ClientProcessor::ListFriends(char* req,int sockfd,vector<string>& strs;
-){
+int ClientProcessor::ListFriends(char* req,int sockfd,vector<string>& strs){
   string request(req);
   Writen(sockfd, (void*)request.c_str(),request.length()+1);
   int repLenght;
@@ -130,7 +138,8 @@ int ClientProcessor::ListFriends(char* req,int sockfd,vector<string>& strs;
     string  str(reply);
     boost::split(strs,str,boost::is_any_of(","));
     if(repLenght==len){
-    
+      if(len==1)
+	return 1; //no online friends
     }
     else{
       printf("something is wrong\n");

@@ -18,7 +18,7 @@
     (grep cmd)))
 ;find other cpp or h file
 (load "/home/aj/.emacs.d/find-file.el")
-(setq cc-search-directories '("../include" "../src" ))
+(setq cc-search-directories '("../include" "../src" "../misc" ))
 (global-set-key (kbd "C-`") 'ff-find-other-file)
 
 (global-set-key (kbd "<f1>")  'mark-whole-buffer)

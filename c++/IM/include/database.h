@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <cstring>
-
+using namespace std;
 class DataBase{
  public:
   ~DataBase();

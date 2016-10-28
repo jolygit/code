@@ -21,7 +21,12 @@ main(int argc, char **argv)
   int			sockfd;
   struct sockaddr_in	servaddr;
   ClientProcessor clProcessor;
+  int on=1;
   sockfd = Socket(AF_INET, SOCK_STREAM, 0);
+  if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof (on)) < 0)
+    err_sys("setsockopt of SO_REUSEADDR error");
+  if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof (on)) < 0)
+    err_sys("setsockopt of SO_REUSEPORT error");
   bzero(&servaddr, sizeof(servaddr));
   servaddr.sin_family = AF_INET;
   servaddr.sin_port = htons(SERV_PORT);

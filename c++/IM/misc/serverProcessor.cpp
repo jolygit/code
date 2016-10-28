@@ -76,7 +76,7 @@ int ServerProcessor::ProcessFriendRequests(string& clUID){
   return 0;
 }
 int ServerProcessor::GetAddress(string& fruid,string& address){
-  if(RetreiveValueForUsernameByKeySimple(fruid.c_str(),"address",address)==0)
+  if(db.RetreiveValueForUsernameByKeySimple(fruid.c_str(),"address",address))
     return 0;
   else{
     printf("could not retreive address for uid %s\n",fruid.c_str());
@@ -156,13 +156,13 @@ int ServerProcessor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,ch
   if(str.compare(0,11,"Register::,")==0){//Register:
     boost::split(strs,str,boost::is_any_of(","));
     string  uidstr(strs[1]);
-    vector<string> uidstrs;
-    boost::split(uidstrs,uidstr,boost::is_any_of("="));
-    string  uid=uidstrs[1];
+    // vector<string> uidstrs;
+    // boost::split(uidstrs,uidstr,boost::is_any_of("="));
+    // string  uid=uidstrs[1];
     string msg("ok");
     if(Register(strs,msg,clAddress)==0){
       printf("registration ok\n");
-      clUID=uid;
+      clUID=uidstr;
     }
     Writen(sockfd,(void*)msg.c_str(),msg.length()+1);
     return 0;
@@ -172,13 +172,13 @@ int ServerProcessor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,ch
     if(strs.size()!=3)
       printf("wrong number of fields\n");
     string  uidstr(strs[1]);
-    vector<string> uidstrs;
-    boost::split(uidstrs,uidstr,boost::is_any_of("="));
-    string  uid=uidstrs[1];
+    // vector<string> uidstrs;
+    // boost::split(uidstrs,uidstr,boost::is_any_of("="));
+    // string  uid=uidstrs[1];
     string msg("ok");
     if(Login(strs,msg,clAddress)==0){
       printf("login ok\n");
-      clUID=uid;
+      clUID=uidstr;
     }
     Writen(sockfd,(void*)msg.c_str(),msg.length()+1);
     return 0;

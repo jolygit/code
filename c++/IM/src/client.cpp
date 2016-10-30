@@ -21,7 +21,9 @@ main(int argc, char **argv)
   int			sockfd;
   struct sockaddr_in	servaddr;
   ClientProcessor clProcessor;
-  int on=1;
+  struct pollfd	  client[myOPEN_MAX];
+  int on=1,maxi,nready,n;
+  char				buf[MAXLINE];
   sockfd = Socket(AF_INET, SOCK_STREAM, 0);
   if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof (on)) < 0)
     err_sys("setsockopt of SO_REUSEADDR error");
@@ -37,8 +39,63 @@ main(int argc, char **argv)
   else if(login)
     clProcessor.Register(sockfd,false);
   else{
-    printf("you have to either register or login use -r or -l options respectively\n");
+    printf("you have to either register or login. Use -r or -l options respectively\n");
+    return false;
   }
-  clProcessor.Commands(sockfd);
-  //	clProcessor.ClientServer(sockfd);
+  client[0].fd = fileno(stdin);
+  client[0].events = POLLRDNORM;
+  clProcessor.clLogin[0]=true;
+  clProcessor.clUID[0]="stdInput";
+  client[1].fd = sockfd;
+  client[1].events = POLLRDNORM;
+  clProcessor.clLogin[1]=true;
+  clProcessor.clUID[1]="server";
+  printf("next command:");
+ 	for (int i = 2; i < myOPEN_MAX; i++){
+ 		client[i].fd = -1;		/* -1 indicates available entry */
+		clProcessor.clLogin[i]=false;
+		clProcessor.clUID[i]="";
+	}
+		maxi = 0;					/* max index into client[] array */
+ 		for ( ; ; ) {
+		  nready = Poll(client, maxi+1, INFTIM);
+		  for (int i = 0; i <= maxi; i++) {	/* check all clients for data */
+		    if ( (sockfd = client[i].fd) < 0)
+		      continue;
+		    if (client[i].revents & (POLLRDNORM | POLLERR)) {
+		      if ( (n = read(sockfd, buf, MAXLINE)) < 0) {
+			if (errno == ECONNRESET) {
+			  /*4connection reset by client */
+			  printf("client[%d] aborted connection\n", i);
+			  Close(sockfd);
+			  client[i].fd = -1;
+			  clProcessor.clLogin[i]=false;
+			  clProcessor.clUID[i]="";
+			} else
+			  err_sys("read error");
+		      } else if (n == 0) {
+			/*4connection closed by client */
+			printf("client[%d] closed connection\n", i);
+			Close(sockfd);
+			client[i].fd = -1;
+			clProcessor.clLogin[i]=false;
+			clProcessor.clUID[i]="";
+		      }
+		      else if (i == 0) { //stdin
+			clProcessor.RequestToServer(client[1].fd);
+		      }
+		      else if (i == 1) { //server
+			if(!clProcessor.selfaddress)
+			  clProcessor.PortFromSocketFd(sockfd);
+			clProcessor.ResponseFromServer(buf);
+		      }
+		      else{
+		
+		      }
+		      if (--nready <= 0)
+			break;				/* no more readable descriptors */
+		    }
+		  }
+		}
+  return 0;
 }

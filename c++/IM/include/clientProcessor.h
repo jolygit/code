@@ -31,16 +31,23 @@ extern "C"{
 }
 class ClientProcessor{
  public:
-int ConnectToFriend(string frienduid,int fd);
-int TcpSimultaneousOpen(string frienduid,int fd);
-int Commands(int sockfd);
-int receive_int(int *num, int fd);
-int ListFriends(char* req,int sockfd,vector<string>& strs);
-int RequestFriend(string& req,int sockfd);
-int Register(int sockfd,bool registering);
-int PortFromSocketFd(int socketFd,string& port,string& addr);
-int ClientServer(int ownsockfd);
-int RequestFriendAddr(string frienduid,int fd,string& friendport,string& friendaddr);
+  ClientProcessor(){
+    selfaddress=false;invitefriend="invitefriend";friendaddress="friendaddress";
+    allfriends="allfriends";onlinefriends="onlinefriends";
+    registration="registration";login="login";registrationlogin="registrationlogin";
+  }
+  int ResponseFromServer(char* buf);
+  int RequestToServer(int sockfd);
+  int TcpSimultaneousOpen(string& friendPort,string& friendIp);
+  int Receive_int(int *num, int fd);
+  int Register(int sockfd,bool registering);
+  int PortFromSocketFd(int socketFd);
+  bool                    clLogin[myOPEN_MAX];
+  string                  clUID[myOPEN_MAX];
+  bool selfaddress;
  private:
- 
+  string selfPort,selfIp;
+  string invitefriend,friendaddress;
+  string allfriends,onlinefriends;
+  string registration,login,registrationlogin;
 };

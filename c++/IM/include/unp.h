@@ -230,7 +230,7 @@ struct timespec {
 /* $$.Ib tv_nsec$$ */
 #endif
 /* end unph */
-
+static const int  myOPEN_MAX = 10000;
 			/* prototypes for our own library functions */
 //int		 connect_nonb(int, const SA *, socklen_t, int);
 int		 connect_timeo(int, const SA *, socklen_t, int);

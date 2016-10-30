@@ -58,7 +58,8 @@ main(int argc, char **argv)
 		    if (--nready <= 0)
 		      continue;				/* no more readable descriptors */
 		  }
-
+		  string  invitefriend="invitefriend",friendaddress="friendaddress",
+  allfriends="allfriends",onlinefriends="onlinefriends";
 		  for (i = 1; i <= maxi; i++) {	/* check all clients for data */
 		    if ( (sockfd = client[i].fd) < 0)
 		      continue;
@@ -82,7 +83,6 @@ main(int argc, char **argv)
 			proc.clUID[i]="";
 		      }
 		      else if(proc.clLogin[i]==false){
-			//	printf("%s",buf);
 			char* clAddress=Sock_ntop((SA *) &cliaddr, clilen);
 			if(proc.RegisterOrLogin(sockfd,proc.clUID[i],buf,clAddress)==0)
 			  proc.clLogin[i]=true;
@@ -91,49 +91,33 @@ main(int argc, char **argv)
 		      }
 		      else{
 			string str(buf);
-			if(str.compare(0,14,"requestFriend:")==0 && proc.clUID[i]!=""){
-			  vector<string> req;
-			  boost::split(req,str,boost::is_any_of(":"));
-			  string toUsername=req[1];
+			vector<string> req;
+			boost::split(req,str,boost::is_any_of(":"));
+			if(req[1]==invitefriend && proc.clUID[i]!=""){
+			  string toUsername=req[2];
 			  string msg;
 			  if(proc.FriendRequest(proc.clUID[i],toUsername))
 			    msg="request failed because user does not exist";
 			  else
 			    msg="request filed sucessfully";
-			  Writen(sockfd,(void*)msg.c_str(),msg.length()+1);
+			  proc.SendResponse(sockfd,req[1],msg);
 			}
-			if(strcmp(buf,"allfriends")==0 && proc.clUID[i]!=""){
-			  int len=0;
-			  string friendreq="allfriends";
-			  string value;
-			  proc.GetFriends(friendreq,i,value);
-			  printf("sending this many bytes%d\n",value.length()+1);
-			  if(proc.Send_int(value.length()+1,sockfd)==0)
-			    Writen(sockfd,(void*)value.c_str(),value.length()+1);
+			if((req[1]==allfriends || req[1]==onlinefriends) && proc.clUID[i]!=""){
+			  string msg;
+			  proc.GetFriends(req[1],i,msg);
+			  proc.SendResponse(sockfd,req[1],msg);
 			}
-			if(str.compare(0,14,"friendAddress:")==0){
-			  vector<string> strs;
-			  boost::split(strs,str,boost::is_any_of(":"));
-			  string fruid=strs[1];
-			  int len=0;
-			  string address;
-			  proc.GetAddress(fruid,address);
-			  printf("sending this many bytes%d\n",address.length()+1);
-			  if(proc.Send_int(address.length()+1,sockfd)==0)
-			    Writen(sockfd,(void*)address.c_str(),address.length()+1);
-			}
-			if(strcmp(buf,"onlinefriends")==0 && proc.clUID[i]!=""){
-			  int len=0;
-			  string friendreq="onlinefriends";
-			  string value;
-			  proc.GetFriends(friendreq,i,value);
-			  printf("sending this many bytes%d\n",value.length()+1);
-			  if(proc.Send_int(value.length()+1,sockfd)==0)
-			    Writen(sockfd,(void*)value.c_str(),value.length()+1);
-			  // sendOnlineFriends();
+			if(req[1]==friendaddress){
+			  string fruid=req[2];
+			  for(int ii=0;ii<myOPEN_MAX;ii++){
+			    if(proc.clUID[ii]==fruid && client[ii].fd){
+			      proc.InitiateTcpSimultOpen(client[ii].fd,proc.clUID[i]);
+			      proc.InitiateTcpSimultOpen(sockfd,fruid);
+			      break;
+			    }
+			  }
 			}
 		      }
-
 		      if (--nready <= 0)
 			break;				/* no more readable descriptors */
 		    }

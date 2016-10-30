@@ -1,5 +1,28 @@
 #include        "serverProcessor.h"
-
+#include        <stdio.h>
+#include        <stdlib.h>
+int ServerProcessor::InitiateTcpSimultOpen(int sockfd,string fruid){
+  int len=0;
+  string msg,command("friendaddress");
+  GetAddress(fruid,msg);
+  msg+=colon;
+  msg+=fruid;
+  SendResponse(sockfd,command,msg);
+  return 0;
+}
+bool ServerProcessor::SendResponse(int sockfd,string& command,string& msg)
+{
+  int l=msg.length()+1;
+  string response("version1.0:");
+  //itoa(l,buffer,10);
+  //response+=string(buffer);
+  response+=colon;
+  response+=command;
+  response+=colon;
+  response+=msg;
+  Writen(sockfd,(void*)response.c_str(),response.length()+1);
+  return true;
+}
 int ServerProcessor::Send_int(int num, int fd)
 {
     int32_t conv = htonl(num);
@@ -153,42 +176,31 @@ int ServerProcessor::Login(vector<string> &strs,string & msg,char* clAddress){
 int ServerProcessor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,char* clAddress){
   string  str(buf);
   vector<string> strs;
+  string msg("ok"),command;
   if(str.compare(0,11,"Register::,")==0){//Register:
     boost::split(strs,str,boost::is_any_of(","));
     string  uidstr(strs[1]);
-    // vector<string> uidstrs;
-    // boost::split(uidstrs,uidstr,boost::is_any_of("="));
-    // string  uid=uidstrs[1];
-    string msg("ok");
     if(Register(strs,msg,clAddress)==0){
       printf("registration ok\n");
       clUID=uidstr;
+      command="registration";
     }
-    Writen(sockfd,(void*)msg.c_str(),msg.length()+1);
-    return 0;
   }
   else if(str.compare(0,8,"Login::,")==0){//Register:
     boost::split(strs,str,boost::is_any_of(","));
     if(strs.size()!=3)
       printf("wrong number of fields\n");
     string  uidstr(strs[1]);
-    // vector<string> uidstrs;
-    // boost::split(uidstrs,uidstr,boost::is_any_of("="));
-    // string  uid=uidstrs[1];
-    string msg("ok");
     if(Login(strs,msg,clAddress)==0){
       printf("login ok\n");
       clUID=uidstr;
+      command="login";
     }
-    Writen(sockfd,(void*)msg.c_str(),msg.length()+1);
-    return 0;
   }
   else{
-    string msg("registration or login should start with Register::, or Login::, try again");
-    char * cstr = new char [msg.length()+1];
-    strcpy (cstr, msg.c_str());
-    printf("%s\n", cstr);
-    Writen(sockfd,cstr,msg.length()+1);
-    return 1;
+    command="registration/login";
+    msg=string("should start with Register::, or Login::, try again");
   }
+  SendResponse(sockfd,command,msg);
+  return 0;
 }

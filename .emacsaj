@@ -71,10 +71,10 @@ Repeated invocations toggle between the two most recently open buffers."
 ;(load "/home/aj/.emacs.d/jdee-2.4.1/lisp/jde.el")
 
 ;bookmark setup
-;(load "/home/aj/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")
-;(require 'bm)
-;(setq bm-highlight-style 'bm-highlight-only-line)
-;(global-set-key (kbd "<f2>") 'bm-toggle)
-;(global-set-key (kbd "<C-f2>") 'bm-next)
+(load "/home/aj/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")
+(require 'bm)
+(setq bm-highlight-style 'bm-highlight-only-line)
+(global-set-key (kbd "<f2>") 'bm-toggle)
+(global-set-key (kbd "<C-f2>") 'bm-next)
 
 (setq tags-table-list '("/home/aj"))

@@ -2,7 +2,7 @@
 
 int ClientProcessor::RequestToServer(int sockfd,string& nextCommand){ //sockfd is server
   string request("request:");
-  if(nextCommand==allfriends || nextCommand==onlinefriends || nextCommand.compare(0,10,"friendaddress:")==0 || nextCommand.compare(0,13,"invitefriend:")==0){
+  if(nextCommand==allfriends || nextCommand==onlinefriends || nextCommand.compare(0,14,"friendaddress:")==0 || nextCommand.compare(0,13,"invitefriend:")==0){
     request+=nextCommand;
     Writen(sockfd,(void*)request.c_str(),request.length()+1);
   }
@@ -13,7 +13,7 @@ int ClientProcessor::RequestToServer(int sockfd,string& nextCommand){ //sockfd i
   // fflush(NULL);
   return 0;
 }
-int ClientProcessor::ResponseFromServer(char* buf){
+int ClientProcessor::ResponseFromServer(char* buf,string& fruid){
   string response=buf;
   string command;
   vector<string> strs;
@@ -30,9 +30,11 @@ int ClientProcessor::ResponseFromServer(char* buf){
   else if(strs[2]==registration || strs[2]==login || strs[2]==registrationlogin){
     printf("%s %s\n",strs[2].c_str(),strs[3].c_str()); // this should say weather request was ok or not 
   }
-  else if(strs[2]==friendaddress){// version:response size:responseCommand:friendPort:friendIp:frUid
+  else if(strs[2]==friendaddress){// version:response size:responseCommand:friendIp:friendPort:frUid
     printf("connecting to %s...\n",strs[5].c_str());
-    TcpSimultaneousOpen(strs[3],strs[4]);
+    int sockfd=TcpSimultaneousOpen(strs[4],strs[3]);
+    fruid=strs[5];
+    return sockfd;
   }
   else{
     printf("supported commands are:allfriends;requestfriend;onlinefriends;friendaddress:<frienduid>. Try again\n");
@@ -42,7 +44,7 @@ int ClientProcessor::ResponseFromServer(char* buf){
   return 0;
 }
 int ClientProcessor::TcpSimultaneousOpen(string& friendPort,string& friendIp){
-   struct sockaddr_in	fraddress, selfAddress;
+  struct sockaddr_in	fraddress, selfAddress;
   int			sockfd;
   sockfd = Socket(AF_INET, SOCK_STREAM, 0);
   int on=1;
@@ -60,7 +62,7 @@ int ClientProcessor::TcpSimultaneousOpen(string& friendPort,string& friendIp){
   Inet_pton(AF_INET, friendIp.c_str(), &fraddress.sin_addr);
   fraddress.sin_port        = htons(atoi(friendPort.c_str()));
   Connect(sockfd, (SA *) &fraddress, sizeof(fraddress));
-  return 0;
+  return sockfd;
 }
 int ClientProcessor::Receive_int(int *num, int fd)
 {

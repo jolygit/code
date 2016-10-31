@@ -87,7 +87,24 @@ main(int argc, char **argv)
 		      else if (i == 1) { //server
 			if(!clProcessor.selfaddress)
 			  clProcessor.PortFromSocketFd(sockfd);
-			clProcessor.ResponseFromServer(buf);
+			string fruid;
+			int connfd=clProcessor.ResponseFromServer(buf,fruid);
+			if(connfd){
+			  int ii;
+			  for (ii = 1; ii < myOPEN_MAX; ii++)
+			    if (client[ii].fd < 0) {
+			      client[ii].fd = connfd;	/* save descriptor */
+			      clProcessor.clLogin[1]=true;
+			      clProcessor.clUID[1]=fruid;
+			      break;
+			    }
+			  if (ii == myOPEN_MAX)
+			    err_quit("too many clients");
+			  client[ii].events = POLLRDNORM;
+			  if (ii > maxi)
+			    maxi = ii;
+			  printf("sucessfully connected to: %s\n",fruid.c_str());
+			}
 		      }
 		      else{
 		

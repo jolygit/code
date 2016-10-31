@@ -38,7 +38,7 @@ class ClientProcessor{
     registeredLogedin=false;
     registrationFieldCount=0;
   }
-  int ResponseFromServer(char* buf);
+  int ResponseFromServer(char* buf,string& fruid);
   int RequestToServer(int sockfd,string& nextCommand);
   int TcpSimultaneousOpen(string& friendPort,string& friendIp);
   int Receive_int(int *num, int fd);

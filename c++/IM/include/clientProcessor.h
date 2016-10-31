@@ -35,19 +35,30 @@ class ClientProcessor{
     selfaddress=false;invitefriend="invitefriend";friendaddress="friendaddress";
     allfriends="allfriends";onlinefriends="onlinefriends";
     registration="registration";login="login";registrationlogin="registrationlogin";
+    registeredLogedin=false;
+    registrationFieldCount=0;
   }
   int ResponseFromServer(char* buf);
-  int RequestToServer(int sockfd);
+  int RequestToServer(int sockfd,string& nextCommand);
   int TcpSimultaneousOpen(string& friendPort,string& friendIp);
   int Receive_int(int *num, int fd);
-  int Register(int sockfd,bool registering);
+  int Register(int sockfd,string& nextCommand);
   int PortFromSocketFd(int socketFd);
   bool                    clLogin[myOPEN_MAX];
   string                  clUID[myOPEN_MAX];
   bool selfaddress;
+  bool registeredLogedin;
  private:
   string selfPort,selfIp;
   string invitefriend,friendaddress;
   string allfriends,onlinefriends;
   string registration,login,registrationlogin;
+  string username;
+  string password;
+  string firstName;
+  string lastName;
+  string email;
+  string comma=",";
+  int    registrationFieldCount;
+  bool   uregister;
 };

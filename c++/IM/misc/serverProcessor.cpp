@@ -1,6 +1,5 @@
 #include        "serverProcessor.h"
-#include        <stdio.h>
-#include        <stdlib.h>
+#include        <sstream>
 int ServerProcessor::InitiateTcpSimultOpen(int sockfd,string fruid){
   int len=0;
   string msg,command("friendaddress");
@@ -13,14 +12,10 @@ int ServerProcessor::InitiateTcpSimultOpen(int sockfd,string fruid){
 bool ServerProcessor::SendResponse(int sockfd,string& command,string& msg)
 {
   int l=msg.length()+1;
-  string response("version1.0:");
-  //itoa(l,buffer,10);
-  //response+=string(buffer);
-  response+=colon;
-  response+=command;
-  response+=colon;
-  response+=msg;
-  Writen(sockfd,(void*)response.c_str(),response.length()+1);
+  stringstream response; 
+  response << "version1.0:"<< l<<colon<<command<<colon<<msg;
+  printf("sending %s\n",response.str().c_str());
+  Writen(sockfd,(void*)response.str().c_str(),response.str().length()+1);
   return true;
 }
 int ServerProcessor::Send_int(int num, int fd)

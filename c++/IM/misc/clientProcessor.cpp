@@ -1,9 +1,6 @@
 #include "clientProcessor.h"
 
-int ClientProcessor::RequestToServer(int sockfd){ //sockfd is server
-  string nextCommand;
-  vector<string> strs;
-  cin >> nextCommand;
+int ClientProcessor::RequestToServer(int sockfd,string& nextCommand){ //sockfd is server
   string request("request:");
   if(nextCommand==allfriends || nextCommand==onlinefriends || nextCommand.compare(0,10,"friendaddress:")==0 || nextCommand.compare(0,13,"invitefriend:")==0){
     request+=nextCommand;
@@ -12,7 +9,8 @@ int ClientProcessor::RequestToServer(int sockfd){ //sockfd is server
   else{
     printf("supported commands are:: allfriends;onlinefriends;invitefriend:<frienduid>;friendaddress:<frienduid>. Try again\n");
   }
-  printf("next command:");
+  // printf("next command:");
+  // fflush(NULL);
   return 0;
 }
 int ClientProcessor::ResponseFromServer(char* buf){
@@ -40,6 +38,7 @@ int ClientProcessor::ResponseFromServer(char* buf){
     printf("supported commands are:allfriends;requestfriend;onlinefriends;friendaddress:<frienduid>. Try again\n");
   }
   printf("next command:");
+  fflush(NULL);
   return 0;
 }
 int ClientProcessor::TcpSimultaneousOpen(string& friendPort,string& friendIp){
@@ -88,33 +87,63 @@ int ClientProcessor::Receive_int(int *num, int fd)
     *num = ntohl(ret);
     return 0;
 }
-int ClientProcessor::Register(int sockfd,bool registering){
+int ClientProcessor::Register(int sockfd,string& nextCommand){
   string request;
-  string reply;
-  string username;
-  string password;
-  string firstName;
-  string lastName;
-  string email;
-  string comma=",";
-  printf("username:");
-  cin >> username;
-  printf("password:");
-  cin >> password;
-  if(registering){
-  printf("firstName:");
-  cin >> firstName;
-  printf("lastName: ");
-  cin >> lastName;
-  printf("email: ");
-  cin >> email;
-  request="Register::,";
-  request+=username+comma+password+comma+firstName+comma+lastName+comma+email;
+  if(registrationFieldCount==0){
+    if(nextCommand=="register")
+      uregister=true;
+    else if(nextCommand=="login")
+      uregister=false;
+    else{
+      printf("you have to either register or login. Type register or login respectively\n");
+      return 1;
+    }
+    printf("username:");
+    fflush(stdout);
+    registrationFieldCount++;
+    return 0;
   }
-  else{
-    request="Login::,";
-    request+=username+comma+password;
+  else if(registrationFieldCount==1){
+    username=nextCommand;
+    printf("password:");
+    fflush(stdout);
+    registrationFieldCount++;
+    return 0;
   }
+  else if(registrationFieldCount==2){
+    password=nextCommand;
+    if(uregister){
+      printf("firstName:");
+      fflush(stdout);
+      registrationFieldCount++;
+      return 0;
+    }
+  }
+  else if(registrationFieldCount==3){
+    firstName=nextCommand;
+    printf("lastName:");
+    fflush(stdout);
+    registrationFieldCount++;
+    return 0;
+  }
+  else if(registrationFieldCount==4){
+    lastName=nextCommand;
+    printf("email:");
+    fflush(stdout);
+    registrationFieldCount++;
+    return 0;
+  }
+  else if(registrationFieldCount==5){
+    email=nextCommand;
+    request="Register::,";
+    request+=username+comma+password+comma+firstName+comma+lastName+comma+email;
+    registeredLogedin=true;
+    Writen(sockfd,(void*)request.c_str(),request.length()+1);
+    return 0;
+  }
+  request="Login::,";
+  request+=username+comma+password;
+  registeredLogedin=true;
   Writen(sockfd,(void*)request.c_str(),request.length()+1);
   return 0;
 }

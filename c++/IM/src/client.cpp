@@ -34,14 +34,7 @@ main(int argc, char **argv)
   servaddr.sin_port = htons(SERV_PORT);
   Inet_pton(AF_INET, address, &servaddr.sin_addr);
   Connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
-  if(uregister)
-    clProcessor.Register(sockfd,true);
-  else if(login)
-    clProcessor.Register(sockfd,false);
-  else{
-    printf("you have to either register or login. Use -r or -l options respectively\n");
-    return false;
-  }
+ 
   client[0].fd = fileno(stdin);
   client[0].events = POLLRDNORM;
   clProcessor.clLogin[0]=true;
@@ -51,12 +44,13 @@ main(int argc, char **argv)
   clProcessor.clLogin[1]=true;
   clProcessor.clUID[1]="server";
   printf("next command:");
+  fflush(NULL);
  	for (int i = 2; i < myOPEN_MAX; i++){
  		client[i].fd = -1;		/* -1 indicates available entry */
 		clProcessor.clLogin[i]=false;
 		clProcessor.clUID[i]="";
 	}
-		maxi = 0;					/* max index into client[] array */
+		maxi = 1;					/* max index into client[] array */
  		for ( ; ; ) {
 		  nready = Poll(client, maxi+1, INFTIM);
 		  for (int i = 0; i <= maxi; i++) {	/* check all clients for data */
@@ -82,7 +76,13 @@ main(int argc, char **argv)
 			clProcessor.clUID[i]="";
 		      }
 		      else if (i == 0) { //stdin
-			clProcessor.RequestToServer(client[1].fd);
+			string tmp=buf;
+			string nextCommand=tmp.substr(0,n-1);
+			//	boost::trim_right(nextCommand);
+			if(clProcessor.registeredLogedin)
+			  clProcessor.RequestToServer(client[1].fd,nextCommand);
+			else
+			  clProcessor.Register(client[1].fd,nextCommand);
 		      }
 		      else if (i == 1) { //server
 			if(!clProcessor.selfaddress)

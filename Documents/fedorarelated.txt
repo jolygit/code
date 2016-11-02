@@ -149,3 +149,8 @@ is created from /etc/sysctl.d/core-pattern.conf
 sudo cp ~/code/c++/IM/mongo-c-driver/.libs/libmongoc-1.0.so.0 /lib64 # make sure to indicate correct path above.
 86. sudo yum install boost-devel # to install boost 
 87. xset b off # to disable anoying alram sound in terminal
+88. yum install brasero # cd/dvd reader writer
+89. sudo yum install gparted # utility for partitioning disks and usbs
+90. unetbootin # utility for creating iso images on usb
+91. emacs /etc/hosts
+    192.168.2.103 newyork # enter to give a name to ip address on the local net

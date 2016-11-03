@@ -11,10 +11,10 @@ int
 main(int argc, char **argv)
 {
   int			sockfd;
-  int const  myOPEN_MAX=100,MAXLINE=20;
+  int const  myOPEN_MAX=100,MAXLINE=4096;
   struct pollfd	  client[myOPEN_MAX];
   int maxi,nready,n;
-  char buf[1000];
+  char buf[4096];
   client[0].fd = fileno(stdin);
   client[0].events = POLLRDNORM;
   for (int i = 1; i < myOPEN_MAX; i++){
@@ -28,8 +28,10 @@ main(int argc, char **argv)
       if ( (sockfd = client[i].fd) < 0)
 	continue;
       if (client[i].revents & (POLLRDNORM | POLLERR)) {
-	if ( (n = read(sockfd, buf, MAXLINE)) < 0) {
+	if ( (n = read(sockfd, buf, MAXLINE)) > 0) {
 	  if (i == 0) { //stdin
+	    printf("works\n");
+	    return 0;
 	  }
 	  if (--nready <= 0)
 	    break;				/* no more readable descriptors */

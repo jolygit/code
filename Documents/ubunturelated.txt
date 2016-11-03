@@ -1,0 +1,4 @@
+1. To enable ssh for the first time do:
+      sudo apt-get install openssh-server
+      sudo ufw allow 22
+2. To change hostname edit /etc/hostname and /etc/hosts files

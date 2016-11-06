@@ -20,7 +20,7 @@
 (load "~/code/.emacs.d/find-file.el")
 (setq cc-search-directories '("../include" "../src" "../misc" ))
 (global-set-key (kbd "C-`") 'ff-find-other-file)
-
+(global-set-key (kbd "M-.") 'find-tag)
 (global-set-key (kbd "<f1>")  'mark-whole-buffer)
 (global-set-key (kbd "<f3>")  'xx)
 (global-set-key (kbd "<f4>") 'grep )
@@ -67,11 +67,11 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key "\M-s\M-s" 'git-status)
 ;(load-file "/usr/lib/gabrielelanaro-emacs-for-python-2f284d1/epy-init.el")
 ;(setq jde-help-remote-file-exists-function '("beanshell"))
-(add-to-list 'load-path "~/.emacs.d/jdee-2.4.1/lisp")
+(add-to-list 'load-path "~/code/.emacs.d/jdee-2.4.1/lisp")
 ;(load "~/.emacs.d/jdee-2.4.1/lisp/jde.el")
 
 ;bookmark setup
-(load "~/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")
+(load "~/code/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")
 (require 'bm)
 (setq bm-highlight-style 'bm-highlight-only-line)
 (global-set-key (kbd "<f2>") 'bm-toggle)

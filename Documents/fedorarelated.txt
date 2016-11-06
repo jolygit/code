@@ -1,4 +1,4 @@
-1. to add keybinding in fedora do:
+  1. to add keybinding in fedora do:
    a. go to Activities
    b. type in shearch keyboard
    c. choose shortcuts
@@ -142,6 +142,9 @@ is created from /etc/sysctl.d/core-pattern.conf
 84. sudo yum install libtool
 85. git clone https://github.com/mongodb/mongo-c-driver.git
 85a. cd mongo-c-driver/
+85aa. if on ubuntu perhaps need to do:
+      sudo apt-get update
+      sudo apt-get install autoconf
 85b. ./autogen.sh --with-libbson=bundled
 85c. make;
 85d. sudo make install

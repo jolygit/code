@@ -2,3 +2,4 @@
       sudo apt-get install openssh-server
       sudo ufw allow 22
 2. To change hostname edit /etc/hostname and /etc/hosts files
+3. To disable defauld Alt . in ubuntu go to keyborad shortcuts and disable HUD 

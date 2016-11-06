@@ -36,15 +36,16 @@ main(int argc, char **argv)
   Connect(sockfd, (SA *) &servaddr, sizeof(servaddr));
  
   client[0].fd = fileno(stdin);
-  client[0].events = POLLRDNORM;
+  client[0].events = POLLIN;
   clProcessor.clLogin[0]=true;
   clProcessor.clUID[0]="stdInput";
   client[1].fd = sockfd;
-  client[1].events = POLLRDNORM;
+  client[1].events = POLLIN;
   clProcessor.clLogin[1]=true;
   clProcessor.clUID[1]="server";
   printf("next command:");
-  fflush(NULL);
+  setvbuf(stdout, NULL, _IONBF, 0);
+  //fflush(NULL);
  	for (int i = 2; i < myOPEN_MAX; i++){
  		client[i].fd = -1;		/* -1 indicates available entry */
 		clProcessor.clLogin[i]=false;
@@ -56,7 +57,7 @@ main(int argc, char **argv)
 		  for (int i = 0; i <= maxi; i++) {	/* check all clients for data */
 		    if ( (sockfd = client[i].fd) < 0)
 		      continue;
-		    if (client[i].revents & (POLLRDNORM | POLLERR)) {
+		    if (client[i].revents & (POLLIN | POLLERR)) {
 		      if ( (n = read(sockfd, buf, MAXLINE)) < 0) {
 			if (errno == ECONNRESET) {
 			  /*4connection reset by client */
@@ -100,7 +101,7 @@ main(int argc, char **argv)
 			    }
 			  if (ii == myOPEN_MAX)
 			    err_quit("too many clients");
-			  client[ii].events = POLLRDNORM;
+			  client[ii].events = POLLIN;
 			  if (ii > maxi)
 			    maxi = ii;
 			  printf("sucessfully connected to: %s\n",fruid.c_str());

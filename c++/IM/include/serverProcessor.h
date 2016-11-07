@@ -6,6 +6,8 @@
 #include        <set>
 
 extern "C"{
+  ssize_t	 Recvfrom(int, void *, size_t, int, SA *, socklen_t *);
+  void	 Sendto(int, const void *, size_t, int, const SA *, socklen_t);
   int Socket(int, int, int);
   void Bind(int, sockaddr const*, unsigned int);
   void Listen(int, int);

@@ -2,3 +2,7 @@
       sudo apt-get install openssh-server
       sudo ufw allow 22
 2. To change hostname edit /etc/hostname and /etc/hosts files
+2a. to be able to connect to other pc on local net add for example:
+192.168.2.100 server #to the file /etc/hosts
+3. sudo apt-get install libboost-all-dev # to install boost on ubuntu
+4. sudo apt-get install build-essential # install gcc and dependencies

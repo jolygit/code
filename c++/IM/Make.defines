@@ -10,7 +10,7 @@
 
 CC = g++ -g
 CFLAGS = -I /home/alex/code/c++/linuxProgInterface/tlpi-dist/lib/ -I /usr/include/boost -I../include -I ../mongo-c-driver/src/mongoc/ -I ../mongo-c-driver/src/libbson/src/bson/   -D_REENTRANT -Wall
-LIBS = ../libunp.a -lpthread -L ../mongo-c-driver/ -lmongoc-1.0 -L ../mongo-c-driver/src/libbson/ -lbson-1.0
+LIBS = ../libunp.a -lpthread -lmongoc-1.0 -L ../mongo-c-driver/src/libbson/ -lbson-1.0
 LIBS_XTI = ../libunpxti.a ../libunp.a -lpthread
 RANLIB = ranlib
 

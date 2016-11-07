@@ -10,6 +10,8 @@
 #define printable(ch) (isprint((unsigned char) ch) ? ch : '#')
 using namespace std;
 extern "C"{
+  void	 Sendto(int, const void *, size_t, int, const SA *, socklen_t);
+  ssize_t	 Recvfrom(int, void *, size_t, int, SA *, socklen_t *);
   int Socket(int, int, int);
   void Bind(int, sockaddr const*, unsigned int);
   void Listen(int, int);

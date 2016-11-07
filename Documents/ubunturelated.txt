@@ -6,3 +6,5 @@
 192.168.2.100 server #to the file /etc/hosts
 3. sudo apt-get install libboost-all-dev # to install boost on ubuntu
 4. sudo apt-get install build-essential # install gcc and dependencies
+5. To disable defauld Alt . in ubuntu go to keyborad shortcuts and disable HUD 
+

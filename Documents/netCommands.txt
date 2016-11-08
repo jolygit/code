@@ -66,3 +66,4 @@ it is restricted NAT + different destinations receive different mappings. I.e if
 48. dig +norec www.stanford.edu @a.root-servers.net # ask nonrecursively to the root server a which are the servers for edu domain
 49. dig +norec www.stanford.edu @g.edu-servers.net # after getting response from root you can query one of the edu servers about nameservers for stanford, and so all the way to your destionation
 50. dig mx gmail.com # to query mail server for a given domain
+51. sudo netstat -anlpu # to see open udp ports for servers and connections

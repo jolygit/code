@@ -21,7 +21,7 @@ int ServerProcessor::AddUdpToDatabase(const char* clAddress,const char* buf){
     return 1;
   }
   username=udp_username[2];
-  if(!db.FindKeyValueInArrayOfDocument("username",username.c_str(),"","","")){
+  if(!db.FindKeyValueInArrayOfDocument("username",username.c_str(),NULL,NULL,NULL)){
     printf("username %s does not exist this should never happen though\n",username.c_str());
     return 1;
   }
@@ -161,7 +161,7 @@ int ServerProcessor::Register(vector<string> &strs,string & msg,char* clAddress)
   lastName=strs[4];
   email=strs[5];
   printf("registering %s,%s\n",username.c_str(),password.c_str());
-  if(db.FindKeyValueInArrayOfDocument("username",username.c_str(),"","",""))
+  if(db.FindKeyValueInArrayOfDocument("username",username.c_str(),NULL,NULL,NULL))
     msg="user name already exist try different one.";
   else{
     db.AddKeyValueToNewDocument("username",username.c_str());

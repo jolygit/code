@@ -4,9 +4,9 @@ ODIR=../obj
 _DEPS = unp.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = client.o
+_OBJ = client.o server.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
-PROGS =	client-x64 
+PROGS =	client-x64 server-x64
 
 all:	${PROGS}
 

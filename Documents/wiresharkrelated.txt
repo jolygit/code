@@ -1,0 +1,2 @@
+1. Filltering
+(ip.dst == 192.168.1.151 && !(mdns)) or (tcp && ip.src == 192.168.1.151)

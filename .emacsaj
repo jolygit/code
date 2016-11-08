@@ -68,7 +68,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;(load-file "/usr/lib/gabrielelanaro-emacs-for-python-2f284d1/epy-init.el")
 ;(setq jde-help-remote-file-exists-function '("beanshell"))
 (add-to-list 'load-path "~/code/.emacs.d/jdee-2.4.1/lisp")
+
 ;(load "~/code/.emacs.d/jdee-2.4.1/lisp/jde.el")
+
 
 ;bookmark setup
 (load "~/code/.emacs.d/jdee-2.4.1/lisp/bm-1.53.el")

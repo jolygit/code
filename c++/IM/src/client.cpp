@@ -105,6 +105,8 @@ main(int argc, char **argv)
 			string nextCommand=tmp.substr(0,n-1);
 			string startudp="startudp";
 			if(nextCommand==startudp){
+			  startudp="startudp:from:";
+			  startudp+=clProcessor.SelfUsername();
 			  Sendto(udpfd,(void*)startudp.c_str(),startudp.length()+1,0,(SA *) &servaddr, svlen);
 			}
 			else if(clProcessor.registeredLogedin)

@@ -1,5 +1,34 @@
 #include        "serverProcessor.h"
 #include        <sstream>
+int ServerProcessor::AddUdpToDatabase(const char* clAddress,const char* buf){
+  string address=clAddress;
+  vector<string> udp_ip_port;
+  boost::split(udp_ip_port,address,boost::is_any_of(":"));
+  if(udp_ip_port.size()!=2){
+    printf("address %s is wrong \n",address.c_str());
+    return 1;
+  }
+  string udp_ip;
+  string udp_port;
+  udp_ip=udp_ip_port[0];
+  udp_port=udp_ip_port[1];
+  string msg=buf;
+  vector<string> udp_username;
+  string username;
+  boost::split(udp_username,msg,boost::is_any_of(":"));
+  if(udp_username.size()!=3){
+    printf("message %s is wrong should be startudp:from:<username>\n",msg.c_str());
+    return 1;
+  }
+  username=udp_username[2];
+  if(!db.FindKeyValueInArrayOfDocument("username",username.c_str(),"","","")){
+    printf("username %s does not exist this should never happen though\n",username.c_str());
+    return 1;
+  }
+  else
+    db.AddKeyValueToExistingDocument("username",username.c_str(),"udpaddress",address.c_str());
+  return 0;
+}
 int ServerProcessor::InitiateTcpSimultOpen(int sockfd,string fruid){
   int len=0;
   string msg,command("friendaddress");

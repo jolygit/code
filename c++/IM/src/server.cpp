@@ -36,7 +36,7 @@ main(int argc, char **argv)
  	client[0].events = POLLIN;
 	proc.clLogin[0]=false;
 	proc.clUID[0]="";
-	client[1].fd = udpfd;
+	client[1].fd = udpfd;// all different clients will be sending udp to this socket
  	client[1].events = POLLIN;
 	proc.clLogin[1]=false;
 	proc.clUID[1]="";
@@ -45,7 +45,7 @@ main(int argc, char **argv)
 		proc.clLogin[i]=false;
 		proc.clUID[i]="";
 	}
-		maxi = 0;					/* max index into client[] array */
+		maxi = 1;					/* max index into client[] array */
  
 		for ( ; ; ) {
 		  nready = Poll(client, maxi+1, INFTIM);
@@ -81,9 +81,10 @@ main(int argc, char **argv)
 			n=Recvfrom(sockfd,buf, MAXLINE,0,(SA *) &cliaddr, &clilen);
 			char* clAddress=Sock_ntop((SA *) &cliaddr, clilen);
 			printf("udp connection from client %s:%s\n",clAddress,buf);
-			string resp="received your udp request.";
-			Sendto(sockfd,(void*)resp.c_str(),resp.length()+1,0,(SA *) &cliaddr, clilen);
-
+			if(proc.AddUdpToDatabase(clAddress,buf)==0){
+			  string resp="received your udp request successfuly.";
+			  Sendto(sockfd,(void*)resp.c_str(),resp.length()+1,0,(SA *) &cliaddr, clilen);
+			}
 		      }
 		      else if ( (n = read(sockfd, buf, MAXLINE)) < 0) {
 			if (errno == ECONNRESET) {

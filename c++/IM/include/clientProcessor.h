@@ -46,6 +46,7 @@ class ClientProcessor{
   int Receive_int(int *num, int fd);
   int Register(int sockfd,string& nextCommand);
   int PortFromSocketFd(int socketFd);
+  string SelfUsername(){return username;}
   bool                    clLogin[myOPEN_MAX];
   string                  clUID[myOPEN_MAX];
   bool selfaddress;

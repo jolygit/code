@@ -25,6 +25,7 @@ using namespace std;
 class ServerProcessor{
 public:
   ServerProcessor(){db.ConnectToCollection("users","users");colon=":";}
+  int AddUdpToDatabase(const char* clAddress,const char* buf);
   int RegisterOrLogin(int sockfd,string& clUID,char const* buf,char* clAddress);
   int InitiateTcpSimultOpen(int sockfd,string fruid);
   int Send_int(int num, int fd);

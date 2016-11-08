@@ -42,6 +42,7 @@ first command: less mylongfile.txt
 second: cat esc-. # will insert mylongfile.txt
 20. fc -l 900 910 # show the commands in history from 900 to 910
 21. "\C-i": "this is macro you can insert text with key combo this way" # insert this line with desired key bindigs and text into ~/.inputrc. That wasy when pressing those keys the entered text will show up.
+21a. "a": self-insert # when a was not working on terminal this is what I have inserted into the ~/.inputrc
 22. bind -p # to show the current key bindings
 23. alias # list all the defined alias
 24. insert: alias codeaj='cd /home/aj/code' in .bash_profile  to create alias

@@ -29,10 +29,10 @@ int ServerProcessor::AddUdpToDatabase(const char* clAddress,const char* buf){
     db.AddKeyValueToExistingDocument("username",username.c_str(),"udpaddress",address.c_str());
   return 0;
 }
-int ServerProcessor::InitiateTcpSimultOpen(int sockfd,string fruid){
+int ServerProcessor::InitiateHolePunch(int sockfd,string fruid,bool udp){
   int len=0;
   string msg,command("friendaddress");
-  GetAddress(fruid,msg);
+  GetAddress(fruid,msg,udp);
   msg+=colon;
   msg+=fruid;
   SendResponse(sockfd,command,msg);
@@ -122,8 +122,10 @@ int ServerProcessor::ProcessFriendRequests(string& clUID){
   }
   return 0;
 }
-int ServerProcessor::GetAddress(string& fruid,string& address){
-  if(db.RetreiveValueForUsernameByKeySimple(fruid.c_str(),"address",address))
+int ServerProcessor::GetAddress(string& fruid,string& address,bool udp){
+  if(!udp && db.RetreiveValueForUsernameByKeySimple(fruid.c_str(),"address",address))
+    return 0;
+  else if(udp && db.RetreiveValueForUsernameByKeySimple(fruid.c_str(),"udpaddress",address))
     return 0;
   else{
     printf("could not retreive address for uid %s\n",fruid.c_str());

@@ -1,19 +1,23 @@
 #include "clientProcessor.h"
 
-int ClientProcessor::RequestToServer(int sockfd,string& nextCommand){ //sockfd is server
+int ClientProcessor::RequestToServer(string& nextCommand){ //sockfd is server
   string request("request:");
+  int sockfd=client[1].fd;
   if(nextCommand==allfriends || nextCommand==onlinefriends || nextCommand.compare(0,14,"friendaddress:")==0 || nextCommand.compare(0,13,"invitefriend:")==0){
     request+=nextCommand;
     Writen(sockfd,(void*)request.c_str(),request.length()+1);
+    if(nextCommand.compare(0,14,"friendaddress:")==0){
+      chat=true;
+    }
   }
   else{
     printf("supported commands are:: allfriends;onlinefriends;invitefriend:<frienduid>;friendaddress:<frienduid>. Try again\n");
+    printf("next command:"); 
+    fflush(stdout);
   }
-  // printf("next command:");
-  // fflush(NULL);
   return 0;
 }
-int ClientProcessor::ResponseFromServer(char* buf,string& fruid){
+int ClientProcessor::ResponseFromServer(char* buf){
   string response=buf;
   string command;
   vector<string> strs;
@@ -28,13 +32,14 @@ int ClientProcessor::ResponseFromServer(char* buf,string& fruid){
     printf("%s\n",strs[3].c_str()); // this should say weather request was ok or not 
   }
   else if(strs[2]==registration || strs[2]==login || strs[2]==registrationlogin){
-    printf("%s %s\n",strs[2].c_str(),strs[3].c_str()); // this should say weather request was ok or not 
+    printf("\n%s %s\n",strs[2].c_str(),strs[3].c_str()); // this should say weather request was ok or not 
   }
   else if(strs[2]==friendaddress){// version:response size:responseCommand:friendIp:friendPort:frUid
-    printf("connecting to %s...\n",strs[5].c_str());
-    int sockfd=TcpSimultaneousOpen(strs[4],strs[3]);
-    fruid=strs[5];
-    return sockfd;
+    // printf("\n connecting to %s...\n",strs[5].c_str());
+    // fflush(NULL);
+    UDPHolePunch(strs[4],strs[3]);
+      //int sockfd=TcpSimultaneousOpen(strs[4],strs[3],strs[5]);
+    return 0;
   }
   else{
     printf("supported commands are:allfriends;requestfriend;onlinefriends;friendaddress:<frienduid>. Try again\n");
@@ -43,7 +48,18 @@ int ClientProcessor::ResponseFromServer(char* buf,string& fruid){
   fflush(NULL);
   return 0;
 }
-int ClientProcessor::TcpSimultaneousOpen(string& friendPort,string& friendIp){
+int ClientProcessor::UDPHolePunch(string& friendPort,string& friendIp){
+  
+  string msg="udp hole punch\n";
+  bzero(&fraddress, sizeof(fraddress));
+  fraddress.sin_family = AF_INET;
+  fraddress.sin_port = htons(atoi(friendPort.c_str()));
+  Inet_pton(AF_INET, friendIp.c_str(), &fraddress.sin_addr);
+  Sendto(client[2].fd,(void*)msg.c_str(),msg.length(),0,(SA *) &fraddress,sizeof(fraddress));
+  chat=true;
+  return 0;
+}
+int ClientProcessor::TcpSimultaneousOpen(string& friendPort,string& friendIp,string& fruid){
   struct sockaddr_in	fraddress, selfAddress;
   int			sockfd;
   sockfd = Socket(AF_INET, SOCK_STREAM, 0);
@@ -54,16 +70,31 @@ int ClientProcessor::TcpSimultaneousOpen(string& friendPort,string& friendIp){
     err_sys("setsockopt of SO_REUSEPORT error");
   bzero(&selfAddress, sizeof(selfAddress));
   selfAddress.sin_family      = AF_INET;
-  Inet_pton(AF_INET, selfIp.c_str(), &selfAddress.sin_addr);
-  selfAddress.sin_port        = htons(atoi(selfPort.c_str()));
+  Inet_pton(AF_INET, selfTcpIp.c_str(), &selfAddress.sin_addr);
+  selfAddress.sin_port        = htons(atoi(selfTcpPort.c_str()));
   Bind(sockfd, (SA *) &selfAddress, sizeof(selfAddress));
   bzero(&fraddress, sizeof(fraddress));
   fraddress.sin_family      = AF_INET;
   Inet_pton(AF_INET, friendIp.c_str(), &fraddress.sin_addr);
   fraddress.sin_port        = htons(atoi(friendPort.c_str()));
   Connect(sockfd, (SA *) &fraddress, sizeof(fraddress));
-  return sockfd;
+  int ii;
+  for (ii = 1; ii < myOPEN_MAX; ii++)
+    if (client[ii].fd < 0) {
+      client[ii].fd = sockfd;	/* save descriptor */
+      clLogin[ii]=true;
+      clUID[ii]=fruid;
+      break;
+    }
+  if (ii == myOPEN_MAX)
+    err_quit("too many clients");
+  client[ii].events = POLLIN;
+  if (ii > maxi)
+    maxi = ii;
+  printf("sucessfully connected to: %s\n",fruid.c_str());
+  return 0;
 }
+
 int ClientProcessor::Receive_int(int *num, int fd)
 {
     int32_t ret;
@@ -89,8 +120,9 @@ int ClientProcessor::Receive_int(int *num, int fd)
     *num = ntohl(ret);
     return 0;
 }
-int ClientProcessor::Register(int sockfd,string& nextCommand){
+int ClientProcessor::Register(string& nextCommand){
   string request;
+  int sockfd=client[1].fd;
   if(registrationFieldCount==0){
     if(nextCommand=="register")
       uregister=true;
@@ -98,6 +130,8 @@ int ClientProcessor::Register(int sockfd,string& nextCommand){
       uregister=false;
     else{
       printf("you have to either register or login. Type register or login respectively\n");
+      printf("next command:");
+      fflush(stdout);
       return 1;
     }
     printf("username:");
@@ -141,12 +175,18 @@ int ClientProcessor::Register(int sockfd,string& nextCommand){
     request+=username+comma+password+comma+firstName+comma+lastName+comma+email;
     registeredLogedin=true;
     Writen(sockfd,(void*)request.c_str(),request.length()+1);
+    startudp+=SelfUsername();
+    udpsvlen=sizeof(udpservaddr);
+    Sendto(client[2].fd,(void*)startudp.c_str(),startudp.length()+1,0,(SA *) &udpservaddr,udpsvlen);
     return 0;
   }
   request="Login::,";
   request+=username+comma+password;
   registeredLogedin=true;
   Writen(sockfd,(void*)request.c_str(),request.length()+1);
+  startudp+=SelfUsername();
+  udpsvlen=sizeof(udpservaddr);
+  Sendto(client[2].fd,(void*)startudp.c_str(),startudp.length()+1,0,(SA *) &udpservaddr,udpsvlen);
   return 0;
 }
 int ClientProcessor::PortFromSocketFd(int socketFd){
@@ -157,9 +197,24 @@ int ClientProcessor::PortFromSocketFd(int socketFd){
   char* ownAddress=Sock_ntop((SA *) &ownAddr, len);
   vector<string> ip_port;
   boost::split(ip_port,ownAddress,boost::is_any_of(":"));
-  selfIp=ip_port[0];
-  selfPort=ip_port[1];
+  selfTcpIp=ip_port[0];
+  selfTcpPort=ip_port[1];
   selfaddress=true;
   //  printf("parsed ip and port of client %s %s\n",ip.c_str(),prt.c_str());
+  return 0;
+}
+int ClientProcessor::ProcessUdp(){
+  Recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
+  vector<string> msgs;
+  string msg=buf;
+  boost::split(msgs,msg,boost::is_any_of("\n"));
+  char* svAddress=Sock_ntop((SA *) &udpservaddr, udpsvlen);
+  printf("\n");
+  printf(" \"%s\" received from %s\n",msgs[0].c_str(),svAddress);
+  if(chat)
+    printf("chat text:");
+  else
+    printf("next command:");
+  fflush(NULL);
   return 0;
 }

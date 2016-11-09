@@ -40,19 +40,27 @@ class ClientProcessor{
     registeredLogedin=false;
     registrationFieldCount=0;
   }
-  int ResponseFromServer(char* buf,string& fruid);
-  int RequestToServer(int sockfd,string& nextCommand);
-  int TcpSimultaneousOpen(string& friendPort,string& friendIp);
+  int ResponseFromServer(char* buf);
+  int RequestToServer(string& nextCommand);
+  int TcpSimultaneousOpen(string& friendPort,string& friendIp,string& fruid);
+  int UDPHolePunch(string& friendPort,string& friendIp);
+  int ProcessUdp();
   int Receive_int(int *num, int fd);
-  int Register(int sockfd,string& nextCommand);
+  int Register(string& nextCommand);
   int PortFromSocketFd(int socketFd);
   string SelfUsername(){return username;}
   bool                    clLogin[myOPEN_MAX];
   string                  clUID[myOPEN_MAX];
+  struct pollfd	          client[myOPEN_MAX];
   bool selfaddress;
   bool registeredLogedin;
+  int maxi;
+  struct sockaddr_in	udpservaddr;
+  socklen_t		udpsvlen;
+  bool                  chat=false;
+  struct sockaddr_in	fraddress;
  private:
-  string selfPort,selfIp;
+  string selfTcpPort,selfTcpIp;
   string invitefriend,friendaddress;
   string allfriends,onlinefriends;
   string registration,login,registrationlogin;
@@ -64,4 +72,6 @@ class ClientProcessor{
   string comma=",";
   int    registrationFieldCount;
   bool   uregister;
+  string startudp="startudp:from:";
+  char			buf[MAXLINE];
 };

@@ -27,7 +27,7 @@ public:
   ServerProcessor(){db.ConnectToCollection("users","users");colon=":";}
   int AddUdpToDatabase(const char* clAddress,const char* buf);
   int RegisterOrLogin(int sockfd,string& clUID,char const* buf,char* clAddress);
-  int InitiateTcpSimultOpen(int sockfd,string fruid);
+  int InitiateHolePunch(int sockfd,string fruid,bool udp=false);
   int Send_int(int num, int fd);
   int GetFriends(string& friends,int uid,string& value);
   int GetOnlineFriends(string& friends,string& uid,string& value);
@@ -36,7 +36,7 @@ public:
   int Register(vector<string> &strs,string & msg,char* clAddress);
   int Login(vector<string> &strs,string & msg,char* clAddress);
   int CreateFrinds(string& clUID,string& user);
-  int GetAddress(string& fruid,string& address);
+  int GetAddress(string& fruid,string& address,bool udp=false);
   bool SendResponse(int fd,string& command,string& msg);
   bool                    clLogin[myOPEN_MAX];
   string                  clUID[myOPEN_MAX];

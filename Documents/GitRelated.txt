@@ -131,3 +131,6 @@ This will show commits that mention frotz and written by Linus.
 73. git blame -L startLine:EndLine <filename> ; To see all the changes introduced to a given file for a given line range.
 74. git commit -a -m "some message" # commits all the modified but tracked files
 75. git add -A # stages all the modified and tracked files for commit
+76. git HEAD detached from origin/master
+    git checkout -b temp # this will reatach the head to the temp branch
+see http://stackoverflow.com/questions/5772192/how-can-i-reconcile-detached-head-with-master-origin

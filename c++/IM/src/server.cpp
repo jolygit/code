@@ -82,7 +82,7 @@ main(int argc, char **argv)
 			char* clAddress=Sock_ntop((SA *) &cliaddr, clilen);
 			printf("udp connection from client %s:%s\n",clAddress,buf);
 			if(proc.AddUdpToDatabase(clAddress,buf)==0){
-			  string resp="received your udp request successfuly.";
+			  string resp="received your udp request successfuly.\n";
 			  Sendto(sockfd,(void*)resp.c_str(),resp.length()+1,0,(SA *) &cliaddr, clilen);
 			}
 		      }
@@ -134,8 +134,8 @@ main(int argc, char **argv)
 			  string fruid=req[2];
 			  for(int ii=0;ii<myOPEN_MAX;ii++){
 			    if(proc.clUID[ii]==fruid && client[ii].fd){
-			      proc.InitiateTcpSimultOpen(client[ii].fd,proc.clUID[i]);
-			      proc.InitiateTcpSimultOpen(sockfd,fruid);
+			      proc.InitiateHolePunch(client[ii].fd,proc.clUID[i],true);
+			      proc.InitiateHolePunch(sockfd,fruid,true);
 			      break;
 			    }
 			  }

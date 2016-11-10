@@ -25,9 +25,10 @@ using namespace std;
 class ServerProcessor{
 public:
   ServerProcessor(){db.ConnectToCollection("users","users");colon=":";}
+  bool OnTheSameNet(string selfID,string fruid);
   int AddUdpToDatabase(const char* clAddress,const char* buf);
   int RegisterOrLogin(int sockfd,string& clUID,char const* buf,char* clAddress);
-  int InitiateHolePunch(int sockfd,string fruid,bool udp=false);
+  int InitiateHolePunch(int sockfd,string fruid,bool udp,bool sameNet);
   int Send_int(int num, int fd);
   int GetFriends(string& friends,int uid,string& value);
   int GetOnlineFriends(string& friends,string& uid,string& value);
@@ -36,7 +37,7 @@ public:
   int Register(vector<string> &strs,string & msg,char* clAddress);
   int Login(vector<string> &strs,string & msg,char* clAddress);
   int CreateFrinds(string& clUID,string& user);
-  int GetAddress(string& fruid,string& address,bool udp=false);
+  int GetAddress(string& fruid,string& address,bool udp,bool sameNet);
   bool SendResponse(int fd,string& command,string& msg);
   bool                    clLogin[myOPEN_MAX];
   string                  clUID[myOPEN_MAX];

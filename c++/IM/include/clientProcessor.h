@@ -7,6 +7,8 @@
 #include        <vector>
 #include        <string>
 #include <iostream>
+#include <arpa/inet.h>
+#include <ifaddrs.h>
 #define printable(ch) (isprint((unsigned char) ch) ? ch : '#')
 using namespace std;
 extern "C"{
@@ -40,6 +42,7 @@ class ClientProcessor{
     registeredLogedin=false;
     registrationFieldCount=0;
   }
+  int InterfaceAddress();
   int ResponseFromServer(char* buf);
   int RequestToServer(string& nextCommand);
   int TcpSimultaneousOpen(string& friendPort,string& friendIp,string& fruid);
@@ -47,7 +50,7 @@ class ClientProcessor{
   int ProcessUdp();
   int Receive_int(int *num, int fd);
   int Register(string& nextCommand);
-  int PortFromSocketFd(int socketFd);
+  int PortFromSocketFd(int socketFd,bool udp);
   string SelfUsername(){return username;}
   bool                    clLogin[myOPEN_MAX];
   string                  clUID[myOPEN_MAX];
@@ -55,12 +58,13 @@ class ClientProcessor{
   bool selfaddress;
   bool registeredLogedin;
   int maxi;
-  struct sockaddr_in	udpservaddr;
+  struct sockaddr_in	udpservaddr,udpselfaddr;
   socklen_t		udpsvlen;
   bool                  chat=false;
   struct sockaddr_in	fraddress;
+  string                interfaceAddress;
  private:
-  string selfTcpPort,selfTcpIp;
+  string selfTcpAddress,selfUdpAddress;
   string invitefriend,friendaddress;
   string allfriends,onlinefriends;
   string registration,login,registrationlogin;
@@ -70,6 +74,7 @@ class ClientProcessor{
   string lastName;
   string email;
   string comma=",";
+  string colon=":";
   int    registrationFieldCount;
   bool   uregister;
   string startudp="startudp:from:";

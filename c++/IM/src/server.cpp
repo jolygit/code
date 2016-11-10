@@ -134,8 +134,9 @@ main(int argc, char **argv)
 			  string fruid=req[2];
 			  for(int ii=0;ii<myOPEN_MAX;ii++){
 			    if(proc.clUID[ii]==fruid && client[ii].fd){
-			      proc.InitiateHolePunch(client[ii].fd,proc.clUID[i],true);
-			      proc.InitiateHolePunch(sockfd,fruid,true);
+			      bool sameNet=proc.OnTheSameNet(proc.clUID[i],fruid);
+			      proc.InitiateHolePunch(client[ii].fd,proc.clUID[i],true,sameNet);
+			      proc.InitiateHolePunch(sockfd,fruid,true,sameNet);
 			      break;
 			    }
 			  }

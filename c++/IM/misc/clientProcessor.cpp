@@ -60,37 +60,37 @@ int ClientProcessor::UDPHolePunch(string& friendPort,string& friendIp){
   return 0;
 }
 int ClientProcessor::TcpSimultaneousOpen(string& friendPort,string& friendIp,string& fruid){
-  struct sockaddr_in	fraddress, selfAddress;
-  int			sockfd;
-  sockfd = Socket(AF_INET, SOCK_STREAM, 0);
-  int on=1;
-  if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof (on)) < 0)
-    err_sys("setsockopt of SO_REUSEADDR error");
-  if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof (on)) < 0)
-    err_sys("setsockopt of SO_REUSEPORT error");
-  bzero(&selfAddress, sizeof(selfAddress));
-  selfAddress.sin_family      = AF_INET;
-  Inet_pton(AF_INET, selfTcpIp.c_str(), &selfAddress.sin_addr);
-  selfAddress.sin_port        = htons(atoi(selfTcpPort.c_str()));
-  Bind(sockfd, (SA *) &selfAddress, sizeof(selfAddress));
-  bzero(&fraddress, sizeof(fraddress));
-  fraddress.sin_family      = AF_INET;
-  Inet_pton(AF_INET, friendIp.c_str(), &fraddress.sin_addr);
-  fraddress.sin_port        = htons(atoi(friendPort.c_str()));
-  Connect(sockfd, (SA *) &fraddress, sizeof(fraddress));
-  int ii;
-  for (ii = 1; ii < myOPEN_MAX; ii++)
-    if (client[ii].fd < 0) {
-      client[ii].fd = sockfd;	/* save descriptor */
-      clLogin[ii]=true;
-      clUID[ii]=fruid;
-      break;
-    }
-  if (ii == myOPEN_MAX)
-    err_quit("too many clients");
-  client[ii].events = POLLIN;
-  if (ii > maxi)
-    maxi = ii;
+  // struct sockaddr_in	fraddress, selfAddress;
+  // int			sockfd;
+  // sockfd = Socket(AF_INET, SOCK_STREAM, 0);
+  // int on=1;
+  // if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof (on)) < 0)
+  //   err_sys("setsockopt of SO_REUSEADDR error");
+  // if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof (on)) < 0)
+  //   err_sys("setsockopt of SO_REUSEPORT error");
+  // bzero(&selfAddress, sizeof(selfAddress));
+  // selfAddress.sin_family      = AF_INET;
+  // Inet_pton(AF_INET, selfTcpIp.c_str(), &selfAddress.sin_addr);
+  // selfAddress.sin_port        = htons(atoi(selfTcpPort.c_str()));
+  // Bind(sockfd, (SA *) &selfAddress, sizeof(selfAddress));
+  // bzero(&fraddress, sizeof(fraddress));
+  // fraddress.sin_family      = AF_INET;
+  // Inet_pton(AF_INET, friendIp.c_str(), &fraddress.sin_addr);
+  // fraddress.sin_port        = htons(atoi(friendPort.c_str()));
+  // Connect(sockfd, (SA *) &fraddress, sizeof(fraddress));
+  // int ii;
+  // for (ii = 1; ii < myOPEN_MAX; ii++)
+  //   if (client[ii].fd < 0) {
+  //     client[ii].fd = sockfd;	/* save descriptor */
+  //     clLogin[ii]=true;
+  //     clUID[ii]=fruid;
+  //     break;
+  //   }
+  // if (ii == myOPEN_MAX)
+  //   err_quit("too many clients");
+  // client[ii].events = POLLIN;
+  // if (ii > maxi)
+  //   maxi = ii;
   printf("sucessfully connected to: %s\n",fruid.c_str());
   return 0;
 }
@@ -176,6 +176,7 @@ int ClientProcessor::Register(string& nextCommand){
     registeredLogedin=true;
     Writen(sockfd,(void*)request.c_str(),request.length()+1);
     startudp+=SelfUsername();
+    startudp+=colon+selfUdpAddress;
     udpsvlen=sizeof(udpservaddr);
     Sendto(client[2].fd,(void*)startudp.c_str(),startudp.length()+1,0,(SA *) &udpservaddr,udpsvlen);
     return 0;
@@ -185,22 +186,42 @@ int ClientProcessor::Register(string& nextCommand){
   registeredLogedin=true;
   Writen(sockfd,(void*)request.c_str(),request.length()+1);
   startudp+=SelfUsername();
+  startudp+=colon+selfUdpAddress;
   udpsvlen=sizeof(udpservaddr);
   Sendto(client[2].fd,(void*)startudp.c_str(),startudp.length()+1,0,(SA *) &udpservaddr,udpsvlen);
   return 0;
 }
-int ClientProcessor::PortFromSocketFd(int socketFd){
+int ClientProcessor::InterfaceAddress(){
+  struct ifaddrs *ifap, *ifa;
+  struct sockaddr_in *sa;
+  char *addr;
+  string loopback="127.0.0.1";
+  getifaddrs (&ifap);
+  for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
+    if (ifa->ifa_addr->sa_family==AF_INET) {
+      sa = (struct sockaddr_in *) ifa->ifa_addr;
+      interfaceAddress = inet_ntoa(sa->sin_addr);
+      if(interfaceAddress !=loopback)
+	break;
+      //      printf("Interface: %s\tAddress: %s\n", ifa->ifa_name, addr);
+    }
+  }
+  freeifaddrs(ifap);
+  return 0;
+}
+int ClientProcessor::PortFromSocketFd(int socketFd,bool udp){
+  
   struct sockaddr ownAddr;
   socklen_t len;
   len=sizeof(ownAddr);
   Getsockname(socketFd,(SA*)&ownAddr,&len);
   char* ownAddress=Sock_ntop((SA *) &ownAddr, len);
-  vector<string> ip_port;
-  boost::split(ip_port,ownAddress,boost::is_any_of(":"));
-  selfTcpIp=ip_port[0];
-  selfTcpPort=ip_port[1];
-  selfaddress=true;
-  //  printf("parsed ip and port of client %s %s\n",ip.c_str(),prt.c_str());
+  if(udp)
+    selfUdpAddress=ownAddress;
+  else{
+    selfTcpAddress=ownAddress;
+    selfaddress=true;
+  }
   return 0;
 }
 int ClientProcessor::ProcessUdp(){

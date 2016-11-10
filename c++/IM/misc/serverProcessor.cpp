@@ -14,25 +14,28 @@ int ServerProcessor::AddUdpToDatabase(const char* clAddress,const char* buf){
   udp_port=udp_ip_port[1];
   string msg=buf;
   vector<string> udp_username;
-  string username;
+  string username,localUdpAddr;
   boost::split(udp_username,msg,boost::is_any_of(":"));
-  if(udp_username.size()!=3){
+  if(udp_username.size()!=5){
     printf("message %s is wrong should be startudp:from:<username>\n",msg.c_str());
     return 1;
   }
   username=udp_username[2];
+  localUdpAddr=udp_username[3]+colon+udp_username[4];
   if(!db.FindKeyValueInArrayOfDocument("username",username.c_str(),NULL,NULL,NULL)){
     printf("username %s does not exist this should never happen though\n",username.c_str());
     return 1;
   }
-  else
+  else{
     db.AddKeyValueToExistingDocument("username",username.c_str(),"udpaddress",address.c_str());
+    db.AddKeyValueToExistingDocument("username",username.c_str(),"localudpaddress",localUdpAddr.c_str());
+  }
   return 0;
 }
-int ServerProcessor::InitiateHolePunch(int sockfd,string fruid,bool udp){
+int ServerProcessor::InitiateHolePunch(int sockfd,string fruid,bool udp,bool sameNet){
   int len=0;
   string msg,command("friendaddress");
-  GetAddress(fruid,msg,udp);
+  GetAddress(fruid,msg,udp,sameNet);
   msg+=colon;
   msg+=fruid;
   SendResponse(sockfd,command,msg);
@@ -122,11 +125,33 @@ int ServerProcessor::ProcessFriendRequests(string& clUID){
   }
   return 0;
 }
-int ServerProcessor::GetAddress(string& fruid,string& address,bool udp){
+bool ServerProcessor::OnTheSameNet(string selfID,string fruid){
+  string selfaddress,selfip;
+  db.RetreiveValueForUsernameByKeySimple(selfID.c_str(),"udpaddress",selfaddress);
+  vector<string> ip_port;
+  boost::split(ip_port,selfaddress,boost::is_any_of(":"));
+  selfip=ip_port[0];
+  string fraddress,frip;
+  db.RetreiveValueForUsernameByKeySimple(fruid.c_str(),"udpaddress",fraddress);
+  boost::split(ip_port,fraddress,boost::is_any_of(":"));
+  frip=ip_port[0];
+  if(frip==selfip)
+    return true;
+  else
+    return false;
+}
+int ServerProcessor::GetAddress(string& fruid,string& address,bool udp,bool sameNet){
   if(!udp && db.RetreiveValueForUsernameByKeySimple(fruid.c_str(),"address",address))
     return 0;
-  else if(udp && db.RetreiveValueForUsernameByKeySimple(fruid.c_str(),"udpaddress",address))
+  else if(udp){
+    string key;
+    if(sameNet)
+      key="localudpaddress";
+    else
+      key="udpaddress";
+    db.RetreiveValueForUsernameByKeySimple(fruid.c_str(),key.c_str(),address);
     return 0;
+  }
   else{
     printf("could not retreive address for uid %s\n",fruid.c_str());
     return 1;

@@ -36,10 +36,13 @@ main(int argc, char **argv)
   
   // Create udp socket
   udpfd = Socket(AF_INET, SOCK_DGRAM, 0);
-  if (setsockopt(udpfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof (on)) < 0)
-    err_sys("setsockopt of SO_REUSEADDR error");
-  if (setsockopt(udpfd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof (on)) < 0)
-    err_sys("setsockopt of SO_REUSEPORT error");
+  bzero(&clProcessor.udpselfaddr, sizeof(clProcessor.udpselfaddr));
+  clProcessor.udpselfaddr.sin_family = AF_INET;
+  clProcessor.udpselfaddr.sin_port = htons(0);
+  clProcessor.InterfaceAddress();
+  Inet_pton(AF_INET,clProcessor.interfaceAddress.c_str(), &clProcessor.udpselfaddr.sin_addr);
+  Bind(udpfd, (SA *) &clProcessor.udpselfaddr, sizeof(clProcessor.udpselfaddr));
+  clProcessor.PortFromSocketFd(udpfd,true);
   bzero(&clProcessor.udpservaddr, sizeof(clProcessor.udpservaddr));
   clProcessor.udpservaddr.sin_family = AF_INET;
   clProcessor.udpservaddr.sin_port = htons(SERV_PORT);
@@ -59,6 +62,7 @@ main(int argc, char **argv)
   clProcessor.client[2].fd = udpfd;
   clProcessor.client[2].events = POLLIN;
   clProcessor.clLogin[2]=true;
+  clProcessor.PortFromSocketFd(udpfd,true);
   clProcessor.clUID[2]="server_udp";
   printf("next command:");
   fflush(NULL);
@@ -112,7 +116,7 @@ main(int argc, char **argv)
 		      }
 		      else if (i == 1) { //server
 			if(!clProcessor.selfaddress)
-			  clProcessor.PortFromSocketFd(sockfd);
+			  clProcessor.PortFromSocketFd(sockfd,false);
 			clProcessor.ResponseFromServer(buf);
 		      }
 		      else{

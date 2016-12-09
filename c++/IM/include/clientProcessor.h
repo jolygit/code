@@ -9,6 +9,7 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include <ifaddrs.h>
+#include "soundProcessor.h"
 #define printable(ch) (isprint((unsigned char) ch) ? ch : '#')
 using namespace std;
 extern "C"{
@@ -41,6 +42,8 @@ class ClientProcessor{
     registration="registration";login="login";registrationlogin="registrationlogin";
     registeredLogedin=false;
     registrationFieldCount=0;
+    sp.SetUpRecorder();
+    sp.SetUpPlayer();
   }
   int InterfaceAddress();
   int ResponseFromServer(char* buf);
@@ -51,6 +54,12 @@ class ClientProcessor{
   int Receive_int(int *num, int fd);
   int Register(string& nextCommand);
   int PortFromSocketFd(int socketFd,bool udp);
+  int StartSendingSound();
+  static void* Sound_wrapper(void* object)
+  {
+    reinterpret_cast<ClientProcessor*>(object)->StartSendingSound();
+    return 0;
+  }
   string SelfUsername(){return username;}
   bool                    clLogin[myOPEN_MAX];
   string                  clUID[myOPEN_MAX];
@@ -64,6 +73,7 @@ class ClientProcessor{
   struct sockaddr_in	fraddress;
   string                interfaceAddress;
  private:
+  SoundProcessor sp;
   string selfTcpAddress,selfUdpAddress;
   string invitefriend,friendaddress;
   string allfriends,onlinefriends;
@@ -79,4 +89,5 @@ class ClientProcessor{
   bool   uregister;
   string startudp="startudp:from:";
   char			buf[MAXLINE];
+  pthread_t	tid;
 };

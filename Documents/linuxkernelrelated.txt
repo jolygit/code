@@ -1,0 +1,21 @@
+1. lsmod # to list currenty loaded kernel modules
+1a. /proc/modules # another way
+2. /lib/modules # location of the modules
+3. /lib/modules/version/modules.dep # tutorial on kernel modules
+4. http://www.kneuro.net/cgi-bin/lxr/http/source/Documentation/kbuild/makefiles.txt # doc on kernel makefile ie how to compile kernel and modules
+5. /usr/src/kernels/4.7.4-100.fc23.x86_64+debug/.config # kernel config
+6. /boot/config-4.7.4-100.fc23.x86_64 # config file used to compile current kernel
+7. rmmod -f module #
+8. http://en.tldp.org/LDP/tlk/tlk.html # linux kernel book
+9. /lib/modules/4.7.4-100.fc23.x86_64/kernel/sound/core/seq/oss/ and /lib/modules/4.7.4-100.fc23.x86_64/kernel/sound/core/oss/ # whre alsa-oss modules are located
+10. To insert modules into kernel do:
+    sudo modprobe snd-mixer-oss;sudo modprobe snd-pcm-oss;sudo modprobe snd-seq-oss
+11. sudo emacs /etc/asound.conf  #this opens config file for module aliases. Paste the following in there...
+
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+
+12. alsamixer # comand that lets you see sound devices

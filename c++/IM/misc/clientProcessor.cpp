@@ -204,7 +204,7 @@ int ClientProcessor::InterfaceAddress(){
   string loopback="127.0.0.1";
   getifaddrs (&ifap);
   for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
-    if (ifa->ifa_addr->sa_family==AF_INET) {
+    if (ifa->ifa_addr && ifa->ifa_addr->sa_family==AF_INET) {
       sa = (struct sockaddr_in *) ifa->ifa_addr;
       interfaceAddress = inet_ntoa(sa->sin_addr);
       if(interfaceAddress !=loopback)

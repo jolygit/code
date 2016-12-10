@@ -156,7 +156,7 @@ bool SoundProcessor::RecordAndSend(int sfd,struct sockaddr_in fraddress){
     } else if (rc_m != (int)frames) {
       fprintf(stderr, "short read, read %d frames\n", rc_m);
     }
-    printf("sending packet %d\n",framecnt);
+    // printf("sending packet %d\n",framecnt);
     stringstream response; 
     response << "voice:"<<framecnt<<colon<<buffer_m;
     sendto(sfd,(void*)response.str().c_str(),response.str().length()+1,0,(SA *) &fraddress,sizeof(fraddress));

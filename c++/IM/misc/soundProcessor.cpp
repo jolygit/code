@@ -34,7 +34,7 @@ bool SoundProcessor::PlaySoundPacket(const char* buf){
   rc_s = snd_pcm_writei(handle_s, buf, frames);
     if (rc_s == -EPIPE) {
       /* EPIPE means underrun */
-      fprintf(stderr, "underrun occurred\n");
+      // fprintf(stderr, "underrun occurred\n");
       snd_pcm_prepare(handle_s);
     } else if (rc_s < 0) {
       fprintf(stderr,

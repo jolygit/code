@@ -38,6 +38,8 @@ int ClientProcessor::ResponseFromServer(char* buf){
     // printf("\n connecting to %s...\n",strs[5].c_str());
     // fflush(NULL);
     UDPHolePunch(strs[4],strs[3]);
+    if(record)
+      pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
       //int sockfd=TcpSimultaneousOpen(strs[4],strs[3],strs[5]);
     return 0;
   }
@@ -46,6 +48,10 @@ int ClientProcessor::ResponseFromServer(char* buf){
   }
   printf("next command:");
   fflush(NULL);
+  return 0;
+}
+int ClientProcessor::StartSendingSound(){
+  sp.RecordAndSend(client[2].fd,fraddress);
   return 0;
 }
 int ClientProcessor::UDPHolePunch(string& friendPort,string& friendIp){
@@ -226,16 +232,26 @@ int ClientProcessor::PortFromSocketFd(int socketFd,bool udp){
 }
 int ClientProcessor::ProcessUdp(){
   Recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
-  vector<string> msgs;
-  string msg=buf;
-  boost::split(msgs,msg,boost::is_any_of("\n"));
-  char* svAddress=Sock_ntop((SA *) &udpservaddr, udpsvlen);
-  printf("\n");
-  printf(" \"%s\" received from %s\n",msgs[0].c_str(),svAddress);
-  if(chat)
-    printf("chat text:");
-  else
-    printf("next command:");
-  fflush(NULL);
+  string packet=buf;
+  if(packet.compare(0,6,"voice:")==0){
+    vector<string> msgs;
+    string msg=buf;
+    boost::split(msgs,msg,boost::is_any_of(":"));
+    printf("playing packet %s\n",msgs[1].c_str());
+    sp.PlaySoundPacket(msgs[2].c_str());
+  }
+  else{
+    vector<string> msgs;
+    string msg=buf;
+    boost::split(msgs,msg,boost::is_any_of("\n"));
+    char* svAddress=Sock_ntop((SA *) &udpservaddr, udpsvlen);
+    printf("\n");
+    printf(" \"%s\" received from %s\n",msgs[0].c_str(),svAddress);
+    if(chat)
+      printf("chat text:");
+    else
+      printf("next command:");
+    fflush(NULL);
+  }
   return 0;
 }

@@ -19,7 +19,7 @@ main(int argc, char **argv)
   int			sockfd,udpfd;
   struct sockaddr_in	servaddr;
   socklen_t		svlen;
-  ClientProcessor clProcessor;
+  ClientProcessor clProcessor(uregister);
   int on=1,nready,n;
   char				buf[MAXLINE];
   //create tcp socket

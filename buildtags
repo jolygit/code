@@ -1,7 +1,7 @@
 #!/bin/bash
 find ~/code -name "*.cpp"  -print|etags -o ~/TAGS -;
 find ~/code -name "*.[ch]"  -print|etags -ao ~/TAGS -;
-find /opt/local/include/ -name "*.[ch]" -print|etags -ao ~/TAGS -;
+find /usr/include/ -name "*.[ch]" -print|etags -ao ~/TAGS -;
 find ~/code -name "*.pl" -print|etags -ao ~/TAGS -;
 find ~/code -name "*.pm" -print|etags -ao ~/TAGS -;
 find ~/code -name "*.txt" -print|etags -ao ~/TAGS -;

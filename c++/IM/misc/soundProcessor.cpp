@@ -13,7 +13,7 @@ bool SoundProcessor::Play(){
     rc_s = snd_pcm_writei(handle_s, buffer_s, frames);
     if (rc_s == -EPIPE) {
       /* EPIPE means underrun */
-      fprintf(stderr, "underrun occurred\n");
+      // fprintf(stderr, "underrun occurred\n");
       snd_pcm_prepare(handle_s);
     } else if (rc_s < 0) {
       fprintf(stderr,

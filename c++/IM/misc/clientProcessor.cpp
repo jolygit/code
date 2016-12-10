@@ -38,7 +38,8 @@ int ClientProcessor::ResponseFromServer(char* buf){
     // printf("\n connecting to %s...\n",strs[5].c_str());
     // fflush(NULL);
     UDPHolePunch(strs[4],strs[3]);
-     pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
+    if(record)
+      pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
       //int sockfd=TcpSimultaneousOpen(strs[4],strs[3],strs[5]);
     return 0;
   }
@@ -231,8 +232,13 @@ int ClientProcessor::PortFromSocketFd(int socketFd,bool udp){
 }
 int ClientProcessor::ProcessUdp(){
   Recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
-  if(strcmp(buf,"voice:")==0){
-    sp.PlaySoundPacket(buf+7);
+  string packet=buf;
+  if(packet.compare(0,6,"voice:")==0){
+    vector<string> msgs;
+    string msg=buf;
+    boost::split(msgs,msg,boost::is_any_of(":"));
+    printf("playing packet %s\n",msgs[1].c_str());
+    sp.PlaySoundPacket(msgs[2].c_str());
   }
   else{
     vector<string> msgs;

@@ -30,7 +30,7 @@ bool SoundProcessor::Play(){
   free(buffer_s);
   return true;
 }
-bool SoundProcessor::PlaySoundPacket(char* buf){
+bool SoundProcessor::PlaySoundPacket(const char* buf){
   rc_s = snd_pcm_writei(handle_s, buf, frames);
     if (rc_s == -EPIPE) {
       /* EPIPE means underrun */
@@ -111,6 +111,10 @@ bool SoundProcessor::SetUpPlayer(){
   return true;
 }
 bool SoundProcessor::Record(){
+  SetUpRecorder();
+  snd_pcm_sframes_t fwdframes=snd_pcm_forwardable(handle_m);
+  printf("forwarding %d\n",fwdframes);
+  snd_pcm_forward(handle_m,fwdframes);
   while (true) {
     rc_m = snd_pcm_readi(handle_m, buffer_m, frames);
     if (rc_m == -EPIPE) {
@@ -136,10 +140,11 @@ bool SoundProcessor::Record(){
   return true;
 }
 bool SoundProcessor::RecordAndSend(int sfd,struct sockaddr_in fraddress){
- 
+  SetUpRecorder();//this needs to be here otherwise delay of sound will happen
+  usleep(300000);
   while (true) {
     framecnt++;
-    rc_m = snd_pcm_readi(handle_m, buffer_m+7, frames);
+    rc_m = snd_pcm_readi(handle_m, buffer_m, frames);
     if (rc_m == -EPIPE) {
       /* EPIPE means overrun */
       fprintf(stderr, "overrun occurred\n");
@@ -151,7 +156,10 @@ bool SoundProcessor::RecordAndSend(int sfd,struct sockaddr_in fraddress){
     } else if (rc_m != (int)frames) {
       fprintf(stderr, "short read, read %d frames\n", rc_m);
     }
-    sendto(sfd,(void*)buffer_m,size+7,0,(SA *) &fraddress,sizeof(fraddress));
+    printf("sending packet %d\n",framecnt);
+    stringstream response; 
+    response << "voice:"<<framecnt<<colon<<buffer_m;
+    sendto(sfd,(void*)response.str().c_str(),response.str().length()+1,0,(SA *) &fraddress,sizeof(fraddress));
   }
 
   snd_pcm_drain(handle_m);
@@ -211,10 +219,8 @@ bool SoundProcessor::SetUpRecorder(){
   snd_pcm_hw_params_get_period_size(params_m,
                                       &frames, &dir_m);
   size = frames; /* 2 bytes/sample, 2 channels */
-  buffer_m = (char *) malloc(size+7);//:voice at the end takes 7 bytes
-  char voice[7]="voice:";
-  strcpy(buffer_m,voice);//append :voice to the end of the buffer
-/* We want to loop for 5 seconds */
+  buffer_m = (char *) malloc(size);
+  /* We want to loop for 5 seconds */
   snd_pcm_hw_params_get_period_time(params_m,
                                          &val_m, &dir_m);
   return true;

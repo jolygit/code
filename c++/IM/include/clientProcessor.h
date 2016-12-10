@@ -36,13 +36,13 @@ extern "C"{
 }
 class ClientProcessor{
  public:
-  ClientProcessor(){
+  ClientProcessor(bool _record=true){
     selfaddress=false;invitefriend="invitefriend";friendaddress="friendaddress";
     allfriends="allfriends";onlinefriends="onlinefriends";
     registration="registration";login="login";registrationlogin="registrationlogin";
     registeredLogedin=false;
+    record=_record;
     registrationFieldCount=0;
-    sp.SetUpRecorder();
     sp.SetUpPlayer();
   }
   int InterfaceAddress();
@@ -90,4 +90,5 @@ class ClientProcessor{
   string startudp="startudp:from:";
   char			buf[MAXLINE];
   pthread_t	tid;
+  bool  record;
 };

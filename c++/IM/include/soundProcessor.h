@@ -1,21 +1,26 @@
 #include <alsa/asoundlib.h>
-#include "unp.h"//sp
+#include "unp.h"
+#include        <sstream>
+#include  <string>
+#include <unistd.h>
 #define ALSA_PCM_NEW_HW_PARAMS_API
+using namespace std;
 class SoundProcessor{
  public:
   SoundProcessor(){
       framecnt=0;
+      colon=":";
   }
   bool SetUpPlayer();
   bool SetUpRecorder();
   bool Record();
   bool RecordAndSend(int sfd,struct sockaddr_in fraddress);
   bool Play();
-  bool PlaySoundPacket(char* buf);
+  bool PlaySoundPacket(const char* buf);
  private:
   int size;
   /* Set period size to 64 frames. */
-  snd_pcm_uframes_t frames=64;
+  snd_pcm_uframes_t frames=64*2;
   // s stands for speaker
   long loops;
   int rc_s;
@@ -32,4 +37,5 @@ class SoundProcessor{
   int dir_m;
   char *buffer_m;
   int  framecnt;
+  string colon;
 };

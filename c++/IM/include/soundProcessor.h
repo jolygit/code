@@ -1,9 +1,9 @@
+#if defined(__LINUX_ALSA__)
 #include <alsa/asoundlib.h>
 #include "unp.h"
 #include        <sstream>
 #include  <string>
 #include <unistd.h>
-#define ALSA_PCM_NEW_HW_PARAMS_API
 using namespace std;
 class SoundProcessor{
  public:
@@ -39,3 +39,33 @@ class SoundProcessor{
   int  framecnt;
   string colon;
 };
+#endif
+
+
+#if defined(__MACOSX_CORE__)
+#include <CoreAudio/AudioHardware.h>
+#include "unp.h"
+#include        <sstream>
+#include  <string>
+#include <unistd.h>
+using namespace std;
+class SoundProcessor{
+ public:
+  SoundProcessor(){
+      framecnt=0;
+      colon=":";
+  }
+  bool SetUpPlayer(){return true;};
+  bool SetUpRecorder(){return true;};
+  bool Record();
+  bool RecordAndSend(int sfd,struct sockaddr_in fraddress){return true;};
+  bool Play();
+  bool PlaySoundPacket(const char* buf){return true;};
+ private:
+  unsigned int val_m;
+  int dir_m;
+  char *buffer_m;
+  int  framecnt;
+  string colon;
+};
+#endif

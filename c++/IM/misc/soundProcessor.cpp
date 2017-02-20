@@ -1,5 +1,5 @@
 #include "soundProcessor.h"
-
+#if defined(__LINUX_ALSA__)
 bool SoundProcessor::Play(){
   while (true) {
     rc_s = read(0, buffer_s, size);
@@ -225,3 +225,4 @@ bool SoundProcessor::SetUpRecorder(){
                                          &val_m, &dir_m);
   return true;
 }
+#endif

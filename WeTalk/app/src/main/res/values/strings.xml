@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WeTalk</string>
+    <string name="cancel">Hang Up</string>
+    <string name="call">Call</string>
+</resources>

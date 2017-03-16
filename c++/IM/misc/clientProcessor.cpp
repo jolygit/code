@@ -237,7 +237,7 @@ int ClientProcessor::ProcessUdp(){
     vector<string> msgs;
     string msg=buf;
     boost::split(msgs,msg,boost::is_any_of(":"));
-    printf("playing packet %s\n",msgs[1].c_str());
+    //printf("playing packet %s\n",msgs[1].c_str());
     sp.PlaySoundPacket(msgs[2].c_str());
   }
   else{

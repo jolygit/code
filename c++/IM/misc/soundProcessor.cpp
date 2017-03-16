@@ -13,7 +13,7 @@ bool SoundProcessor::Play(){
     rc_s = snd_pcm_writei(handle_s, buffer_s, frames);
     if (rc_s == -EPIPE) {
       /* EPIPE means underrun */
-      fprintf(stderr, "underrun occurred\n");
+      // fprintf(stderr, "underrun occurred\n");
       snd_pcm_prepare(handle_s);
     } else if (rc_s < 0) {
       fprintf(stderr,
@@ -34,7 +34,7 @@ bool SoundProcessor::PlaySoundPacket(const char* buf){
   rc_s = snd_pcm_writei(handle_s, buf, frames);
     if (rc_s == -EPIPE) {
       /* EPIPE means underrun */
-      fprintf(stderr, "underrun occurred\n");
+      // fprintf(stderr, "underrun occurred\n");
       snd_pcm_prepare(handle_s);
     } else if (rc_s < 0) {
       fprintf(stderr,
@@ -156,7 +156,7 @@ bool SoundProcessor::RecordAndSend(int sfd,struct sockaddr_in fraddress){
     } else if (rc_m != (int)frames) {
       fprintf(stderr, "short read, read %d frames\n", rc_m);
     }
-    printf("sending packet %d\n",framecnt);
+    // printf("sending packet %d\n",framecnt);
     stringstream response; 
     response << "voice:"<<framecnt<<colon<<buffer_m;
     sendto(sfd,(void*)response.str().c_str(),response.str().length()+1,0,(SA *) &fraddress,sizeof(fraddress));

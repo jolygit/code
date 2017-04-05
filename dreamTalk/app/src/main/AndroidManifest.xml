@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.sample.echo" >
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"></uses-permission>
+    <application
+        android:name=".MyGlobals"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:supportsRtl="true"
+        android:icon="@drawable/dreamapp"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+
+    <activity android:name=".MainActivity"
+              android:screenOrientation="portrait"
+              android:configChanges="orientation|screenSize|keyboardHidden">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <service android:enabled="true" android:name=".ServerConnectionService"></service>
+    </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

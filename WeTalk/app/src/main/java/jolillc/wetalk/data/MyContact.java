@@ -23,6 +23,7 @@ public class MyContact {
     public String getfirstName() { return firstName; }
     public String getlastName() {return lastName; }
     public boolean getStatus() { return image; }
+    public void setStatus(boolean st) { image=st; }
     public boolean getSelected() { return selected;}
     public boolean setSelected(boolean selection){selected=selection; return true;}
 }

@@ -1,11 +1,17 @@
 package jolillc.wetalk;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +30,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +41,8 @@ import jolillc.wetalk.data.MyContact;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
-public class MainActivity extends Activity {
-
-
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
+    private static final int FORECAST_LOADER_ID = 2;
 
     public void login(View view) {
         Intent intent = new Intent(this,login.class);
@@ -72,8 +81,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        super.onCreate(savedInstanceState);
+        /*super.onCreate(savedInstanceState);
         MyContacts.add(new MyContact("alex","joly",false,false));
         MyContacts.add(new MyContact("gigi","esak1",true,false));
         MyContacts.add(new MyContact("gigi","esak2",true,false));
@@ -92,8 +100,9 @@ public class MainActivity extends Activity {
 
         //Find list view and bind it with the custom adapter
         ListView listView = (ListView) findViewById(R.id.customListView);
-        listView.setAdapter(adapter);
-
+        listView.setAdapter(adapter);*/
+       // LoaderManager.LoaderCallbacks<String> callback = MainActivity.this;
+        //getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, callback);
     }
 
     class contactArrayAdapter extends ArrayAdapter<MyContact> {
@@ -169,5 +178,64 @@ public class MainActivity extends Activity {
         }
             return view;
         }
+    }
+
+    @Override
+    public Loader<String> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<String>(this) {
+            List<String> numbers = new ArrayList<String>();
+
+            public String client(String registration) throws IOException {
+                Socket echoSocket = new Socket("192.168.1.117",9877);
+                PrintWriter out =
+                        new PrintWriter(echoSocket.getOutputStream(), true);
+                InputStream in=echoSocket.getInputStream();
+                out.println(registration);
+                String response=null;
+                while(true){
+                    if(in.available()>0){
+                        int num=in.available();
+                        byte[] cbuff= new byte[num];
+                        in.read(cbuff);
+                        String str1 = new String(cbuff);
+                        response=str1;
+                        break;
+                    }
+                }
+                return response;
+            }
+
+            @Override
+            public String loadInBackground() {
+                String allFriends="request:allfriends"+"\0";
+                String serverResponse=null;
+                try {
+                    serverResponse=client(allFriends);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return serverResponse;
+            }
+            @Override
+            protected void onStartLoading() {
+                forceLoad();
+            }
+            public void deliverResult(String data) {
+                //result = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String friendList) {
+        String subst=friendList.substring(0,friendList.length()-1);
+        String[] frList=friendList.split(",");
+        String fr=frList[0];
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+
     }
 }

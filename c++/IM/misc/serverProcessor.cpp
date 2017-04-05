@@ -8,10 +8,6 @@ int ServerProcessor::AddUdpToDatabase(const char* clAddress,const char* buf){
     printf("address %s is wrong \n",address.c_str());
     return 1;
   }
-  string udp_ip;
-  string udp_port;
-  udp_ip=udp_ip_port[0];
-  udp_port=udp_ip_port[1];
   string msg=buf;
   vector<string> udp_username;
   string username,localUdpAddr;
@@ -212,6 +208,7 @@ int ServerProcessor::Login(vector<string> &strs,string & msg,char* clAddress){
   string password;
   username=strs[1];
   password=strs[2];
+  boost::trim_right(password);
   printf("%s\n",password.c_str());
   if(!db.Find2KeyValuePair("username" , username.c_str(), "password" ,password.c_str())){//"username",username.c_str(),"password",password.c_str())){
     msg="user name and password you have provided do not match try again or register.";

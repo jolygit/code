@@ -3,6 +3,7 @@
     package="jolillc.wetalk">
 
     <application
+        android:name=".MyGlobals"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".registration"></activity>
+        <service android:enabled="true" android:name=".ServerConnectionService"></service>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

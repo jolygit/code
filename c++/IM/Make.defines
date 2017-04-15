@@ -7,10 +7,12 @@
 # "make" is executed in all the subdirectories of this directory.
 #
 # System = x86_64-unknown-linux-gnu
-
-CC = g++ -g
-CFLAGS = -I /home/alex/code/c++/linuxProgInterface/tlpi-dist/lib/ -I /usr/include/boost -I../include -I ../mongo-c-driver/src/mongoc/ -I ../mongo-c-driver/src/libbson/src/bson/   -D_REENTRANT -Wall
-LIBS = ../libunp.a -lpthread -lmongoc-1.0 -L ../mongo-c-driver/src/libbson/ -lbson-1.0
+# use -D__LINUX_ALSA__ for linux
+CC = g++ -g -D__MACOSX_CORE__
+CFLAGS = -I /home/alex/code/c++/linuxProgInterface/tlpi-dist/lib/ -I /usr/include/boost -I../include -D_REENTRANT -Wall
+SFLAGS = -I ../mongo-c-driver/src/mongoc/ -I ../mongo-c-driver/src/libbson/src/bson/
+LIBS = ../libunp.a -lpthread 
+SLIBS = -lmongoc-1.0 -L ../mongo-c-driver/src/libbson/ -lbson-1.0
 LIBS_XTI = ../libunpxti.a ../libunp.a -lpthread
 RANLIB = ranlib
 

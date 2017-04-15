@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="cb454b52545859ed2f24a6c01366805b0fa04b22">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-25.2.0_6c9e367c2ee651849c7f4770acda5249bd701333.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/transition/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="e51c2f662bb72419632af5192553c37e33890a99">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-transition-25.2.0_d023b4ef48b25bda9b222790e00b9079ebbbc446.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/transition/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="e51c2f662bb72419632af5192553c37e33890a99">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-transition-25.2.0_1754505d8a2077bc1ef8d8ad3a374495666cfb10.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="ee394a892dd21c03a528139c1e8d4e0e1264ac84">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-media-compat-25.2.0_733c194557e730f9fb6fcdc6c70b2eaa6b150dec.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/design/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="ea6a989b83d19b1b461281e0475a6cd6514897f8">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-design-25.2.0_e02efe9feeb80a0fb8b87d07383957cc4961ed1d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="e820b7be8c035dd522da4bc822e8a76c8e27921a">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-support-core-utils-25.2.0_7ea7be8c38f212b0299ca583aaff12f95b7934fc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="152de8da301561dcb0946471697a420d8f7a68c5">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-25.2.0_8657df6c3eda786317705ed656191a1c6b6c7137.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="fa0446a14ed5dd3725047d6399ffea771a564b30">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-support-core-ui-25.2.0_937a774cb84e7b4dcb4e8c56523078d9059e0275.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="67eb33110dbacb46a48175b08ae0c96761d2c17d">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-support-compat-25.2.0_626919f133fdf5ed2480b7bfd05c4f200289432d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="702d339bc0a81d21354cd7e2cf2b67225fa4a16c">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-25.2.0_f8684e0ea40d1cff9e0b4b284cebb74b85e6ddec.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/design/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="ea6a989b83d19b1b461281e0475a6cd6514897f8">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-design-25.2.0_024527afd3fa048d5eec648f05bfda52c65d8a2a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-fragment-25.2.0_4b6bc31ca3bb570b720a4f456e8cb7a1574a8236.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/Library/Android/sdk/extras/m2repository/com/android/support/constraint/constraint-layout-solver/1.0.2/constraint-layout-solver-1.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/constraint-layout-solver-1.0.2_532e4196a8522e35611b573f3bbabd5230d6b517.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/support-v4/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-25.2.0_d5f7a49ac28145c736269273647c92cefc095291.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="810f41e5b7fd99f196ebeabe865ba2c54e7e76dc">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-25.2.0_162c6e7b04a836bc06723d4f9f31b795848e2a68.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="cb454b52545859ed2f24a6c01366805b0fa04b22">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-25.2.0_0246e5d1133fcf46cf87e6522f5695f397362d3f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/support-fragment/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-support-fragment-25.2.0_3f6142b38751f3cd9aa46aadc4020865cdf117b4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/support-v4/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-25.2.0_49468ebec16c6aa0f27a6a3c70004fbe1ba1b599.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support.constraint/constraint-layout/1.0.2/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support.constraint-constraint-layout-1.0.2_2237fadd89fe4da76ec391f10176678a875e7668.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/25.2.0/support-annotations-25.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="4a5a82a027706397fff621b22fd6fa796e91d7c5">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/support-annotations-25.2.0_07fce155a45c44cb988b233715fd5dfa054decb0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support.constraint/constraint-layout/1.0.2/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support.constraint-constraint-layout-1.0.2_0f2afb6a4794bb5c572fe2a40583bd21e8a0110d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="fa0446a14ed5dd3725047d6399ffea771a564b30">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-core-ui-25.2.0_293402ceac36d4d70814496d6e0f0668a7e94354.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="67eb33110dbacb46a48175b08ae0c96761d2c17d">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-compat-25.2.0_1729fa991360ec7295aba3142d28a17e2269cd3b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="702d339bc0a81d21354cd7e2cf2b67225fa4a16c">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-25.2.0_42074a5c1c9157ee4fa57051755a460257124938.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="810f41e5b7fd99f196ebeabe865ba2c54e7e76dc">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-25.2.0_5bcb2deb9e59bcd30381dc4e9e26fd2d25dbdad8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="152de8da301561dcb0946471697a420d8f7a68c5">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-25.2.0_851aef8087bf809fc05958525526506f54c8de14.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="ee394a892dd21c03a528139c1e8d4e0e1264ac84">
+        <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-support-media-compat-25.2.0_83faa2f2111b2b2a89b1f29ca648a2d0c6246471.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="e820b7be8c035dd522da4bc822e8a76c8e27921a">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-core-utils-25.2.0_ee34eb81dba55d05b2dcfbdfbaf27b42b4239b1f.jar" />
+    </item>
+
+</items>

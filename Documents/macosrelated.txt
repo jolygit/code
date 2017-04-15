@@ -1,0 +1,22 @@
+1. To install boost on mac follow: 
+     http://apple.stackexchange.com/questions/208478/how-do-i-disable-system-integrity-protection-sip-aka-rootless-on-os-x-10-11
+     http://stackoverflow.com/questions/104322/how-do-you-install-boost-on-macos
+    and use command: sudo -s /opt/local/bin/port install boost
+    to install boost after xcode and MacPorts have been installed; xcode-select --install
+
+1a. if port does not work follow the steps for your own download and installation something like:
+a. Download the the .tar.gz from http://sourceforge.net/projects/boost/files/boost/1.50.0/
+Unpack and go into the directory:
+
+tar -xzf boost_1_50_0.tar.gz
+cd boost_1_50_0
+Configure (and build bjam):
+b. ./bootstrap.sh --prefix=/some/dir/you/would/like/to/prefix
+Build:
+c. ./b2
+Install:
+d. ./b2 install
+
+Keep in mind that dir /usr/include is restricted. so you have to http://apple.stackexchange.com/questions/208478/how-do-i-disable-system-integrity-protection-sip-aka-rootless-on-os-x-10-11 to disable restricton
+
+boost is installed in /usr/include/boost and libs are in /usr/include/stage/lib

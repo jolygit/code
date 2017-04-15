@@ -1,0 +1,43 @@
+1. If Android Studio will display Cannot resolve symbol errors because this code references classes that are not imported. You can solve some of these with Android Studio's "import class" functionality by pressing Alt + Enter
+2. Platform versions
+https://developer.android.com/about/dashboards/index.html
+3. NDK path
+/Users/aj/Library/Android/sdk//ndk-bundle/platforms/android-22/arch-arm64/usr/include
+4. Threads in android
+http://www.techotopia.com/index.php/A_Basic_Overview_of_Android_Threads_and_Thread_handlers
+5. Libs that you create in ndk are placed in:
+  find Audio-Echo/ -name "*<libname>.so"
+this is the lib that is loaded by for example
+   static {
+        System.loadLibrary("echo");
+    }
+
+6. When creating new class in java folder, you have to add the name of the class to the AndroidManifest.xml
+like so:
+        <activity android:name=".AnimalListActivity" >
+        </activity>
+7. block comment
+hold Cmd+ alt +/
+
+8. To enable adb command after installing it form the studio do in the terminal if on mac:
+
+~ aj$ echo 'export PATH=$PATH:'$HOME'/Library/Android/sdk/platform-tools' >> ~/.profile
+~ aj$ source ~/.profile
+
+9. using adb
+ a. adb devices -l # list connected devices
+ b. adb shell # to go to the device shell, once there assuming the device is rooted do:
+ c. run-as com.domain.yourapp (for example com.google.sample.echo) # this will take you to the data dir of the device see http://stackoverflow.com/questions/1043322/why-do-i-get-access-denied-to-data-folder-when-using-adb
+10. to convert png to svg go to http://www.autotracer.org/
+11. To assign key shortcuts in android studio:
+    To do that go to Preferences > Keymap then under Main menu > Navigate > Bookmarks you can set the desired keyboard shortcut for various action
+
+12. The Loaders in adroid app will be called onStart() of the activity/fragment threfore to avoid redoing the same thing (senging duplicate sms!) you should have 
+protected void onStartLoading() {
+                if (result != null) {
+                    deliverResult(result);
+                } else {
+                    result="sending in progress";//if you press home button and come back this message will be shown. This is to prevent repiting the same task in loadBackground()
+                    forceLoad();
+                }
+            }

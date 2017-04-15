@@ -8,10 +8,6 @@ int ServerProcessor::AddUdpToDatabase(const char* clAddress,const char* buf){
     printf("address %s is wrong \n",address.c_str());
     return 1;
   }
-  string udp_ip;
-  string udp_port;
-  udp_ip=udp_ip_port[0];
-  udp_port=udp_ip_port[1];
   string msg=buf;
   vector<string> udp_username;
   string username,localUdpAddr;

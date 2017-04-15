@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ class requestsArrayAdapter extends ArrayAdapter<String> {
                 remove(contact);
                 ((MyGlobals) context.getApplicationContext()).GetPeerRequests().remove(contact);
                 int numPeerRequest=((MyGlobals) context.getApplicationContext()).GetPeerRequests().size();
-                TextView cnt=(TextView)((MyGlobals) context.getApplicationContext()).GetTab().getCustomView().findViewById(R.id.count1); //(TextView)tabLayout.getTabAt(1).getCustomView().findViewById(R.id.count1);
+                TextView cnt=(TextView)((MyGlobals) context.getApplicationContext()).GetTab().getCustomView().findViewById(R.id.count1);
                 if(numPeerRequest>0) {
                     cnt.setText("" + numPeerRequest);
                 }
@@ -49,6 +50,12 @@ class requestsArrayAdapter extends ArrayAdapter<String> {
                     cnt.setBackgroundResource(android.R.color.transparent);
                 }
                 notifyDataSetChanged();
+                try {
+                    String response="accept:"+contact+"\n";
+                    MainActivity.writeToStdin(response);//send request to client() in native code running on separete thread to terminate itself
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         view.findViewById(R.id.reject).setOnClickListener(new View.OnClickListener() {
@@ -58,7 +65,7 @@ class requestsArrayAdapter extends ArrayAdapter<String> {
                 remove(contact);
                 ((MyGlobals) context.getApplicationContext()).GetPeerRequests().remove(contact);
                 int numPeerRequest=((MyGlobals) context.getApplicationContext()).GetPeerRequests().size();
-                TextView cnt=(TextView)((MyGlobals) context.getApplicationContext()).GetTab().getCustomView().findViewById(R.id.count1); //(TextView)tabLayout.getTabAt(1).getCustomView().findViewById(R.id.count1);
+                TextView cnt=(TextView)((MyGlobals) context.getApplicationContext()).GetTab().getCustomView().findViewById(R.id.count1);
                 if(numPeerRequest>0) {
                     cnt.setText("" + numPeerRequest);
                 }
@@ -67,6 +74,12 @@ class requestsArrayAdapter extends ArrayAdapter<String> {
                     cnt.setBackgroundResource(android.R.color.transparent);
                 }
                 notifyDataSetChanged();
+                try {
+                    String response="reject:"+contact+"\n";
+                    MainActivity.writeToStdin(response);//send request to client() in native code running on separete thread to terminate itself
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 

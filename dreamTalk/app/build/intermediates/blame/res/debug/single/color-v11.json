@@ -4,6 +4,10 @@
         "source": "/Users/aj/code/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/res/color-v11/abc_background_cache_hint_selector_material_dark.xml"
     },
     {
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/color-v11/abc_background_cache_hint_selector_material_dark.xml",
+        "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/color-v11/abc_background_cache_hint_selector_material_dark.xml"
+    },
+    {
         "merged": "/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/res/merged/debug/color-v11/abc_background_cache_hint_selector_material_dark.xml",
         "source": "/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/color-v11/abc_background_cache_hint_selector_material_dark.xml"
     },
@@ -14,5 +18,9 @@
     {
         "merged": "/Users/aj/code/Audio-Echo1/app/build/intermediates/res/merged/debug/color-v11/abc_background_cache_hint_selector_material_light.xml",
         "source": "/Users/aj/code/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/res/color-v11/abc_background_cache_hint_selector_material_light.xml"
+    },
+    {
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/color-v11/abc_background_cache_hint_selector_material_light.xml",
+        "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/color-v11/abc_background_cache_hint_selector_material_light.xml"
     }
 ]

@@ -79,7 +79,7 @@ void ClientProcessor::split(std::vector<string> &strs,char* str,const char* deli
 int ClientProcessor::RequestToServer(string& nextCommand){ //sockfd is server
     string request("request:");
     int sockfd=client[1].fd;
-    if(nextCommand==allfriends || nextCommand==onlinefriends || nextCommand.compare(0,14,"friendaddress:")==0 || nextCommand.compare(0,13,"invitefriend:")==0){
+    if(nextCommand==allfriends || nextCommand==onlinefriends || nextCommand.compare(0,14,"friendaddress:")==0 || nextCommand.compare(0,13,"invitefriend:")==0 || nextCommand.compare(0,7,"accept:")==0 || nextCommand.compare(0,7,"reject:")==0){
         request+=nextCommand;
         writen(sockfd,(void*)request.c_str(),request.length()+1);
         if(nextCommand.compare(0,14,"friendaddress:")==0){
@@ -107,7 +107,7 @@ int ClientProcessor::ResponseFromServer(char* buf){
     else if(strs[2]==friendaddress){// version:response size:responseCommand:friendIp:friendPort:frUid
         // printf("\n connecting to %s...\n",strs[5].c_str());
         // fflush(NULL);
-        UDPHolePunch(strs[4],strs[3]);
+        UDPHolePunch(strs[4],strs[3],strs[5]);
         if(record)
             pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
         //int sockfd=TcpSimultaneousOpen(strs[4],strs[3],strs[5]);
@@ -124,13 +124,16 @@ int ClientProcessor::StartSendingSound(){
     //sp.RecordAndSend(client[2].fd,fraddress);
     return 0;
 }
-int ClientProcessor::UDPHolePunch(string& friendPort,string& friendIp){
+int ClientProcessor::UDPHolePunch(string& friendPort,string& friendIp,string uid){
 
     string msg="udp hole punch\n";
+    struct sockaddr_in fraddress;
     bzero(&fraddress, sizeof(fraddress));
     fraddress.sin_family = AF_INET;
     fraddress.sin_port = htons(atoi(friendPort.c_str()));
     inet_pton(AF_INET, friendIp.c_str(), &fraddress.sin_addr);
+    fraddresses[uid]=fraddress;
+    udpHolePunchedForThisUid.insert(uid);
     sendto(client[2].fd,(void*)msg.c_str(),msg.length(),0,(SA *) &fraddress,sizeof(fraddress));
     //chat=true;
     return 0;
@@ -247,10 +250,11 @@ int ClientProcessor::PortFromSocketFd(int socketFd,bool udp){
     struct sockaddr ownAddr;
     socklen_t len;
     len=sizeof(ownAddr);
-    getsockname(socketFd,(SA*)&ownAddr,&len);
+    int rt=getsockname(socketFd,(SA*)&ownAddr,&len);
+    printf("%d",rt);
     char* ownAddress=sock_ntop((SA *) &ownAddr, len);
     if(udp)
-        selfUdpAddress=interfaceAddress+":50000";//port number is not used but server expects this format
+        selfUdpAddress=ownAddress;//port number is not used but server expects this format
     else{
         selfTcpAddress=ownAddress;
         selfaddress=true;
@@ -261,12 +265,11 @@ string ClientProcessor::ProcessUdp(){
     recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
     string packet=buf;
     int l=packet.size();
-    if(packet.compare(0,6,"voice:")==0 || !chat){
+    if(packet.compare(0,6,"voice:")==0){
         vector<string> msgs;
         split(msgs,buf,(const char*)":");
         packet.clear();//return zero str
     }
-    //printf("AbdulmanatKhabib:chat:%sAbdulmanatKhabib:", buf);
     bzero(buf,l);//erasing previous data
     return packet;//if it is a chat message return it else return empty str
 }

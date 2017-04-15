@@ -37,7 +37,7 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) ;//j
 JNIEXPORT int JNICALL
 Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//jclass
     bool uregister=false;
-    const char *address="192.168.1.117";
+    const char *address="67.80.234.215";//192.168.1.117";////"
     int			sockfd,udpfd,serversocketfd;
     struct sockaddr_in	servaddr;
     socklen_t		svlen;
@@ -60,11 +60,15 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//j
     udpfd = socket(AF_INET, SOCK_DGRAM, 0);
     bzero(&clProcessor.udpselfaddr, sizeof(clProcessor.udpselfaddr));
     clProcessor.udpselfaddr.sin_family = AF_INET;
-    clProcessor.udpselfaddr.sin_port = htons(0);
+    clProcessor.udpselfaddr.sin_port = htons(SERV_PORT);
     clProcessor.InterfaceAddress();
-    inet_pton(AF_INET,clProcessor.interfaceAddress.c_str(), &clProcessor.udpselfaddr.sin_addr);
-    bind(udpfd, (SA *) &clProcessor.udpselfaddr, sizeof(clProcessor.udpselfaddr));
+    const char* selfAddr=clProcessor.interfaceAddress.c_str();
+    inet_pton(AF_INET,selfAddr, &clProcessor.udpselfaddr.sin_addr);
+    while(::bind(udpfd, (SA *) &clProcessor.udpselfaddr, sizeof(clProcessor.udpselfaddr)) ==-1) {//:: is important here because of the using namespace std, without :: wrong bind was being called
+        sleep(1);// poprt SERV_PORT could be used just a while ago so let system make it available again.
+    }
     clProcessor.PortFromSocketFd(udpfd,true);
+    //create server udp address
     bzero(&clProcessor.udpservaddr, sizeof(clProcessor.udpservaddr));
     clProcessor.udpservaddr.sin_family = AF_INET;
     clProcessor.udpservaddr.sin_port = htons(SERV_PORT);
@@ -75,11 +79,11 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//j
     //jclass cls = (env)->FindClass("com/google/sample/echo/MainActivity");//make sure to change the full path if you change it in java
     jmethodID ProcessRequest = (env)->GetMethodID(cls, "ProcessRequest", "(Ljava/lang/String;)V");
 // create the pipe for stdin
-    remove("/data/data/com.google.sample.echo/files/infile");
-    int in=mkfifo("/data/data/com.google.sample.echo/files/infile", 0777);
+    remove("/data/data/com.google.sample.echo/infile");//files/infile
+    int in=mkfifo("/data/data/com.google.sample.echo/infile", 0777);
     if(in)
         in=1;
-    int fdi = open("/data/data/com.google.sample.echo/files/infile", O_RDONLY|O_NONBLOCK);
+    int fdi = open("/data/data/com.google.sample.echo/infile", O_RDONLY|O_NONBLOCK);
     dup2(fdi, 0);
     // create the pipe for stdout
     /*setbuf(stdout, NULL);
@@ -125,8 +129,7 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//j
             if (clProcessor.client[i].revents & (POLLIN | POLLERR)) {
                 if(i==2){// incoming udp data
                     string msg=clProcessor.ProcessUdp();
-                   msg="chat:"+msg;
-                    if(msg.size()>0) {//chat msg came
+                    if(msg.size()>0) {//chat msg came of the form chat:<sourceUserName>:chatmsg
                         jstring jstr = (env)->NewStringUTF(msg.c_str());
                         (env)->CallVoidMethod(obj,ProcessRequest, jstr);//let main thread handler handle the chat msg i.e print it on the screen
                     }
@@ -154,6 +157,7 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//j
                     string nextCommand=tmp.substr(0,n-1);
                     if(tmp==exitstr){//need to finish the thread
                         close(serversocketfd);
+                        close(udpfd);
                         clProcessor.client[i].fd = -1;
                         clProcessor.clLogin[i]=false;
                         clProcessor.clUID[i]="";
@@ -162,24 +166,53 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//j
                     else if(tmp.compare(0,7,"Login::")==0 || tmp.compare(0,10,"Register::")==0){
                         clProcessor.Register(nextCommand);
                     }
-                    else if(clProcessor.registeredLogedin && (tmp.compare(0,14,"friendaddress:")==0 || tmp.compare(0,10,"allfriends")==0 || tmp.compare(0,13,"onlinefriends")==0 || tmp.compare(0,12,"invitefriend")==0)) {
+                    else if(clProcessor.registeredLogedin && (tmp.compare(0,14,"friendaddress:")==0 || tmp.compare(0,10,"allfriends")==0 || tmp.compare(0,13,"onlinefriends")==0 || tmp.compare(0,12,"invitefriend")==0
+                                                              || tmp.compare(0,7,"accept:")==0 || tmp.compare(0,7,"reject:")==0)) {
                             if(clProcessor.RequestToServer(nextCommand)){//in case of a wrong request function returns 1
                                 string msg="wrong request"+nextCommand;//+"AbdulmanatKhabib:"
                                 jstring jstr = (env)->NewStringUTF(msg.c_str());
                                 (env)->CallVoidMethod(obj,ProcessRequest, jstr);//let main thread handler handle the chat msg i.e print it on the screen
                             }
                     }
-                    else if(clProcessor.chat){//chat packet
-                        sendto(clProcessor.client[2].fd,(void*)buf,n,0,(SA *) &clProcessor.fraddress,sizeof(clProcessor.fraddress));
+                    else if(tmp.compare(0,5,"chat:")==0){//chat packet it has the format chat:<selfusername>:chatmsg:<destination userNames separated by eabdulmanatkhabibgivivajaalko>
+                        vector<string> strs;
+                        string colon=":";
+                        clProcessor.split(strs,(char*)tmp.c_str(),(const char*)":");
+                        string msg="";
+                        for(int u=0;u<strs.size()-1;u++) //all but the first and last token is the message. since users could have used : in their message we have to have the loop below
+                            if(u!=0)
+                                msg+=colon+strs[u];
+                            else
+                                msg=strs[u];
+                        string UseridCombo=strs[strs.size()-1];//last token is combination of userIDs to whom to send message
+                        vector<string> userids;
+                        clProcessor.split(userids,(char*)UseridCombo.c_str(),(const char*)"_");// this token is chosen to reduce the chance that it will be part of the chat conversation
+                        for(int u=0;u<userids.size();u++) {// sending to all the destinations
+                            string uid=userids[u];
+                            if(clProcessor.udpHolePunchedForThisUid.find(uid) != clProcessor.udpHolePunchedForThisUid.end()) { //make sure udp hole is punched for uid
+                                struct sockaddr_in fraddress=clProcessor.fraddresses[uid];
+                                sendto(clProcessor.client[2].fd, (void *) msg.c_str(), msg.size(),0, (SA *) &fraddress,sizeof(fraddress));
+                            }
+                        }
                     }
                 }
                 else if (i == 1) { //server
                     if(!clProcessor.selfaddress)
                         clProcessor.PortFromSocketFd(sockfd,false);
-                    if(!clProcessor.ResponseFromServer(buf)){//everyting exept udp hole puch is directed back to the main thread
-                        //string msg="AbdulmanatKhabib:"+string(buf)+"AbdulmanatKhabib:";
-                        jstring jstr = (env)->NewStringUTF(buf);
-                        (env)->CallVoidMethod(obj,ProcessRequest, jstr);//let main thread handler handle the response i.e initiate a new request in case this one was good
+                    //sometimes buffer containes the following  version1.0:3:login:ok'\0'version1.0:3:requests:la  i.e two server responses in one buffer. For that reason we need to handle it
+                    int numRead=0;
+                    while(true) {
+                        string msg = string((buf+numRead));//
+                        numRead+=msg.size();
+                        if (!clProcessor.ResponseFromServer(buf)) {//everyting exept udp hole puch is directed back to the main thread
+                            jstring jstr = (env)->NewStringUTF(msg.c_str());
+                            (env)->CallVoidMethod(obj, ProcessRequest,
+                                                  jstr);//let main thread handler handle the response i.e initiate a new request in case this one was good
+                        }
+                        if(numRead==(n-1))
+                            break;
+                        else
+                            numRead++;//add \0 to the count
                     }
 
                 }

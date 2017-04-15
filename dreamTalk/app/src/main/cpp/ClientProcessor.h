@@ -13,6 +13,9 @@
 //#include "tlpi_hdr.h"
 #include        <vector>
 #include        <string>
+#include        <set>
+#include        <map>
+
 #include <iostream>
 #include <arpa/inet.h>
 //#include <ifaddrs.h>
@@ -68,7 +71,7 @@ public:
     int ResponseFromServer(char* buf);
     int RequestToServer(string& nextCommand);
     int TcpSimultaneousOpen(string& friendPort,string& friendIp,string& fruid);
-    int UDPHolePunch(string& friendPort,string& friendIp);
+    int UDPHolePunch(string& friendPort,string& friendIp,string uid);
     string ProcessUdp();
     int Receive_int(int *num, int fd);
     int Register(string& nextCommand);
@@ -91,7 +94,8 @@ public:
     struct sockaddr_in	udpservaddr,udpselfaddr;
     socklen_t		udpsvlen;
     bool                  chat=false;
-    struct sockaddr_in	fraddress;
+    map<string,struct sockaddr_in>	fraddresses;
+    set<string>                     udpHolePunchedForThisUid;
     string                interfaceAddress;
 private:
     //SoundProcessor sp;

@@ -1,51 +1,25 @@
 package com.google.sample.echo;
 
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
-import android.content.ComponentName;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.TextPaint;
-import android.text.method.ScrollingMovementMethod;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
-import android.text.style.StyleSpan;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -55,26 +29,31 @@ import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 import com.google.sample.echo.data.MyContact;
-import android.support.v4.app.FragmentManager;
 
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity  {
-
-
+    String chatusers;// are peer user ids to whom the chat is dirrected
+    registrationFragment rfragment;
+    loginFragment lfragment;
+    requestsArrayAdapter requestAdapter;
     ArrayAdapter<String> chatAdapter;
+    ArrayAdapter<MyContact> contactsadapter;
     ListView chatList;
     ListView requestList;
     final static String token="zilimbekdipsheetmagamedovhasanjemalusho";////this is the token to separate the chat hist. It has to be unique so that user text is not mistaken for it, that is why comma could not be used!
     String login;
+    String selfUid;
+    ViewPager viewPager;
+    PageAdapter pageadapter;
+    TabLayout tabLayout;
+    Toolbar toolbar;
+    Boolean inChat=false;
     static {
         System.loadLibrary("echo");
     }
@@ -103,18 +82,15 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
             else if(bundleForLoader.containsKey("chat")){
-                String RequestType = bundleForLoader.getString("chat");
-                if (RequestType.equals("udp hole punch\n")) {
-                    ((MyGlobals) getApplicationContext()).SetUdpHolePunch(true);
-                    Fragment fragment =new chatFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.frame1, fragment, FRAG2_TAG).addToBackStack(null).commit();
-                } else {
-                    AppendToChatScreen(RequestType);
-                }
+                String RequestType = bundleForLoader.getString("chat");// chat:senderuserid:chatmsg
+                String[] tokens=RequestType.split(":");
+                String senderUserid=tokens[1];
+                String chatmsg=tokens[2];
+                AppendToChatScreen(senderUserid,chatmsg);
+
             }
-            else if(bundleForLoader.containsKey("mainFragment")){
-                ((MyGlobals) getApplicationContext()).GetPeerRequests().add("givi");
-                ((MyGlobals) getApplicationContext()).GetPeerRequests().add("vova");
+            else if(bundleForLoader.containsKey("mainFragment") && inChat==false){
+                ((MyGlobals) getApplicationContext()).SetReadyForUpdates(true);
                 setContentView(R.layout.tmp);//start
                 toolbar = (Toolbar) findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
@@ -122,9 +98,9 @@ public class MainActivity extends AppCompatActivity  {
                 tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
                 tabLayout.addTab(tabLayout.newTab().setText("Add Contacts"));
                 viewPager = (ViewPager) findViewById(R.id.pager);
-                adapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),getApplicationContext());
+                pageadapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),getApplicationContext());
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-                viewPager.setAdapter(adapter);
+                viewPager.setAdapter(pageadapter);
                 viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
                 tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
@@ -135,40 +111,119 @@ public class MainActivity extends AppCompatActivity  {
                     public void onTabReselected(TabLayout.Tab tab) { }
                 });
                 int numPeerRequest=((MyGlobals) getApplicationContext()).GetPeerRequests().size();
-                View v=adapter.getTabView(numPeerRequest,getApplicationContext());
+                View v=pageadapter.getTabView(numPeerRequest,getApplicationContext());
                 tabLayout.getTabAt(1).setCustomView(v);
                 ((MyGlobals) getApplicationContext()).SetTab(tabLayout.getTabAt(1));
+                pageadapter.notifyDataSetChanged();
+            }
+            else if(bundleForLoader.containsKey("updateFragments") && inChat==false){
+                int numPeerRequest=((MyGlobals) getApplicationContext()).GetPeerRequests().size();
+                TextView cnt=(TextView)((MyGlobals) getApplicationContext()).GetTab().getCustomView().findViewById(R.id.count1);
+                if(numPeerRequest>0) {
+                    cnt.setText("" + numPeerRequest);
+                    cnt.setBackgroundResource(R.drawable.circle);
+                }
+                else{
+                    cnt.setText("");
+                    cnt.setBackgroundResource(android.R.color.transparent);
+                }
+                pageadapter.notifyDataSetChanged();
             }
         }
     }
-    ViewPager viewPager;
-    PageAdapter adapter;
-    TabLayout tabLayout;
-    Toolbar toolbar;
-    public void submit(View view){
-       // SendJobToMainThread("refresh","");
+    public void onBackPressed() {
+        if(inChat){
+            inChat=false;
+            setContentView(R.layout.tmp);//start
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+            tabLayout.addTab(tabLayout.newTab().setText("Contacts"));
+            tabLayout.addTab(tabLayout.newTab().setText("Add Contacts"));
+            viewPager = (ViewPager) findViewById(R.id.pager);
+            pageadapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),getApplicationContext());
+            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+            viewPager.setAdapter(pageadapter);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {viewPager.setCurrentItem(tab.getPosition());}
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) { }
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) { }
+            });
+            int numPeerRequest=((MyGlobals) getApplicationContext()).GetPeerRequests().size();
+            View v=pageadapter.getTabView(numPeerRequest,getApplicationContext());
+            tabLayout.getTabAt(1).setCustomView(v);
+            pageadapter.notifyDataSetChanged();
+        }
+        else {
+            finish();
+        }
     }
+    public void submit(View view){
+        pageadapter.notifyDataSetChanged();
+        EditText UserName = (EditText) findViewById(R.id.typeuserid);
+        String unameSt = UserName.getText().toString();
+        String request="invitefriend:"+unameSt+"\n";
+        UserName.setText("");
+        try {
+            writeToStdin(request);//send request to client() in native code running on separete thread to terminate itself
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 // this is called from the native client() function when chat text need to be passed to the main thread
     public void ProcessRequest(String str) {
         String[] resp = str.split(":");
-        if (resp.length == 4 && resp[3].equals("ok")) {
+        if(resp.length == 4 && resp[2].equals("invitefriend") && resp[3].equals("request failed because user does not exist. Try again.")){//
+           // TextView UserName = (TextView) findViewById(R.id.submit_notify);
+           // UserName.setText("User does not exit. Try again!");
+            //UserName.clearFocus();
+            //Toast.makeText(this,str, Toast.LENGTH_SHORT).show();
+        }
+        else if(resp.length == 4 && resp[2].equals("requests")){
+            String requests=resp[3];
+            String[] usrs = requests.split(":");
+            for(String usr:usrs) {
+                ((MyGlobals) getApplicationContext()).GetPeerRequests().add(usr);
+            }
+            if(((MyGlobals) getApplicationContext()).GetReadyForUpdates()) {
+                SendJobToMainThread("updateFragments", str);
+            }
+        }
+        else if(resp.length == 4 && resp[2].equals("invitefriend") && resp[3].equals("request filed sucessfully")){
+           // TextView UserName = (TextView) findViewById(R.id.submit_notify);
+           // UserName.setText("Request submitted!");
+           // UserName.clearFocus();
+           // Toast.makeText(this,"request submitted!", Toast.LENGTH_SHORT).show();
+        }
+        else if (resp.length == 4 && resp[3].equals("ok")) {
             SharedPreferences.Editor editor = getSharedPreferences("PeerInfo", MODE_PRIVATE).edit();
             editor.putString("login",login);//save login info in sharedPrefs
             editor.commit();
             allfriends();
-        } else if (resp.length == 4 && resp[2].equals("allfriends")) {
+        } else if (resp.length >= 4 && resp[2].equals("allfriends")) {
             String frlistSt = resp[3].substring(0, resp[3].length());
             CreateAllFriendsList(frlistSt,true);
             onlinefriends();
-        } else if (resp.length > 2 && resp[2].equals("onlinefriends")) {
+        } else if (resp.length == 3 && resp[2].equals("allfriends")) {
+            SendJobToMainThread("mainFragment",str);//after initial registration friends list is empty
+        }
+        else if (resp.length > 2 && resp[2].equals("onlinefriends")) {
             if (resp.length == 4) {
                 String frlistSt = resp[3].substring(0, resp[3].length());
                 CreateOnlineFriendsStatus(frlistSt);
             }
+            else{
+                CreateOnlineFriendsStatus("");
+            }
             SendJobToMainThread("mainFragment",str);
         }
-        else if((resp.length ==2 && resp[0].equals("chat"))){
-            SendJobToMainThread("chat",resp[1]);
+        else if((resp.length >=2 && resp[0].equals("chat"))){ // chat:<sourceUserName>:chatmsg
+            SendJobToMainThread("chat",str);
         }
         else{
             SendJobToMainThread("toastMsg",str);
@@ -177,9 +232,21 @@ public class MainActivity extends AppCompatActivity  {
     public void CreateAllFriendsList(String csvlist,boolean addtoshare){
         String[] frList = csvlist.split(",");
         ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
-        MyContacts.clear();
-        for (int i = 0; i < frList.length; i++) {
-                MyContacts.add(new MyContact("", "", frList[i], false, false));
+        //MyContacts.clear();
+        for (String user:frList) {
+            String[] tokens=user.split(";");
+            String firstName=tokens[1];
+            String lastName=tokens[2];
+            String userId=tokens[0];
+            boolean found=false;
+            for (int j = 0; j < MyContacts.size(); j++) {
+                if (MyContacts.get(j).getUsername().equals(userId)) {
+                    found=true;
+                    break;
+                }
+            }
+            if(!found)//only adding new friends
+                MyContacts.add(new MyContact(firstName,lastName,userId, false, false,false,""));
         }
         if(addtoshare) {
             SharedPreferences.Editor editor = getSharedPreferences("PeerInfo", MODE_PRIVATE).edit();
@@ -188,8 +255,13 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
     public void CreateOnlineFriendsStatus(String csvonlinelist){
-        String[] frList = csvonlinelist.split(",");
         ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
+        //reset online status to false
+        for (int j = 0; j < MyContacts.size(); j++) {
+            MyContacts.get(j).setStatus(false);
+        }
+        String[] frList = csvonlinelist.split(",");
+        //update online status based on the frlist
         for (int i = 0; i < frList.length; i++) {
             for (int j = 0; j < MyContacts.size(); j++) {
                 if (MyContacts.get(j).getUsername().equals(frList[i])) {
@@ -287,14 +359,16 @@ public class MainActivity extends AppCompatActivity  {
         RemoveSharedPrefs("PeerInfo");
         RemoveSharedPrefs("SelfInfo");
         RemoveSharedPrefs("ChatHistory");
-
+        ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
+        MyContacts.clear();
         try {
             writeToStdin("exit");//send request to client() in native code running on separete thread to terminate itself
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Fragment fragment = new loginFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame1,fragment,FRAG2_TAG).commit();
+        setContentView(R.layout.start);
+        lfragment= new loginFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame1, lfragment, FRAG2_TAG).commit();
     }
     public void startClientThread(){
         class MyRunnable implements Runnable {
@@ -307,19 +381,23 @@ public class MainActivity extends AppCompatActivity  {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+       // RemoveSharedPrefs("PeerInfo");
+       // RemoveSharedPrefs("SelfInfo");
+       // RemoveSharedPrefs("ChatHistory");
+        String dir=getApplicationContext().getApplicationInfo().dataDir;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);//start
         //RemoveSharedPrefs();
         ((MyGlobals) getApplicationContext()).setHandlerMain(new ChatMainHandler(this.getMainLooper()));
         if(!FindThreadByName("clientThread")) {//make sure you dont create thread that connects to server twice!
-            //start the client() in a separate thread
             startClientThread();
             SharedPreferences prefs = getSharedPreferences("PeerInfo", MODE_PRIVATE);
             if (!prefs.contains("login")){//brand new connection from this user or user pressed logout before
-                loginFragment fragment = new loginFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame1,fragment,FRAG2_TAG).commit();
+                lfragment = new loginFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame1,lfragment,FRAG2_TAG).commit();
             }
             else{//user logged in already once we know usr name and pswd so we bypass login screen but still go through login proceess requred by the server
+                //start the client() in a separate thread
                 login=prefs.getString("login","");
                 try {
                     Thread.sleep(100);//this is needed in order for the newly created thread abouve to have enough time to set up the stdin pipe to which we write with writeToStdin() function below. Otherwise write will block
@@ -340,17 +418,55 @@ public class MainActivity extends AppCompatActivity  {
             onlinefriends();//update online friends by requesting the list from the server
         }
     }
+    public void addNotification(String msg) {
+        android.support.v4.app.NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_green)
+                        .setContentTitle("Chat")
+                        .setContentText(msg+"...");
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder.setSound(alarmSound);
+        builder.setAutoCancel(true);
+        builder.setPriority(Notification.PRIORITY_MAX);
+        builder.setLights(Color.YELLOW, 500, 500);
+        long[] pattern = {500,500,500,500,500,500,500,500,500};
+        builder.setVibrate(pattern);
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+    }
     public void goToChat(View view) throws InterruptedException {
         ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
         int selectCont = -1;
         ArrayList<String> peers = new ArrayList<String>();
         String usersBunch="";
+        chatusers="";
+        String namesToShow="   ";
         for (int j = 0; j < MyContacts.size(); j++) {
             if (MyContacts.get(j).getSelected() && MyContacts.get(j).getStatus()) {
                 selectCont = j;
                 String uname=MyContacts.get(j).getUsername();
                 peers.add(uname);
                 usersBunch+=uname;
+                String fullName=MyContacts.get(j).getfirstName()+" "+MyContacts.get(j).getlastName();
+                if(chatusers==null){
+                    chatusers=uname;
+                }
+                else{
+                    chatusers+="_";//this is a token that will be used in case of a multiuser chat, by splitting with this token we can retreive the userids
+                    chatusers+=uname;
+                }
+                if(namesToShow=="   "){
+                    namesToShow+=fullName;
+                }
+                else {
+                    namesToShow += "," + fullName;
+                }
             }
         }
         if (selectCont >= 0) {
@@ -358,57 +474,109 @@ public class MainActivity extends AppCompatActivity  {
             usersBunch+=prefs.getString("uname","");//create unique key for retreival of chat history
             ((MyGlobals) getApplicationContext()).SetUserIdOfChatPeer(usersBunch);
             InitiatePeerConnections(peers);
+            inChat=true;
+            for (MyContact contact: MyContacts) {
+                if(contact.getUsername().equals(usersBunch)){//
+                    contact.setBold(false);
+                    contact.setMessage("");
+                }
+            }
+          //creating the chat screen
+            setContentView(R.layout.startchat);//start
+            TextView nameToShow=(TextView)findViewById(R.id.chatname);
+            nameToShow.setText(namesToShow);
+            ((MyGlobals) getApplicationContext()).SetUdpHolePunch(true);
+            Fragment fragment = new chatFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame1, fragment, FRAG2_TAG).addToBackStack(null).commit();
         } else {
             Toast.makeText(MainActivity.this, "please select an active user!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void AddMsgToHistory(String chatmsg){
+    public void AddMsgToHistory(String senderUid,String chatmsg){
         SharedPreferences prefs = getSharedPreferences("ChatHistory", MODE_PRIVATE);
-        String uid=((MyGlobals) getApplicationContext()).GetUserIdOfChatPeer();
+        //String uid=((MyGlobals) getApplicationContext()).GetUserIdOfChatPeer();
         String hist="";
-        if (prefs.contains(uid)) {
-            hist = prefs.getString(uid, "");
+        if (prefs.contains(senderUid)) {
+            hist = prefs.getString(senderUid, "");
             hist += token + chatmsg;//adding current msg to history
         }
         else {
             hist += chatmsg;//adding current msg to history
         }
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(uid,hist);//save login info in sharedPrefs
+        editor.putString(senderUid,hist);//save login info in sharedPrefs
         editor.commit();
     }
     public void send(View view) throws IOException {
         EditText chatText = (EditText) findViewById(R.id.txttosnd);
-        String chatmsg = chatText.getText().toString() + "\n";
-        if (chatmsg.length() > 1) {
+        SharedPreferences prefs = getSharedPreferences("SelfInfo", MODE_PRIVATE);
+        String selfUserName=prefs.getString("selfUserName","error");//self username should always be available
+        String chatmsg=chatText.getText().toString();
+        String Fullchatmsg = "chat:"+selfUserName+":"+chatmsg;
+        if (chatmsg.length() >=1) {
+            String uid=((MyGlobals) getApplicationContext()).GetUserIdOfChatPeer();
             chatAdapter.add(chatmsg);
             chatAdapter.notifyDataSetChanged();
-            writeToStdin(chatmsg);
-            AddMsgToHistory(chatmsg);
+            AddMsgToHistory(uid,chatmsg);
+            Fullchatmsg+=(":"+chatusers);// chatusers are peer user ids to whom the chat is dirrected
+            writeToStdin(Fullchatmsg);
         }
         chatText.setText("");
     }
-
-    public void AppendToChatScreen(String chatmsg) {
-
+    public void AppendToChatScreen(String senderUserid,String chatmsg) {
         if (chatmsg.length() > 0 && !chatmsg.equals("\n")) {
+            String shortmsg="";
+            if(chatmsg.length()>7)
+                shortmsg=chatmsg.substring(0,7);
+            else
+                shortmsg=chatmsg;
+            String uid=((MyGlobals) getApplicationContext()).GetUserIdOfChatPeer(); //this is set when chat button is pressed
             chatmsg = "abdulmanatkhabib:" + chatmsg;
-            chatAdapter.add(chatmsg);
-            chatAdapter.notifyDataSetChanged();
-            AddMsgToHistory(chatmsg);
+            AddMsgToHistory(senderUserid,chatmsg);
+            if(senderUserid.equals(uid) && inChat) {//adding to the screen only if the chat screeen for the peer that the message is intended for is open
+                chatAdapter.add(chatmsg);
+                chatAdapter.notifyDataSetChanged();
+            }
+            else{//make the sender name in your peers list bold and show part of the message as well, like in skype
+                ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
+                String fname="";
+                String lname="";
+                for (MyContact contact: MyContacts) {
+                    if(contact.getUsername().equals(senderUserid)){
+                        contact.setBold(true);
+                        contact.setMessage(shortmsg);//what we set just above
+                        fname=contact.getfirstName();
+                        lname=contact.getlastName();
+                    }
+                }
+                SendJobToMainThread("mainFragment","");
+                addNotification(fname+" "+lname+" says:"+shortmsg);
+            }
         }
     }
-
-    //int LOGIN_LOADER_ID = 0;
-
     public void goToRegister(View view) {
-        registrationFragment fragment = new registrationFragment();
-        getFragmentManager().beginTransaction().replace(R.id.frame1, fragment, FRAG2_TAG).addToBackStack(null).commit();
+        if(!FindThreadByName("clientThread")){
+            startClientThread();
+        }
+       /* else{
+            try {
+                writeToStdin("exit");//send request to client() in native code running on separete thread to terminate itself
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            startClientThread();// need to restart client thread when registering new user otherwise cant send udp to server
+        }*/
+        rfragment = new registrationFragment();
+        getSupportFragmentManager().beginTransaction().remove(lfragment).add(R.id.frame1, rfragment, FRAG2_TAG).commit();
     }
-
+    public void backtologin(View view) {
+        getSupportFragmentManager().beginTransaction().remove(rfragment).add(R.id.frame1, lfragment, FRAG2_TAG).commit();
+    }
     public void login(View view) throws InterruptedException {
-        startClientThread();
+        if(!FindThreadByName("clientThread")){
+            startClientThread();
+        }
         Thread.sleep(100);//this is needed in order for the newly created thread abouve to have enough time to set up the stdin pipe to which we write with writeToStdin() function below. Otherwise write will block
         EditText UserName = (EditText) findViewById(R.id.usernameEntry);
         String unameSt = UserName.getText().toString();
@@ -417,7 +585,7 @@ public class MainActivity extends AppCompatActivity  {
         login = "Login::," + unameSt + "," + pswdSt + "\0";
         //saving self username
         SharedPreferences.Editor editor = getSharedPreferences("SelfInfo", MODE_PRIVATE).edit();
-        editor.putString("uname",unameSt);//save login info in sharedPrefs
+        editor.putString("selfUserName",unameSt);//save login info in sharedPrefs
         editor.commit();
         try {
             writeToStdin(login);//send request to client() in native code
@@ -430,6 +598,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     public void register(View view) {
+
         String FNAME = "fname";
         Bundle bundleForLoader = new Bundle();
         bundleForLoader.putString("RequestType", "Register");
@@ -453,17 +622,18 @@ public class MainActivity extends AppCompatActivity  {
         String emailSt = uname.getText().toString();
         bundleForLoader.putString("email", emailSt);
 
-       String request = "Register::," + unameSt + "," + pswdSt + "," + fname + "," + lname + "," + email + "\0";
+       String request = "Register::," + unameSt + "," + pswdSt + "," + fnameSt + "," + lnameSt + "," + emailSt + "\0";
         try {
             writeToStdin(request);//send request to client() in native code
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //LoaderManager.LoaderCallbacks<String> callback = MainActivity.this;
-        //getSupportLoaderManager().restartLoader(LOGIN_LOADER_ID, bundleForLoader, callback);
-
+        login = "Login::," + unameSt + "," + pswdSt + "\0";
+        //saving self username
+        SharedPreferences.Editor editor = getSharedPreferences("SelfInfo", MODE_PRIVATE).edit();
+        editor.putString("selfUserName",unameSt);//save login info in sharedPrefs
+        editor.commit();
     }
-
     public void allfriends() {
         String request = "allfriends" + "\0";
         try {
@@ -471,12 +641,7 @@ public class MainActivity extends AppCompatActivity  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // Bundle bundleForLoader = new Bundle();
-        // bundleForLoader.putString("RequestType", "AllFriends");
-               //LoaderManager.LoaderCallbacks<String> callback = MainActivity.this;
-        //getSupportLoaderManager().restartLoader(LOGIN_LOADER_ID, bundleForLoader, callback);
     }
-
     public void onlinefriends() {
         String request = "onlinefriends" + "\0";
         try {
@@ -484,10 +649,6 @@ public class MainActivity extends AppCompatActivity  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //Bundle bundleForLoader = new Bundle();
-        //bundleForLoader.putString("RequestType", "OnlineFriends");
-        //LoaderManager.LoaderCallbacks<String> callback = MainActivity.this;
-        //getSupportLoaderManager().restartLoader(LOGIN_LOADER_ID, bundleForLoader, callback);
     }
     public void InitiatePeerConnections(ArrayList<String> peers){
         String request = "friendaddress:";// + unameSt + "\0";
@@ -510,10 +671,10 @@ public class MainActivity extends AppCompatActivity  {
     }
     public final static String FRAG2_TAG = "FRAG2";
 
-    public void writeToStdin(String msg) throws IOException {
+    static public void writeToStdin(String msg) throws IOException {
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream("/data/data/com.google.sample.echo/files/infile");
+            out = new FileOutputStream("/data/data/com.google.sample.echo/infile");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -526,41 +687,11 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
-    public String readFromStdout() {
-        FileReader in = null;
-        try {
-            in = new FileReader("/data/data/com.google.sample.echo/files/outfile");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            while (true) {
-                if (in.ready()) {
-                    char[] cbuff = new char[200];
-                    int numread = in.read(cbuff);
-                    String response = String.valueOf(cbuff);
-                    String[] res = response.split("AbdulmanatKhabib:");// this is done cos there is a bug that sometimes returns garbage at the begining of the sent string
-                    if (res.length == 3) {
-                        return res[1];
-                    } else {
-                        continue;
-                    }
-                }
-                Thread.sleep(100);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return "error";
-    }
-
     public void PopulateContactsList() {
-        ArrayAdapter<MyContact> adapter = new contactArrayAdapter(this, 0, ((MyGlobals) getApplicationContext()).GetContacts());
+        contactsadapter = new contactArrayAdapter(this, 0, ((MyGlobals) getApplicationContext()).GetContacts());
         //Find list view and bind it with the custom adapter
         ListView listView = (ListView) findViewById(R.id.customListView);
-        listView.setAdapter(adapter);
+        listView.setAdapter(contactsadapter);
     }
     public void PopulateChatList() {
        // RemoveSharedPrefs("ChatHistory");
@@ -578,22 +709,10 @@ public class MainActivity extends AppCompatActivity  {
         chatList.setAdapter(chatAdapter);
     }
     public void PopulateRequestsList() {
-        requestsArrayAdapter requestAdapter= new requestsArrayAdapter(this, 0);
+        requestAdapter= new requestsArrayAdapter(this, 0);
         for(String peer:((MyGlobals) getApplicationContext()).GetPeerRequests()){
             requestAdapter.add(peer);
         }
-        /*SharedPreferences prefs = getSharedPreferences("PeerInfo", MODE_PRIVATE);
-        if (prefs.contains("requests")){
-            String request=prefs.getString("requests","");//requests from the peers
-            String[] requests = request.split(",");
-            for(String req:requests) {
-                requestAdapter.add(req);
-            }
-        }
-        requestAdapter.add("tmpvova");
-        requestAdapter.add("tmpilo");
-        requestAdapter.add("tmpasdvfb");        */
-
         TextView requests=(TextView)findViewById(R.id.requests);
         if(requestAdapter.isEmpty()) {
             requests.setText("");

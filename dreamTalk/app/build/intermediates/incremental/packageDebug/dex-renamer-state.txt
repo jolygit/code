@@ -1,4 +1,4 @@
-#Wed Apr 05 15:11:17 EDT 2017
-base.0=/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
+#Thu Apr 13 20:48:42 EDT 2017
+base.0=/Users/aj/code/dreamTalk/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
 renamed.0=classes.dex
-file.0=/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex
+file.0=/Users/aj/code/dreamTalk/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex

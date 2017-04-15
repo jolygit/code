@@ -85,7 +85,7 @@
 
     <Button
         android:text="Back to Login"
-        android:onClick="backtologinlogin"
+        android:onClick="backtologin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rlogin"

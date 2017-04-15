@@ -8,6 +8,7 @@
     android:background="@color/white">
 
     <EditText
+        android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
@@ -53,11 +54,12 @@
         app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
-        android:text="Add Contact by userid"
+        android:text="Enter User ID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
+        android:id="@+id/submit_notify"
         app:layout_constraintLeft_toLeftOf="@+id/typeuserid"
         app:layout_constraintBottom_toTopOf="@+id/typeuserid"
         android:layout_marginBottom="8dp" />
+
 </android.support.constraint.ConstraintLayout>

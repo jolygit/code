@@ -17,6 +17,9 @@ import com.google.sample.echo.data.MyContact;
  */
 import com.google.sample.echo.data.MyContact;
 public class MyGlobals extends Application {
+    private boolean readyForUpdates=false;
+    public boolean GetReadyForUpdates(){return readyForUpdates;};
+    public void SetReadyForUpdates(boolean ready){readyForUpdates=ready;};
     private String useridOfChatPeer;
     Handler handlermain;
     boolean udpholepunch=false;

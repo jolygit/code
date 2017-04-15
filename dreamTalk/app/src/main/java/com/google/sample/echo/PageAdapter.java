@@ -51,7 +51,7 @@ public class PageAdapter extends FragmentStatePagerAdapter {
             tv.setText("" + position);
         }
         else{
-            tv.setText("N");
+            tv.setText("");
         }
         return v;
     }

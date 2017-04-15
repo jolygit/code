@@ -1,6 +1,7 @@
 package com.google.sample.echo;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,13 @@ class contactArrayAdapter extends ArrayAdapter<MyContact> {
                     }
                 }
         );
-        Name.setText(String.valueOf(contact.getUsername())); //tmp hack
+        if(contact.getBold()){
+            Name.setTypeface(null,Typeface.BOLD);
+            Name.setText(String.valueOf(contact.getfirstName()+" "+contact.getlastName()+":  "+contact.getMessage()));//add part of the message to the usrname in the list
+        }
+        else{
+            Name.setText(String.valueOf(contact.getfirstName()+" "+contact.getlastName())); //tmp hack
+        }
         /*findViewById(R.id.call).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

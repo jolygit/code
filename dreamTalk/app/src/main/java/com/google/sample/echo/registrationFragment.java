@@ -1,6 +1,7 @@
 package com.google.sample.echo;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,7 @@ import android.view.ViewGroup;
 /**
  * Created by aj on 3/18/17.
  */
-public class registrationFragment extends android.app.Fragment {
+public class registrationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

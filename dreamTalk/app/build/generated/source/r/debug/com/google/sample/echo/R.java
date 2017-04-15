@@ -3142,13 +3142,13 @@ containing a value of this type.
         public static final int action_context_bar=0x7f0d006c;
         public static final int action_divider=0x7f0d00ae;
         public static final int action_image=0x7f0d00a8;
-        public static final int action_logout=0x7f0d00ce;
+        public static final int action_logout=0x7f0d00cf;
         public static final int action_menu_divider=0x7f0d0002;
         public static final int action_menu_presenter=0x7f0d0003;
         public static final int action_mode_bar=0x7f0d0068;
         public static final int action_mode_bar_stub=0x7f0d0067;
         public static final int action_mode_close_button=0x7f0d004a;
-        public static final int action_settings=0x7f0d00cd;
+        public static final int action_settings=0x7f0d00ce;
         public static final int action_text=0x7f0d00a9;
         public static final int actions=0x7f0d00b6;
         public static final int activity_chooser_view_content=0x7f0d004b;
@@ -3171,6 +3171,7 @@ containing a value of this type.
         public static final int chains=0x7f0d0016;
         public static final int chat=0x7f0d0082;
         public static final int chat1=0x7f0d0093;
+        public static final int chatname=0x7f0d00c7;
         public static final int checkbox=0x7f0d0062;
         public static final int chronometer=0x7f0d00b3;
         public static final int clip_horizontal=0x7f0d003a;
@@ -3221,8 +3222,8 @@ containing a value of this type.
         public static final int lname=0x7f0d0087;
         public static final int lnameEditText=0x7f0d0088;
         public static final int loginButton=0x7f0d007f;
-        public static final int main_layout=0x7f0d00c7;
-        public static final int masked=0x7f0d00cc;
+        public static final int main_layout=0x7f0d00c8;
+        public static final int masked=0x7f0d00cd;
         public static final int media_actions=0x7f0d00ad;
         public static final int middle=0x7f0d0040;
         public static final int mini=0x7f0d003e;
@@ -3235,7 +3236,7 @@ containing a value of this type.
         public static final int notification_main_column=0x7f0d00b0;
         public static final int notification_main_column_container=0x7f0d00af;
         public static final int packed=0x7f0d0012;
-        public static final int pager=0x7f0d00ca;
+        public static final int pager=0x7f0d00cb;
         public static final int parallax=0x7f0d0038;
         public static final int parent=0x7f0d000f;
         public static final int parentPanel=0x7f0d0054;
@@ -3297,14 +3298,14 @@ containing a value of this type.
         public static final int submenuarrow=0x7f0d0065;
         public static final int submit=0x7f0d00bf;
         public static final int submit_area=0x7f0d0076;
+        public static final int submit_notify=0x7f0d00c2;
         public static final int tabMode=0x7f0d001a;
-        public static final int tab_layout=0x7f0d00c9;
+        public static final int tab_layout=0x7f0d00ca;
         public static final int tabtext1=0x7f0d0099;
         public static final int text=0x7f0d00bc;
         public static final int text2=0x7f0d00ba;
         public static final int textSpacerNoButtons=0x7f0d0059;
         public static final int textSpacerNoTitle=0x7f0d0058;
-        public static final int textView=0x7f0d00c2;
         public static final int text_input_password_toggle=0x7f0d00a6;
         public static final int textinput_counter=0x7f0d0009;
         public static final int textinput_error=0x7f0d000a;
@@ -3314,7 +3315,7 @@ containing a value of this type.
         public static final int title=0x7f0d0051;
         public static final int titleDividerNoCustom=0x7f0d0060;
         public static final int title_template=0x7f0d005e;
-        public static final int toolbar=0x7f0d00c8;
+        public static final int toolbar=0x7f0d00c9;
         public static final int top=0x7f0d0037;
         public static final int topPanel=0x7f0d005d;
         public static final int touch_outside=0x7f0d009d;
@@ -3328,7 +3329,7 @@ containing a value of this type.
         public static final int useLogo=0x7f0d0020;
         public static final int usernameEntry=0x7f0d007c;
         public static final int view_offset_helper=0x7f0d000e;
-        public static final int visible=0x7f0d00cb;
+        public static final int visible=0x7f0d00cc;
         public static final int withText=0x7f0d0045;
         public static final int wrap=0x7f0d0011;
         public static final int wrap_content=0x7f0d002c;
@@ -3415,8 +3416,9 @@ containing a value of this type.
         public static final int select_dialog_multichoice_material=0x7f040043;
         public static final int select_dialog_singlechoice_material=0x7f040044;
         public static final int start=0x7f040045;
-        public static final int support_simple_spinner_dropdown_item=0x7f040046;
-        public static final int tmp=0x7f040047;
+        public static final int startchat=0x7f040046;
+        public static final int support_simple_spinner_dropdown_item=0x7f040047;
+        public static final int tmp=0x7f040048;
     }
     public static final class menu {
         public static final int menu_main=0x7f0e0000;

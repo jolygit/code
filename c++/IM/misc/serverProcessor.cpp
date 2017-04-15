@@ -83,12 +83,18 @@ int ServerProcessor::GetFriends(string& friends,int i,string& value){
   string uid=clUID[i];
   vector<string> tmpval;
   db.RetreiveValueForUsernameByKey(uid.c_str(),"friends",tmpval);
+  string semicolon=";";
   for (size_t i = 0; i < tmpval.size(); i++){
     string user=tmpval[i];
-    if(friends==string("allfriends")){
+    if(friends==string("allfriends")){//for each user send userid as well as first and last name 
+      //get first name and last name for user
+      string firstName;
+      db.RetreiveValueForUsernameByKeySimple(user.c_str(),"firstName",firstName);
+      string lastName;
+      db.RetreiveValueForUsernameByKeySimple(user.c_str(),"lastName",lastName);
       if(value.size())
 	value+=",";
-      value+=user;
+      value+=user+semicolon+firstName+semicolon+lastName;
     }
     else{
       if(userSet.count(user)){
@@ -114,15 +120,20 @@ int ServerProcessor::FriendRequest(string& fromUsername,string& toUsername){
   }
   return 0;
 }
-int ServerProcessor::ProcessFriendRequests(string& clUID){
+int ServerProcessor::ProcessFriendRequests(string& clUID,int sockfd){
   vector<string> tmpval;
   if(!db.RetreiveValueForUsernameByKey(clUID.c_str(),"friendRequests",tmpval))
     return 0;
+  string users;
+  string comma=",";
   for (size_t i = 0; i < tmpval.size(); i++){
-    string user=tmpval[i];
-    CreateFrinds(clUID,user);
-    CreateFrinds(user,clUID);
+    if(i==0)
+      users+=tmpval[i];
+    else
+      users+=(comma+tmpval[i]);
   }
+  string requests="requests";
+  SendResponse(sockfd,requests,users);
   return 0;
 }
 bool ServerProcessor::OnTheSameNet(string selfID,string fruid){
@@ -157,9 +168,10 @@ int ServerProcessor::GetAddress(string& fruid,string& address,bool udp,bool same
     return 1;
   }
 }
-int ServerProcessor::CreateFrinds(string& clUID,string& user){
+int ServerProcessor::CreateFriends(string& clUID,string& user,bool accept){
   if(!db.FindKeyValueInArrayOfDocument("username",clUID.c_str(),"friends","username",user.c_str())){
-    db.AddArrayKeyValueToDocument("username",clUID.c_str(),"friends","username",user.c_str());
+    if(accept)// request could be denied. In that case only remove it from the requests
+      db.AddArrayKeyValueToDocument("username",clUID.c_str(),"friends","username",user.c_str());
     if(db.FindKeyValueInArrayOfDocument("username",clUID.c_str(),"friendRequests","username",user.c_str()))
       db.RemoveArrayKeyValueFromDocument("username",clUID.c_str(),"friendRequests","username",user.c_str());
   }
@@ -213,8 +225,8 @@ int ServerProcessor::Login(vector<string> &strs,string & msg,char* clAddress){
   username=strs[1];
   password=strs[2];
   boost::trim_right(password);
-  printf("%s\n",password.c_str());
-  if(!db.Find2KeyValuePair("username" , username.c_str(), "password" ,password.c_str())){//"username",username.c_str(),"password",password.c_str())){
+  //printf("%s\n",password.c_str());
+  if(username.size()==0 || password.size()==0 || !db.Find2KeyValuePair("username" , username.c_str(), "password" ,password.c_str())){//"username",username.c_str(),"password",password.c_str())){
     msg="user name and password you have provided do not match try again or register.";
     return 1;
   }
@@ -229,6 +241,7 @@ int ServerProcessor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,ch
   string  str(buf);
   vector<string> strs;
   string msg("ok"),command;
+  int toreturn=1;
   if(str.compare(0,11,"Register::,")==0){//Register:
     boost::split(strs,str,boost::is_any_of(","));
     string  uidstr(strs[1]);
@@ -236,6 +249,7 @@ int ServerProcessor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,ch
       printf("registration ok\n");
       clUID=uidstr;
       command="registration";
+      toreturn=0;
     }
   }
   else if(str.compare(0,8,"Login::,")==0){//Register:
@@ -247,6 +261,7 @@ int ServerProcessor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,ch
       printf("login ok\n");
       clUID=uidstr;
       command="login";
+      toreturn=0;
     }
   }
   else{
@@ -254,5 +269,5 @@ int ServerProcessor::RegisterOrLogin(int sockfd,string& clUID,char const* buf,ch
     msg=string("should start with Register::, or Login::, try again");
   }
   SendResponse(sockfd,command,msg);
-  return 0;
+  return toreturn;
 }

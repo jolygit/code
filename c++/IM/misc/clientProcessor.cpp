@@ -38,8 +38,8 @@ int ClientProcessor::ResponseFromServer(char* buf){
     // printf("\n connecting to %s...\n",strs[5].c_str());
     // fflush(NULL);
     UDPHolePunch(strs[4],strs[3]);
-    if(record)
-      pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
+    // if(record)
+      // pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
       //int sockfd=TcpSimultaneousOpen(strs[4],strs[3],strs[5]);
     return 0;
   }

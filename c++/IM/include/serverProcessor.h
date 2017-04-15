@@ -33,10 +33,10 @@ public:
   int GetFriends(string& friends,int uid,string& value);
   int GetOnlineFriends(string& friends,string& uid,string& value);
   int FriendRequest(string& fromUsername,string& toUsername);
-  int ProcessFriendRequests(string& clUID);
+  int ProcessFriendRequests(string& clUID,int sockfd);
   int Register(vector<string> &strs,string & msg,char* clAddress);
   int Login(vector<string> &strs,string & msg,char* clAddress);
-  int CreateFrinds(string& clUID,string& user);
+  int CreateFriends(string& clUID,string& user,bool accept);
   int GetAddress(string& fruid,string& address,bool udp,bool sameNet);
   bool SendResponse(int fd,string& command,string& msg);
   bool                    clLogin[myOPEN_MAX];

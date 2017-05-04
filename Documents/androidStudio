@@ -28,6 +28,9 @@ hold Cmd+ alt +/
  a. adb devices -l # list connected devices
  b. adb shell # to go to the device shell, once there assuming the device is rooted do:
  c. run-as com.domain.yourapp (for example com.google.sample.echo) # this will take you to the data dir of the device see http://stackoverflow.com/questions/1043322/why-do-i-get-access-denied-to-data-folder-when-using-adb
+ d. to copy file from mac to rooted android do: Not that you cant direclty copy to the app folder i.e /data/data/...
+    1. adb push ~/Downloads/bach.wav /storage/sdcard0/ # i.e from mac address to android address
+    2. if you want to place it at the particlular app fileder then go to that folder by run-as com.domain.yourap and then cp from /storage/sdcard0/ to .
 10. to convert png to svg go to http://www.autotracer.org/
 11. To assign key shortcuts in android studio:
     To do that go to Preferences > Keymap then under Main menu > Navigate > Bookmarks you can set the desired keyboard shortcut for various action

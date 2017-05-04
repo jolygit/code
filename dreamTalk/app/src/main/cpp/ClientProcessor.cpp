@@ -108,7 +108,7 @@ int ClientProcessor::ResponseFromServer(char* buf){
         // printf("\n connecting to %s...\n",strs[5].c_str());
         // fflush(NULL);
         UDPHolePunch(strs[4],strs[3],strs[5]);
-        if(record)
+        if(true)//record
             pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
         //int sockfd=TcpSimultaneousOpen(strs[4],strs[3],strs[5]);
         return 1;
@@ -116,25 +116,22 @@ int ClientProcessor::ResponseFromServer(char* buf){
     else{
        // printf("AbdulmanatKhabib:%s AbdulmanatKhabib:\n",response.c_str());
     }
-    //printf("next command:");
-    //fflush(NULL);
     return 0;
 }
 int ClientProcessor::StartSendingSound(){
-    //sp.RecordAndSend(client[2].fd,fraddress);
+    audio_Proc.startRecording(client[2].fd,peerAddress);
     return 0;
 }
 int ClientProcessor::UDPHolePunch(string& friendPort,string& friendIp,string uid){
 
     string msg="udp hole punch\n";
-    struct sockaddr_in fraddress;
-    bzero(&fraddress, sizeof(fraddress));
-    fraddress.sin_family = AF_INET;
-    fraddress.sin_port = htons(atoi(friendPort.c_str()));
-    inet_pton(AF_INET, friendIp.c_str(), &fraddress.sin_addr);
-    fraddresses[uid]=fraddress;
+    bzero(&peerAddress, sizeof(peerAddress));
+    peerAddress.sin_family = AF_INET;
+    peerAddress.sin_port = htons(atoi(friendPort.c_str()));
+    inet_pton(AF_INET, friendIp.c_str(), &peerAddress.sin_addr);
+    fraddresses[uid]=peerAddress;
     udpHolePunchedForThisUid.insert(uid);
-    sendto(client[2].fd,(void*)msg.c_str(),msg.length(),0,(SA *) &fraddress,sizeof(fraddress));
+    sendto(client[2].fd,(void*)msg.c_str(),msg.length(),0,(SA *) &peerAddress,sizeof(peerAddress));
     //chat=true;
     return 0;
 }
@@ -261,15 +258,80 @@ int ClientProcessor::PortFromSocketFd(int socketFd,bool udp){
     }
     return 0;
 }
-string ClientProcessor::ProcessUdp(){
-    recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
+typedef struct  WAV_HEADER
+{
+    /* RIFF Chunk Descriptor */
+    uint8_t         RIFF[4];        // RIFF Header Magic header
+    uint32_t        ChunkSize;      // RIFF Chunk Size
+    uint8_t         WAVE[4];        // WAVE Header
+    /* "fmt" sub-chunk */
+    uint8_t         fmt[4];         // FMT header
+    uint32_t        Subchunk1Size;  // Size of the fmt chunk
+    uint16_t        AudioFormat;    // Audio format 1=PCM,6=mulaw,7=alaw,     257=IBM Mu-Law, 258=IBM A-Law, 259=ADPCM
+    uint16_t        NumOfChan;      // Number of channels 1=Mono 2=Sterio
+    uint32_t        SamplesPerSec;  // Sampling Frequency in Hz
+    uint32_t        bytesPerSec;    // bytes per second
+    uint16_t        blockAlign;     // 2=16-bit mono, 4=16-bit stereo
+    uint16_t        bitsPerSample;  // Number of bits per sample
+    /* "data" sub-chunk */
+    uint8_t         Subchunk2ID[4]; // "data"  string
+    uint32_t        Subchunk2Size;  // Sampled data length
+} wav_hdr;
+static char recording[4096*536];
+bool start=true;
+#define RECORDER_FRAMES (800)
+string ClientProcessor::ProcessUdp() {
+    if(false) {
+        if (start) {
+            start = false;
+            wav_hdr wavHeader;
+            int headerSize = sizeof(wav_hdr);
+            FILE *wavFile = fopen("/data/data/com.google.sample.echo/files/bach.wav", "r");
+            if (wavFile == nullptr) {
+                return "";
+            }
+            //Read the header
+            size_t bytesRead = fread(&wavHeader, 1, headerSize, wavFile);
+            if (bytesRead > 0) {
+                //Read the data
+                //uint16_t bytesPerSample = wavHeader.bitsPerSample / 8;      //Number     of bytes per sample
+                //uint64_t numSamples = wavHeader.ChunkSize / bytesPerSample; //How many samples are in the wav file?
+                static const uint16_t BUFFER_SIZE = 4096;
+                int8_t *buffer = new int8_t[BUFFER_SIZE];
+                int cnt = 0;
+                while ((bytesRead = fread(buffer, sizeof buffer[0],
+                                          BUFFER_SIZE / (sizeof buffer[0]), wavFile)) > 0) {
+                    for (int i = 0; i < bytesRead; i++) {
+                        recording[BUFFER_SIZE * cnt + i] = buffer[i];
+                    }
+                    cnt++;
+                    if (cnt > 535)
+                        break;
+                }
+                delete[] buffer;
+            }
+            fclose(wavFile);
+        }
+        short *buf1 = (short *) recording;
+        for (int j = 0; j < 700; j++) {
+            short *buf2 = buf1 + j * RECORDER_FRAMES;
+            audio_Proc.Play(buf2, 0);
+            usleep(100000);
+        }
+        recvfrom(client[2].fd, buf, MAXLINE, 0, (SA *) &udpservaddr, &udpsvlen);
+        return "";
+    }
+    int leng=recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
     string packet=buf;
     int l=packet.size();
-    if(packet.compare(0,6,"voice:")==0){
-        vector<string> msgs;
-        split(msgs,buf,(const char*)":");
-        packet.clear();//return zero str
+    if(leng>100){//packet.compare(0,6,"voice:")==0){
+        audio_Proc.Play((short*)buf,0); //buf is chat* i.e l is in bytes but in short we have 2 bytes i.e /2
+        //vector<string> msgs;
+        //split(msgs,buf,(const char*)":");
+        //packet.clear();//return zero str
+        bzero(buf,leng);
+        return "";
     }
     bzero(buf,l);//erasing previous data
-    return packet;//if it is a chat message return it else return empty str
+    return packet;//if it is a chat message return it else return empty str*/
 }

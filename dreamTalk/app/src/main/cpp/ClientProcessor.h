@@ -27,35 +27,13 @@
 #include	<errno.h>
 #include	<fcntl.h>		/* for nonblocking */
 #include    <poll.h>
-//#include "soundProcessor.h"
+#include "audioProcessor.h"
 #define	SA	struct sockaddr
 #define	MAXLINE		4096
 #define	BUFFSIZE	8192
 #define	SERV_PORT	9877
 #define printable(ch) (isprint((unsigned char) ch) ? ch : '#')
 using namespace std;
-/*extern "C"{
-void	 Sendto(int, const void *, size_t, int, const SA *, socklen_t);
-ssize_t	 Recvfrom(int, void *, size_t, int, SA *, socklen_t *);
-int Socket(int, int, int);
-void Bind(int, sockaddr const*, unsigned int);
-void Listen(int, int);
-int poll(pollfd*, unsigned long, int);
-int Accept(int, sockaddr*, unsigned int*);
-void err_quit(char const*, ...);
-void Close(int);
-void err_sys(char const*, ...);
-void Writen(int, void*, unsigned long);
-ssize_t Readn(int, void*, size_t);
-ssize_t Read(int, void*, size_t);
-void	 Connect(int, const SA *, socklen_t);
-void	 Inet_pton(int, const char *, void *);
-void	 str_cli(FILE *, int);
-void	 Setsockopt(int, int, int, const void *, socklen_t);
-char	*Fgets(char *, int, FILE *);
-char	*Sock_ntop(const SA *, socklen_t);
-void	 Getsockname(int, SA *, socklen_t *);
-}*/
 class ClientProcessor{
 public:
     ClientProcessor(bool _record=true){
@@ -65,7 +43,7 @@ public:
         registeredLogedin=false;
         record=_record;
         registrationFieldCount=0;
-        //sp.SetUpPlayer();
+        audio_Proc.SetUp();
     }
     int InterfaceAddress();
     int ResponseFromServer(char* buf);
@@ -98,7 +76,8 @@ public:
     set<string>                     udpHolePunchedForThisUid;
     string                interfaceAddress;
 private:
-    //SoundProcessor sp;
+    struct sockaddr_in peerAddress;
+    AudioProcessor audio_Proc;
     string selfTcpAddress,selfUdpAddress;
     string invitefriend,friendaddress;
     string allfriends,onlinefriends;

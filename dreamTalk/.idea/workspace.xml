@@ -14,11 +14,13 @@
     <bookmark url="file://$PROJECT_DIR$/app/src/main/cpp/client.cpp" line="205" />
     <bookmark url="file://$PROJECT_DIR$/app/src/main/cpp/audioProcessor.cpp" line="244" />
     <bookmark url="file://$PROJECT_DIR$/app/src/main/cpp/audioProcessor.cpp" line="63" />
-    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="474" />
-    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="652" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="479" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="657" />
     <bookmark url="file://$PROJECT_DIR$/app/src/main/cpp/ClientProcessor.cpp" line="343" />
-    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="108" />
-    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="113" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="111" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="116" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="207" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" line="87" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="486b427f-2846-402e-b317-8def8ae78c20" name="Default" comment="" />
@@ -53,21 +55,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7380">
-              <caret line="533" column="94" selection-start-line="533" selection-start-column="8" selection-end-line="533" selection-end-column="94" />
+            <state relative-caret-position="307">
+              <caret line="206" column="129" selection-start-line="206" selection-start-column="129" selection-end-line="206" selection-end-column="129" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="incommingCallActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="client.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/cpp/client.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="485">
+              <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
+              <folding>
+                <element signature="e#37#89#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="incommingCallActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/incommingCallActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="645">
-              <caret line="69" column="28" selection-start-line="69" selection-start-column="28" selection-end-line="69" selection-end-column="28" />
+            <state relative-caret-position="60">
+              <caret line="28" column="1" selection-start-line="28" selection-start-column="1" selection-end-line="28" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -78,7 +92,11 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="270">
               <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#831#832#0" expanded="false" />
+                <element signature="e#868#869#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1818,14 +1836,14 @@
         <option value="$PROJECT_DIR$/app/src/main/cpp/ClientProcessor.cpp" />
         <option value="$PROJECT_DIR$/app/src/main/cpp/audioProcessor.cpp" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/outgoingCallActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/incommingCallActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="163" />
-    <option name="y" value="36" />
+    <option name="x" value="166" />
+    <option name="y" value="43" />
     <option name="width" value="2278" />
     <option name="height" value="1476" />
   </component>
@@ -2337,7 +2355,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="163" y="36" width="2278" height="1476" extended-state="0" />
+    <frame x="166" y="43" width="2278" height="1476" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -2363,7 +2381,7 @@
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.50419164" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2382353" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2382353" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -2396,7 +2414,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java</url>
-          <line>781</line>
+          <line>786</line>
           <properties />
           <option name="timeStamp" value="286" />
         </line-breakpoint>
@@ -2414,15 +2432,21 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java</url>
-          <line>108</line>
+          <line>111</line>
           <properties />
           <option name="timeStamp" value="587" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java</url>
-          <line>95</line>
+          <line>98</line>
           <properties />
           <option name="timeStamp" value="591" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java</url>
+          <line>206</line>
+          <properties />
+          <option name="timeStamp" value="635" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/app/src/main/cpp/audioProcessor.cpp</url>
@@ -2435,7 +2459,7 @@
           <option name="timeStamp" value="599" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="624" />
+      <option name="time" value="638" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="AndroidRunConfigurationType">
@@ -2697,6 +2721,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="269">
           <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2780,6 +2805,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="846">
           <caret line="99" column="7" selection-start-line="99" selection-start-column="4" selection-end-line="99" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2787,16 +2813,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
           <caret line="2244" column="0" selection-start-line="2244" selection-start-column="0" selection-end-line="2244" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/client.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="130" column="0" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
-          <folding>
-            <element signature="e#37#89#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2826,26 +2842,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/outgoingCallActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7380">
-          <caret line="533" column="94" selection-start-line="533" selection-start-column="8" selection-end-line="533" selection-end-column="94" />
-          <folding />
+        <state relative-caret-position="270">
+          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#831#832#0" expanded="false" />
+            <element signature="e#868#869#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/cpp/client.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="485">
+          <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
+          <folding>
+            <element signature="e#37#89#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/incommingCallActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
-          <caret line="69" column="28" selection-start-line="69" selection-start-column="28" selection-end-line="69" selection-end-column="28" />
+        <state relative-caret-position="60">
+          <caret line="28" column="1" selection-start-line="28" selection-start-column="1" selection-end-line="28" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/outgoingCallActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/google/sample/echo/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
+        <state relative-caret-position="307">
+          <caret line="206" column="129" selection-start-line="206" selection-start-column="129" selection-end-line="206" selection-end-column="129" />
           <folding />
         </state>
       </provider>

@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity  {
         //bindService(new Intent(this, ServerConnectionService.class), mConnection,Context.BIND_AUTO_CREATE);
 
     }
+    private void showToast(String msgToPost){
+        Toast.makeText(this, msgToPost, Toast.LENGTH_SHORT).show();
+    }
     class ChatMainHandler extends Handler {
         private static final String TAG = "from handler:";
 
@@ -79,9 +82,9 @@ public class MainActivity extends AppCompatActivity  {
         public void handleMessage(Message msg) {
             Bundle bundleForLoader = msg.getData();
             if(bundleForLoader.containsKey("toastMsg")) {
-                String RequestError = bundleForLoader.getString("toastMsg");
-                if (RequestError.length() > 0) {
-                    //Toast.makeText(this, RequestError, Toast.LENGTH_SHORT).show();
+                String msgToPost = bundleForLoader.getString("toastMsg");
+                if (msgToPost.length() > 0) {
+                    showToast(msgToPost);
                 }
             }
             else if(bundleForLoader.containsKey("chat")){
@@ -201,7 +204,8 @@ public class MainActivity extends AppCompatActivity  {
 // this is called from the native client() function when chat text need to be passed to the main thread
     public void ProcessRequest(String str) {
         String[] resp = str.split(":");
-        if(resp.length == 4 && resp[2].equals("invitefriend") && resp[3].equals("request failed because user does not exist. Try again.")){//
+        if(resp.length == 4 && resp[2].equals("invitefriend") ){//&& resp[3].equals("request failed because user does not exist")
+            SendJobToHandler("toastMsg",resp[3],"MainActivity");
            // TextView UserName = (TextView) findViewById(R.id.submit_notify);
            // UserName.setText("User does not exit. Try again!");
             //UserName.clearFocus();
@@ -435,6 +439,7 @@ public class MainActivity extends AppCompatActivity  {
         String dir=getApplicationContext().getApplicationInfo().dataDir;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);//start
+        //this is to wake the phone up when incomming call happens
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |

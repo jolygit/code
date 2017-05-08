@@ -155,6 +155,7 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//j
                 else if (i == 0) { //stdin
                     string tmp=buf;
                     string nextCommand=tmp.substr(0,n-1);
+
                     if(tmp==exitstr){//need to finish the thread
                         close(serversocketfd);
                         close(udpfd);
@@ -162,6 +163,33 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//j
                         clProcessor.clLogin[i]=false;
                         clProcessor.clUID[i]="";
                         return 0;
+                    }
+                    else if(tmp.compare(0,17,"IncomingVoiceFrom")==0 || tmp.compare(0,17,"CanceledVoiceFrom")==0 || tmp.compare(0,17,"RejectedVoiceFrom")==0 || tmp.compare(0,17,"AcceptedVoiceFrom")==0 || tmp.compare(0,15,"HangupVoiceFrom")==0){
+                        clProcessor.OutgoingvoiceCall=tmp;
+                        vector<string> strs;
+                        string colon=":";
+                        clProcessor.split(strs,(char*)tmp.c_str(),(const char*)":");
+                        string msg="";
+                        for(int u=0;u<strs.size()-1;u++) //all but the first and last token is the message. since users could have used : in their message we have to have the loop below
+                            if(u!=0)
+                                msg+=colon+strs[u];
+                            else
+                                msg=strs[u];
+                        string UseridCombo=strs[strs.size()-1];//last token is combination of userIDs to whom to send message
+                        vector<string> userids;
+                        clProcessor.split(userids,(char*)UseridCombo.c_str(),(const char*)"_");// this token is chosen to reduce the chance that it will be part of the chat conversation
+                        for(int u=0;u<userids.size();u++) {// sending to all the destinations
+                            string uid=userids[u];
+                            if (clProcessor.udpHolePunchedForThisUid.find(uid) !=clProcessor.udpHolePunchedForThisUid.end()) { //make sure udp hole is punched for uid
+                                  struct sockaddr_in fraddress = clProcessor.fraddresses[uid];
+                                    sendto(clProcessor.client[2].fd, (void *) msg.c_str(),msg.size(), 0, (SA *) &fraddress, sizeof(fraddress));
+                                clProcessor.OutgoingvoiceCall="udp hole punch\n";//resettting it to the defauld
+                            }
+                        }
+                        if(tmp.compare(0,17,"AcceptedVoiceFrom")==0)//when we accept we start recording sound and sending it over udp
+                            clProcessor.StartVoiceConversation();
+                        if(tmp.compare(0,15,"HangupVoiceFrom")==0)
+                            clProcessor.StopVoiceConversation();
                     }
                     else if(tmp.compare(0,7,"Login::")==0 || tmp.compare(0,10,"Register::")==0){
                         clProcessor.Register(nextCommand);

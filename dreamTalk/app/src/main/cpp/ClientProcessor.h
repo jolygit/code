@@ -36,14 +36,15 @@
 using namespace std;
 class ClientProcessor{
 public:
-    ClientProcessor(bool _record=true){
+    ClientProcessor(bool _voiceConverstation=false){
         selfaddress=false;invitefriend="invitefriend";friendaddress="friendaddress";
         allfriends="allfriends";onlinefriends="onlinefriends";
         registration="registration";login="login";registrationlogin="registrationlogin";
         registeredLogedin=false;
-        record=_record;
+        OutgoingvoiceCall="udp hole punch\n";//this will be overwritten
+        //voiceConverstation=_voiceConverstation;
         registrationFieldCount=0;
-        audio_Proc.SetUp();
+        //audio_Proc.SetUp();
     }
     int InterfaceAddress();
     int ResponseFromServer(char* buf);
@@ -55,6 +56,8 @@ public:
     int Register(string& nextCommand);
     int PortFromSocketFd(int socketFd,bool udp);
     int StartSendingSound();
+    int StartVoiceConversation();
+    int StopVoiceConversation();
     void split(std::vector<string> &strs,char* str,const char* delim);
     static void* Sound_wrapper(void* object)
     {
@@ -74,6 +77,7 @@ public:
     bool                  chat=false;
     map<string,struct sockaddr_in>	fraddresses;
     set<string>                     udpHolePunchedForThisUid;
+    string                OutgoingvoiceCall;
     string                interfaceAddress;
 private:
     struct sockaddr_in peerAddress;
@@ -94,5 +98,6 @@ private:
     string startudp="startudp:from:";
     char			buf[MAXLINE];
     pthread_t	tid;
-    bool  record;
+    //bool  voiceConverstation;
+    //bool firstPacket=true;
 };

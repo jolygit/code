@@ -60,6 +60,10 @@
         "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/layout/select_dialog_item_material.xml"
     },
     {
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/layout/activity_incomming_call.xml",
+        "source": "/Users/aj/code/dreamTalk/app/src/main/res/layout/activity_incomming_call.xml"
+    },
+    {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/layout/requestfragment.xml",
         "source": "/Users/aj/code/dreamTalk/app/src/main/res/layout/requestfragment.xml"
     },
@@ -78,6 +82,10 @@
     {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/layout/abc_expanded_menu_layout.xml",
         "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/layout/abc_expanded_menu_layout.xml"
+    },
+    {
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/layout/activity_outgoing_call.xml",
+        "source": "/Users/aj/code/dreamTalk/app/src/main/res/layout/activity_outgoing_call.xml"
     },
     {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/layout/tmp.xml",

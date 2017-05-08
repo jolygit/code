@@ -108,8 +108,8 @@ int ClientProcessor::ResponseFromServer(char* buf){
         // printf("\n connecting to %s...\n",strs[5].c_str());
         // fflush(NULL);
         UDPHolePunch(strs[4],strs[3],strs[5]);
-        if(true)//record
-            pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
+        //if(true)//record
+         //   pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
         //int sockfd=TcpSimultaneousOpen(strs[4],strs[3],strs[5]);
         return 1;
     }
@@ -122,9 +122,15 @@ int ClientProcessor::StartSendingSound(){
     audio_Proc.startRecording(client[2].fd,peerAddress);
     return 0;
 }
+int ClientProcessor::StartVoiceConversation() {
+    audio_Proc.SetUp();
+    sleep(1);
+    int result=pthread_create(&tid, NULL, Sound_wrapper, this);
+    return result;
+}
 int ClientProcessor::UDPHolePunch(string& friendPort,string& friendIp,string uid){
 
-    string msg="udp hole punch\n";
+    string msg=OutgoingvoiceCall;//"udp hole punch\n";
     bzero(&peerAddress, sizeof(peerAddress));
     peerAddress.sin_family = AF_INET;
     peerAddress.sin_port = htons(atoi(friendPort.c_str()));
@@ -132,6 +138,7 @@ int ClientProcessor::UDPHolePunch(string& friendPort,string& friendIp,string uid
     fraddresses[uid]=peerAddress;
     udpHolePunchedForThisUid.insert(uid);
     sendto(client[2].fd,(void*)msg.c_str(),msg.length(),0,(SA *) &peerAddress,sizeof(peerAddress));
+    OutgoingvoiceCall="udp hole punch\n";//reset to defauld
     //chat=true;
     return 0;
 }
@@ -332,6 +339,21 @@ string ClientProcessor::ProcessUdp() {
         bzero(buf,leng);
         return "";
     }
-    bzero(buf,l);//erasing previous data
+    else if(packet.compare(0,17,"IncomingVoiceFrom")==0 || packet.compare(0,17,"CanceledVoiceFrom")==0 || packet.compare(0,17,"RejectedVoiceFrom")==0 || packet.compare(0,17,"AcceptedVoiceFrom")==0 || packet.compare(0,15,"HangupVoiceFrom")==0){
+        if(packet.compare(0,17,"AcceptedVoiceFrom")==0){//when we got accepted we start recording sound and sending it over udp
+            StartVoiceConversation();
+        }
+        else if(packet.compare(0,15,"HangupVoiceFrom")==0)
+            StopVoiceConversation();
+        bzero(buf, leng);
+        return packet;
+    }
+    bzero(buf, l);//erasing previous data
     return packet;//if it is a chat message return it else return empty str*/
+}
+int ClientProcessor::StopVoiceConversation(){
+    //audio_Proc.stopRecording();
+    audio_Proc.shutdown();
+    int result=pthread_kill(tid,9);
+    return result;
 }

@@ -32,16 +32,16 @@
         "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/design/25.2.0/res/drawable/navigation_empty_icon.xml"
     },
     {
-        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/ic_gray.xml",
-        "source": "/Users/aj/code/dreamTalk/app/src/main/res/drawable/ic_gray.xml"
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/ic_reject.xml",
+        "source": "/Users/aj/code/dreamTalk/app/src/main/res/drawable/ic_reject.xml"
     },
     {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/abc_text_cursor_material.xml",
         "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/drawable/abc_text_cursor_material.xml"
     },
     {
-        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/ic_reject.xml",
-        "source": "/Users/aj/code/dreamTalk/app/src/main/res/drawable/ic_reject.xml"
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/ic_gray.xml",
+        "source": "/Users/aj/code/dreamTalk/app/src/main/res/drawable/ic_gray.xml"
     },
     {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/abc_list_selector_background_transition_holo_light.xml",
@@ -66,6 +66,10 @@
     {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/abc_switch_thumb_material.xml",
         "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/drawable/abc_switch_thumb_material.xml"
+    },
+    {
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/acceptrectange.xml",
+        "source": "/Users/aj/code/dreamTalk/app/src/main/res/drawable/acceptrectange.xml"
     },
     {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/abc_ic_voice_search_api_material.xml",
@@ -170,6 +174,10 @@
     {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/abc_ic_search_api_material.xml",
         "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/drawable/abc_ic_search_api_material.xml"
+    },
+    {
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/rejectrectangle.xml",
+        "source": "/Users/aj/code/dreamTalk/app/src/main/res/drawable/rejectrectangle.xml"
     },
     {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/drawable/abc_cab_background_internal_bg.xml",

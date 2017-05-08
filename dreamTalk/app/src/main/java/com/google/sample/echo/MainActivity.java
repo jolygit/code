@@ -20,8 +20,10 @@ import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,6 +41,7 @@ import android.support.v7.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity  {
     String chatusers;// are peer user ids to whom the chat is dirrected
+    String namesToShow="   ";
     registrationFragment rfragment;
     loginFragment lfragment;
     requestsArrayAdapter requestAdapter;
@@ -88,6 +91,26 @@ public class MainActivity extends AppCompatActivity  {
                 String chatmsg=tokens[2];
                 AppendToChatScreen(senderUserid,chatmsg);
 
+            }
+            else if(bundleForLoader.containsKey("IncomingVoiceFrom")){
+                String[] tokens=bundleForLoader.getString("IncomingVoiceFrom").split(":");
+                String uid=tokens[1];
+                ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
+                String fullName="";
+                for (int j = 0; j < MyContacts.size(); j++) {
+                    if (MyContacts.get(j).getUsername().equals(uid)) {
+                        fullName=MyContacts.get(j).getfirstName()+" "+MyContacts.get(j).getlastName();
+                        break;
+                    }
+                }
+                VoiceCallNotification(fullName,uid,"incomming");
+            }
+            else if(bundleForLoader.containsKey("HangupVoiceFrom")){
+                ((MyGlobals) getApplicationContext()).SetTalking(false);
+                Intent mainIntent = new Intent("android.intent.category.LAUNCHER");
+                mainIntent.setClassName("com.google.sample.echo", "com.google.sample.echo.MainActivity");
+                mainIntent.putExtra("hangup","");
+                startActivity(mainIntent);//primary reason is to refresh the call hangup button
             }
             else if(bundleForLoader.containsKey("mainFragment") && inChat==false){
                 ((MyGlobals) getApplicationContext()).SetReadyForUpdates(true);
@@ -191,7 +214,7 @@ public class MainActivity extends AppCompatActivity  {
                 ((MyGlobals) getApplicationContext()).GetPeerRequests().add(usr);
             }
             if(((MyGlobals) getApplicationContext()).GetReadyForUpdates()) {
-                SendJobToMainThread("updateFragments", str);
+                SendJobToHandler("updateFragments", str,"MainActivity");
             }
         }
         else if(resp.length == 4 && resp[2].equals("invitefriend") && resp[3].equals("request filed sucessfully")){
@@ -210,7 +233,7 @@ public class MainActivity extends AppCompatActivity  {
             CreateAllFriendsList(frlistSt,true);
             onlinefriends();
         } else if (resp.length == 3 && resp[2].equals("allfriends")) {
-            SendJobToMainThread("mainFragment",str);//after initial registration friends list is empty
+            SendJobToHandler("mainFragment",str,"MainActivity");//after initial registration friends list is empty
         }
         else if (resp.length > 2 && resp[2].equals("onlinefriends")) {
             if (resp.length == 4) {
@@ -220,13 +243,28 @@ public class MainActivity extends AppCompatActivity  {
             else{
                 CreateOnlineFriendsStatus("");
             }
-            SendJobToMainThread("mainFragment",str);
+            SendJobToHandler("mainFragment",str,"MainActivity");
         }
         else if((resp.length >=2 && resp[0].equals("chat"))){ // chat:<sourceUserName>:chatmsg
-            SendJobToMainThread("chat",str);
+            SendJobToHandler("chat",str,"MainActivity");
+        }
+        else if(resp[0].equals("IncomingVoiceFrom")){
+            SendJobToHandler("IncomingVoiceFrom",str,"MainActivity");
+        }
+        else if(resp[0].equals("HangupVoiceFrom")){
+            SendJobToHandler("HangupVoiceFrom",str,"MainActivity");
+        }
+        else if(resp[0].equals("CanceledVoiceFrom")){
+            SendJobToHandler("CanceledVoiceFrom",str,"incommingCallActivity");
+        }
+        else if(resp[0].equals("RejectedVoiceFrom")){
+            SendJobToHandler("RejectedVoiceFrom",str,"outgoingCallActivity");
+        }
+        else if(resp[0].equals("AcceptedVoiceFrom")){
+            SendJobToHandler("AcceptedVoiceFrom",str,"outgoingCallActivity");
         }
         else{
-            SendJobToMainThread("toastMsg",str);
+            SendJobToHandler("toastMsg",str,"MainActivity");
         }
     }
     public void CreateAllFriendsList(String csvlist,boolean addtoshare){
@@ -273,17 +311,27 @@ public class MainActivity extends AppCompatActivity  {
         editor.putString("onlinefriends",csvonlinelist);
         editor.commit();
     }
-    public void SendJobToMainThread(String job,String str) {
-        Handler mainhd = ((MyGlobals) getApplicationContext()).getHandlerMain();
-        Message msg = mainhd.obtainMessage();
+    public void SendJobToHandler(String job,String str,String whichActivity) {
+        Handler handler=null;
+        if(whichActivity.equals("incommingCallActivity")){
+            handler= ((MyGlobals) getApplicationContext()).getHandlerIncommingCallActivity();
+        }
+        else if(whichActivity.equals("MainActivity")) {
+            handler= ((MyGlobals) getApplicationContext()).getHandlerMain();
+        }
+        else if(whichActivity.equals("outgoingCallActivity")) {
+            handler= ((MyGlobals) getApplicationContext()).getHandlerOutgoingCallActivity();
+        }
+        Message msg = handler.obtainMessage();
         Bundle bundleForLoader = new Bundle();
         bundleForLoader.putString(job, str);
         msg.what = 0;
         msg.setData(bundleForLoader);
-        mainhd.sendMessage(msg);
+        handler.sendMessage(msg);
     }
     @Override
     protected void onResume() {
+
         super.onResume();
     }
 
@@ -381,12 +429,16 @@ public class MainActivity extends AppCompatActivity  {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       // RemoveSharedPrefs("PeerInfo");
+        // RemoveSharedPrefs("PeerInfo");
        // RemoveSharedPrefs("SelfInfo");
        // RemoveSharedPrefs("ChatHistory");
         String dir=getApplicationContext().getApplicationInfo().dataDir;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);//start
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         //RemoveSharedPrefs();
         ((MyGlobals) getApplicationContext()).setHandlerMain(new ChatMainHandler(this.getMainLooper()));
         if(!FindThreadByName("clientThread")) {//make sure you dont create thread that connects to server twice!
@@ -417,6 +469,43 @@ public class MainActivity extends AppCompatActivity  {
             CreateAllFriendsList(csvfriends,false);
             onlinefriends();//update online friends by requesting the list from the server
         }
+        Intent intent = getIntent();
+        String message = intent.getStringExtra("uid");
+        if(message!=null){
+            try {
+                ((MyGlobals) getApplicationContext()).SetTalking(true);
+                goToChatAfterAcceptingCall(message);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        String hangup = intent.getStringExtra("hangup");
+        if(hangup!=null){
+            Toast.makeText(this, "Call was terminated...", Toast.LENGTH_SHORT).show();
+        }
+        String rejected = intent.getStringExtra("rejected");
+        if(rejected!=null){
+            Toast.makeText(this, "Call was rejected...", Toast.LENGTH_SHORT).show();
+        }
+        String notanswered = intent.getStringExtra("notanswered");
+        if(notanswered!=null){
+            Toast.makeText(this, "Call not answered...", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public int id=1;
+    public void VoiceCallNotification(String fullname,String uid,String direction) {
+        Intent notificationIntent = new Intent("android.intent.category.LAUNCHER");
+        notificationIntent.putExtra("fullname",fullname);
+        notificationIntent.putExtra("uid",uid);
+        if(direction.equals("incomming")) {
+            notificationIntent.setClassName("com.google.sample.echo", "com.google.sample.echo.incommingCallActivity");
+        }
+        else if(direction.equals("outgoing")){
+            notificationIntent.setClassName("com.google.sample.echo", "com.google.sample.echo.outgoingCallActivity");
+        }
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(notificationIntent);
     }
     public void addNotification(String msg) {
         android.support.v4.app.NotificationCompat.Builder builder =
@@ -440,13 +529,14 @@ public class MainActivity extends AppCompatActivity  {
         NotificationManager manager = (NotificationManager) getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
     }
+    //this is called when we just want to chat
     public void goToChat(View view) throws InterruptedException {
         ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
         int selectCont = -1;
         ArrayList<String> peers = new ArrayList<String>();
         String usersBunch="";
+        namesToShow="   ";
         chatusers="";
-        String namesToShow="   ";
         for (int j = 0; j < MyContacts.size(); j++) {
             if (MyContacts.get(j).getSelected() && MyContacts.get(j).getStatus()) {
                 selectCont = j;
@@ -469,6 +559,7 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         }
+        ((MyGlobals) getApplicationContext()).SetChatUsers(chatusers);
         if (selectCont >= 0) {
             SharedPreferences prefs = getSharedPreferences("SelfInfo", MODE_PRIVATE);
             usersBunch+=prefs.getString("uname","");//create unique key for retreival of chat history
@@ -492,7 +583,96 @@ public class MainActivity extends AppCompatActivity  {
             Toast.makeText(MainActivity.this, "please select an active user!", Toast.LENGTH_SHORT).show();
         }
     }
+    //this is called when we accept voice call and go to chat as well
+    public void goToChatAfterAcceptingCall(String uid) throws InterruptedException {
 
+        ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
+        int selectCont = -1;
+        ArrayList<String> peers = new ArrayList<String>();
+        String usersBunch="";
+        chatusers="";
+        namesToShow="   ";
+        for (int j = 0; j < MyContacts.size(); j++) {
+            if (MyContacts.get(j).getUsername().equals(uid)) {
+                selectCont = j;
+                String uname=MyContacts.get(j).getUsername();
+                peers.add(uname);
+                usersBunch+=uname;
+                String fullName=MyContacts.get(j).getfirstName()+" "+MyContacts.get(j).getlastName();
+                if(chatusers==null){
+                    chatusers=uname;
+                }
+                else{
+                    chatusers+="_";//this is a token that will be used in case of a multiuser chat, by splitting with this token we can retreive the userids
+                    chatusers+=uname;
+                }
+                if(namesToShow=="   "){
+                    namesToShow+=fullName;
+                }
+                else {
+                    namesToShow += "," + fullName;
+                }
+            }
+        }
+        ((MyGlobals) getApplicationContext()).SetChatUsers(chatusers);
+        if (selectCont >= 0) {
+            SharedPreferences prefs = getSharedPreferences("SelfInfo", MODE_PRIVATE);
+            usersBunch+=prefs.getString("uname","");//create unique key for retreival of chat history
+            ((MyGlobals) getApplicationContext()).SetUserIdOfChatPeer(usersBunch);
+            inChat=true;
+            for (MyContact contact: MyContacts) {
+                if(contact.getUsername().equals(usersBunch)){//
+                    contact.setBold(false);
+                    contact.setMessage("");
+                }
+            }
+            //creating the chat screen
+            setContentView(R.layout.startchat);//start
+            TextView nameToShow=(TextView)findViewById(R.id.chatname);
+            nameToShow.setText(" voice call with: "+namesToShow);
+            ((MyGlobals) getApplicationContext()).SetUdpHolePunch(true);
+            Fragment fragment = new chatFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame1, fragment, FRAG2_TAG).addToBackStack(null).commit();
+        } else {
+            Toast.makeText(MainActivity.this, "Something is wrong!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    //this is called when we initiate voice connection
+    public boolean goToVoiceChat(View view) throws InterruptedException {
+        boolean talking=((MyGlobals) getApplicationContext()).GetTalking();
+        if (!talking){
+            goToChat(view);
+            if(chatusers.isEmpty()) {
+                //Toast.makeText(MainActivity.this, "please select an active user!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            String[] tokens = chatusers.split("_");
+            VoiceCallNotification(namesToShow.trim(), tokens[1], "outgoing");
+            SharedPreferences prefs = getSharedPreferences("SelfInfo", MODE_PRIVATE);
+            String selfUserName = prefs.getString("selfUserName", "error");
+            String FullCall = "IncomingVoiceFrom:" + selfUserName + ":IncomingVoiceFrom:" + chatusers;//IncomingVoiceFrom serves as a message
+            try {
+                writeToStdin(FullCall);//send request to client() in native code
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else{//here we want to finish conversation
+            Button CallOrHangupButton=(Button)findViewById(R.id.voiceCall);
+            CallOrHangupButton.setBackgroundResource(R.drawable.acceptrectange);
+            CallOrHangupButton.setText("Call");
+            ((MyGlobals) getApplicationContext()).SetTalking(false);
+            SharedPreferences prefs = getSharedPreferences("SelfInfo", MODE_PRIVATE);
+            String selfUserName = prefs.getString("selfUserName", "error");
+            String FullCall = "HangupVoiceFrom:" + selfUserName + ":HangupVoiceFrom:" + chatusers;//IncomingVoiceFrom serves as a message
+            try {
+                writeToStdin(FullCall);//send request to client() in native code
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
     public void AddMsgToHistory(String senderUid,String chatmsg){
         SharedPreferences prefs = getSharedPreferences("ChatHistory", MODE_PRIVATE);
         //String uid=((MyGlobals) getApplicationContext()).GetUserIdOfChatPeer();
@@ -550,7 +730,7 @@ public class MainActivity extends AppCompatActivity  {
                         lname=contact.getlastName();
                     }
                 }
-                SendJobToMainThread("mainFragment","");
+                SendJobToHandler("mainFragment","","MainActivity");
                 addNotification(fname+" "+lname+" says:"+shortmsg);
             }
         }

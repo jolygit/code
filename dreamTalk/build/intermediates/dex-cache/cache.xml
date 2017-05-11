@@ -75,6 +75,15 @@
     </item>
     <item
         is-multidex="false"
+        jar="/Users/aj/.gradle/caches/modules-2/files-2.1/javax.activation/activation/1.1/e6cb541461c2834bdea3eb920f1884d1eb508b50/activation-1.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="e6cb541461c2834bdea3eb920f1884d1eb508b50">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/activation-1.1_15fc191764f08d4d4891fbac85a99a4bf39ff051.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/exploded-aar/com.android.support/support-compat/25.2.0/jars/classes.jar"
         jumboMode="false"
         optimize="true"
@@ -99,6 +108,15 @@
         revision="23.0.2"
         sha1="ea6a989b83d19b1b461281e0475a6cd6514897f8">
         <dex dex="/Users/aj/code/android examples/Audio-Echo1/app/build/intermediates/pre-dexed/debug/com.android.support-design-25.2.0_024527afd3fa048d5eec648f05bfda52c65d8a2a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/.gradle/caches/modules-2/files-2.1/javax.mail/mail/1.4.7/9add058589d5d85adeb625859bf2c5eeaaedf12d/mail-1.4.7.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="9add058589d5d85adeb625859bf2c5eeaaedf12d">
+        <dex dex="/Users/aj/code/dreamTalk/app/build/intermediates/pre-dexed/debug/mail-1.4.7_bca83e92faa83dd83972df723fd39f5e30c4f4d3.jar" />
     </item>
     <item
         is-multidex="false"

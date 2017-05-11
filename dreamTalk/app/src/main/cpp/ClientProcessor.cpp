@@ -216,6 +216,7 @@ int ClientProcessor::Register(string& nextCommand){
     }
     int sockfd=client[1].fd;
     writen(sockfd,(void*)nextCommand.c_str(),nextCommand.length()+1);
+    startudp="startudp:from:";
     startudp+=SelfUsername();
     startudp+=colon+selfUdpAddress;
     udpsvlen=sizeof(udpservaddr);

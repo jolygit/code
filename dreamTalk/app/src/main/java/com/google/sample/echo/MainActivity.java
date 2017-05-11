@@ -1,10 +1,12 @@
 package com.google.sample.echo;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.RingtoneManager;
@@ -13,6 +15,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,13 +37,27 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Set;
 import com.google.sample.echo.data.MyContact;
 
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 
-public class MainActivity extends AppCompatActivity  {
+import javax.mail.BodyPart;
+import javax.mail.Folder;
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.internet.MimeMultipart;
+
+
+public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+    private static final int AUDIO_ECHO_REQUEST = 0;
+    boolean registering=false;
+    String ip="";
     String chatusers;// are peer user ids to whom the chat is dirrected
     String namesToShow="   ";
     registrationFragment rfragment;
@@ -50,7 +68,7 @@ public class MainActivity extends AppCompatActivity  {
     ListView chatList;
     ListView requestList;
     final static String token="zilimbekdipsheetmagamedovhasanjemalusho";////this is the token to separate the chat hist. It has to be unique so that user text is not mistaken for it, that is why comma could not be used!
-    String login;
+    String login="";
     String selfUid;
     ViewPager viewPager;
     PageAdapter pageadapter;
@@ -60,7 +78,7 @@ public class MainActivity extends AppCompatActivity  {
     static {
         System.loadLibrary("echo");
     }
-    public native int client();
+    public native int client(String ip);
     @Override
     protected void onStart() {
         super.onStart();
@@ -81,6 +99,9 @@ public class MainActivity extends AppCompatActivity  {
         @Override
         public void handleMessage(Message msg) {
             Bundle bundleForLoader = msg.getData();
+            if(bundleForLoader.containsKey("completeRegistration")) {
+               completeRegistration();
+            }
             if(bundleForLoader.containsKey("toastMsg")) {
                 String msgToPost = bundleForLoader.getString("toastMsg");
                 if (msgToPost.length() > 0) {
@@ -142,6 +163,10 @@ public class MainActivity extends AppCompatActivity  {
                 ((MyGlobals) getApplicationContext()).SetTab(tabLayout.getTabAt(1));
                 pageadapter.notifyDataSetChanged();
             }
+            else if(bundleForLoader.containsKey("loginFragment")){
+                lfragment = new loginFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame1,lfragment,FRAG2_TAG).commit();
+            }
             else if(bundleForLoader.containsKey("updateFragments") && inChat==false){
                 int numPeerRequest=((MyGlobals) getApplicationContext()).GetPeerRequests().size();
                 TextView cnt=(TextView)((MyGlobals) getApplicationContext()).GetTab().getCustomView().findViewById(R.id.count1);
@@ -185,8 +210,25 @@ public class MainActivity extends AppCompatActivity  {
             pageadapter.notifyDataSetChanged();
         }
         else {
-            finish();
+            moveTaskToBack(true);
+            //   finish();
         }
+    }
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        // TODO Auto-generated method stub
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
     public void submit(View view){
         pageadapter.notifyDataSetChanged();
@@ -204,12 +246,8 @@ public class MainActivity extends AppCompatActivity  {
 // this is called from the native client() function when chat text need to be passed to the main thread
     public void ProcessRequest(String str) {
         String[] resp = str.split(":");
-        if(resp.length == 4 && resp[2].equals("invitefriend") ){//&& resp[3].equals("request failed because user does not exist")
+        if(resp.length == 4 && (resp[2].equals("invitefriend") || resp[3].equals("user name already exist try different one.") || resp[3].equals("user name and password you have provided do not match try again or register.")) ){//&& resp[3].equals("request failed because user does not exist")
             SendJobToHandler("toastMsg",resp[3],"MainActivity");
-           // TextView UserName = (TextView) findViewById(R.id.submit_notify);
-           // UserName.setText("User does not exit. Try again!");
-            //UserName.clearFocus();
-            //Toast.makeText(this,str, Toast.LENGTH_SHORT).show();
         }
         else if(resp.length == 4 && resp[2].equals("requests")){
             String requests=resp[3];
@@ -221,11 +259,18 @@ public class MainActivity extends AppCompatActivity  {
                 SendJobToHandler("updateFragments", str,"MainActivity");
             }
         }
-        else if(resp.length == 4 && resp[2].equals("invitefriend") && resp[3].equals("request filed sucessfully")){
-           // TextView UserName = (TextView) findViewById(R.id.submit_notify);
-           // UserName.setText("Request submitted!");
-           // UserName.clearFocus();
-           // Toast.makeText(this,"request submitted!", Toast.LENGTH_SHORT).show();
+        else if (resp.length == 2 && resp[0].equals("connectedToServerOk") && registering) {//after we retreive ip from email and connect to the server from client() code we are ready to login
+            SendJobToHandler("completeRegistration",str,"MainActivity");
+        }
+        else if (resp.length == 2 && resp[0].equals("connectedToServerOk") && !login.isEmpty() && !registering) {//after we retreive ip from email and connect to the server from client() code we are ready to login
+            try {
+                writeToStdin(login);//send request to client() in native code
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else if (resp.length == 2 && resp[0].equals("connectedToServerOk") && login.isEmpty() && !registering) {//after we retreive ip from email and connect to the server from client() code we are ready to login
+            SendJobToHandler("loginFragment",str,"MainActivity");
         }
         else if (resp.length == 4 && resp[3].equals("ok")) {
             SharedPreferences.Editor editor = getSharedPreferences("PeerInfo", MODE_PRIVATE).edit();
@@ -266,9 +311,6 @@ public class MainActivity extends AppCompatActivity  {
         }
         else if(resp[0].equals("AcceptedVoiceFrom")){
             SendJobToHandler("AcceptedVoiceFrom",str,"outgoingCallActivity");
-        }
-        else{
-            SendJobToHandler("toastMsg",str,"MainActivity");
         }
     }
     public void CreateAllFriendsList(String csvlist,boolean addtoshare){
@@ -334,32 +376,6 @@ public class MainActivity extends AppCompatActivity  {
         handler.sendMessage(msg);
     }
     @Override
-    protected void onResume() {
-
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // Bind to the service
-        //sayHello(1);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Bind to the service
-        //sayHello(1);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Bind to the service
-        //sayHello(1);
-    }
-    @Override
     protected void onSaveInstanceState(Bundle state) {
         state.putString("RequestType", "Friendaddress");
         super.onSaveInstanceState(state);
@@ -408,6 +424,7 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
     public void logout(){
+        login="";
         RemoveSharedPrefs("PeerInfo");
         RemoveSharedPrefs("SelfInfo");
         RemoveSharedPrefs("ChatHistory");
@@ -425,48 +442,150 @@ public class MainActivity extends AppCompatActivity  {
     public void startClientThread(){
         class MyRunnable implements Runnable {
             public void run() {
-                client();
+                while(true){
+                    if(!ip.isEmpty()){//wait until ip is read from the email southamptonserver@gmail.com
+                        client(ip);
+                        break;
+                    }
+                    else{
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }
         Thread thread = new Thread(new MyRunnable(), "clientThread");
         thread.start();
     }
+    public void startClientThreadWithPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[] { Manifest.permission.RECORD_AUDIO },
+                    AUDIO_ECHO_REQUEST);
+            return;
+        }
+        startClientThread();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        /*
+         * if any permission failed, the sample could not play
+         */
+        if (AUDIO_ECHO_REQUEST != requestCode) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
+        }
+
+        if (grantResults.length != 1  ||
+                grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            /*
+             * When user denied the permission, throw a Toast to prompt that RECORD_AUDIO
+             * is necessary; on UI, we display the current status as permission was denied so
+             * user know what is going on.
+             * This application go back to the original state: it behaves as if the button
+             * was not clicked. The assumption is that user will re-click the "start" button
+             * (to retry), or shutdown the app in normal way.
+             */
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.NeedRecordAudioPermission),
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
+        /*
+         * When permissions are granted, we prompt the user the status. User would
+         * re-try the "start" button to perform the normal operation. This saves us the extra
+         * logic in code for async processing of the button listener.
+         */
+        // The callback runs on app's thread, so we are safe to resume the action
+        startClientThreadWithPermission();
+    }
+    public  void check()
+    {
+        try {
+            String host = "pop.gmail.com";// change accordingly
+            String storeType = "pop3";
+            final String user = "southamptonserver@gmail.com";// change accordingly
+            final String password = "southamptonserver123"; // change accordingly
+            //create properties field
+            Properties properties = new Properties();
+            properties.put("mail.pop3.host", host);
+            properties.put("mail.pop3.port", "995");
+            properties.put("mail.pop3.starttls.enable", "true");
+            Session emailSession = Session.getInstance(properties, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(user, password);
+                }
+            });
+            //create the POP3 store object and connect with the pop server
+            Store store = emailSession.getStore("pop3s");
+            store.connect(host, user, password);
+            //create the folder object and open it
+            Folder emailFolder = store.getFolder("INBOX");
+            emailFolder.open(Folder.READ_ONLY);
+
+            // retrieve the messages from the folder in an array and print it
+            javax.mail.Message[] messages = emailFolder.getMessages();
+            System.out.println("messages.length---" + messages.length);
+            for (int i = 0, n = messages.length; i < n; i++) {
+                javax.mail.Message message = messages[messages.length-i-1];
+                String Subject=message.getSubject();
+                String[] tokens=Subject.split(":");
+                if(tokens[0].equals("ip address") && tokens.length==2){
+                    ip=tokens[1];
+                    break;
+                }
+            }
+            //close the store and folder objects
+            emailFolder.close(false);
+            store.close();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void startEmailThread(){
+        class MyRunnable implements Runnable {
+            public void run() {
+               check();
+            }
+        }
+        Thread thread = new Thread(new MyRunnable(), "emailThread");
+        thread.start();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startEmailThread();
         // RemoveSharedPrefs("PeerInfo");
-       // RemoveSharedPrefs("SelfInfo");
-       // RemoveSharedPrefs("ChatHistory");
+        //RemoveSharedPrefs("SelfInfo");
+        //RemoveSharedPrefs("ChatHistory");
         String dir=getApplicationContext().getApplicationInfo().dataDir;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);//start
-        //this is to wake the phone up when incomming call happens
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         //RemoveSharedPrefs();
         ((MyGlobals) getApplicationContext()).setHandlerMain(new ChatMainHandler(this.getMainLooper()));
         if(!FindThreadByName("clientThread")) {//make sure you dont create thread that connects to server twice!
-            startClientThread();
+            startClientThreadWithPermission();
             SharedPreferences prefs = getSharedPreferences("PeerInfo", MODE_PRIVATE);
             if (!prefs.contains("login")){//brand new connection from this user or user pressed logout before
-                lfragment = new loginFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame1,lfragment,FRAG2_TAG).commit();
+
             }
             else{//user logged in already once we know usr name and pswd so we bypass login screen but still go through login proceess requred by the server
                 //start the client() in a separate thread
                 login=prefs.getString("login","");
-                try {
-                    Thread.sleep(100);//this is needed in order for the newly created thread abouve to have enough time to set up the stdin pipe to which we write with writeToStdin() function below. Otherwise write will block
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    writeToStdin(login);//send request to client() in native code
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
+            Fragment cfragment = new connectionFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame1,cfragment,FRAG2_TAG).commit();
         }
         else{// once person loges in once afterwards no more login screen will be shown i.e app goes directly to the mainfragment which shows list of online friends and ofline friends. If logout is pressed then sharedPrefs will be erased
             SharedPreferences prefs = getSharedPreferences("PeerInfo", MODE_PRIVATE);
@@ -741,16 +860,8 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
     public void goToRegister(View view) {
-        if(!FindThreadByName("clientThread")){
-            startClientThread();
-        }
-       /* else{
-            try {
-                writeToStdin("exit");//send request to client() in native code running on separete thread to terminate itself
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            startClientThread();// need to restart client thread when registering new user otherwise cant send udp to server
+       /* if(!FindThreadByName("clientThread")){
+            startClientThreadWithPermission();
         }*/
         rfragment = new registrationFragment();
         getSupportFragmentManager().beginTransaction().remove(lfragment).add(R.id.frame1, rfragment, FRAG2_TAG).commit();
@@ -760,7 +871,7 @@ public class MainActivity extends AppCompatActivity  {
     }
     public void login(View view) throws InterruptedException {
         if(!FindThreadByName("clientThread")){
-            startClientThread();
+            startClientThreadWithPermission();
         }
         Thread.sleep(100);//this is needed in order for the newly created thread abouve to have enough time to set up the stdin pipe to which we write with writeToStdin() function below. Otherwise write will block
         EditText UserName = (EditText) findViewById(R.id.usernameEntry);
@@ -783,7 +894,16 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     public void register(View view) {
-
+        registering=true;
+        if(!FindThreadByName("clientThread")){
+            startClientThreadWithPermission();
+        }
+        else{
+            completeRegistration();
+        }
+    }
+    public void completeRegistration(){
+        registering=false;
         String FNAME = "fname";
         Bundle bundleForLoader = new Bundle();
         bundleForLoader.putString("RequestType", "Register");
@@ -804,10 +924,10 @@ public class MainActivity extends AppCompatActivity  {
         bundleForLoader.putString("pwd", pswdSt);
 
         EditText email = (EditText) findViewById(R.id.remailEditText);
-        String emailSt = uname.getText().toString();
+        String emailSt = email.getText().toString();
         bundleForLoader.putString("email", emailSt);
 
-       String request = "Register::," + unameSt + "," + pswdSt + "," + fnameSt + "," + lnameSt + "," + emailSt + "\0";
+        String request = "Register::," + unameSt + "," + pswdSt + "," + fnameSt + "," + lnameSt + "," + emailSt + "\0";
         try {
             writeToStdin(request);//send request to client() in native code
         } catch (IOException e) {

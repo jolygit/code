@@ -32,12 +32,14 @@
 using namespace::std;
 extern "C" {
 JNIEXPORT int JNICALL
-Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) ;//jclass
+Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstring ip) ;//jclass
 }
 JNIEXPORT int JNICALL
-Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//jclass
+Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstring ip) {//jclass
+    const char * address;
+    address = (*env).GetStringUTFChars(ip,NULL);
     bool uregister=false;
-    const char *address="67.80.234.215";//192.168.1.117";////"
+    //const char *address="67.80.234.215";//192.168.1.117";////"
     int			sockfd,udpfd,serversocketfd;
     struct sockaddr_in	servaddr;
     socklen_t		svlen;
@@ -117,8 +119,10 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj) {//j
         clProcessor.clUID[i]="";
     }
     clProcessor.maxi = 2;					/* max index into client[] array */
-
-
+    //Let the mainActivity know that we are connected to server and ready to process requests
+    string msg="connectedToServerOk:ok";
+    jstring jstr = (env)->NewStringUTF(msg.c_str());
+    (env)->CallVoidMethod(obj,ProcessRequest, jstr);//let main thread handler handle the chat msg i.e print it on the screen
     string exitstr="exit";
     for ( ; ; ) {
         //continue;

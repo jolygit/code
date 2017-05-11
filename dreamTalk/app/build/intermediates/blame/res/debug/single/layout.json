@@ -116,6 +116,10 @@
         "source": "/Users/aj/code/dreamTalk/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/25.2.0/res/layout/abc_action_mode_bar.xml"
     },
     {
+        "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/layout/activity_connect.xml",
+        "source": "/Users/aj/code/dreamTalk/app/src/main/res/layout/activity_connect.xml"
+    },
+    {
         "merged": "/Users/aj/code/dreamTalk/app/build/intermediates/res/merged/debug/layout/start.xml",
         "source": "/Users/aj/code/dreamTalk/app/src/main/res/layout/start.xml"
     },

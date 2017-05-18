@@ -322,27 +322,29 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
     public void CreateAllFriendsList(String csvlist,boolean addtoshare){
         String[] frList = csvlist.split(",");
-        ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
-        //MyContacts.clear();
-        for (String user:frList) {
-            String[] tokens=user.split(";");
-            String firstName=tokens[1];
-            String lastName=tokens[2];
-            String userId=tokens[0];
-            boolean found=false;
-            for (int j = 0; j < MyContacts.size(); j++) {
-                if (MyContacts.get(j).getUsername().equals(userId)) {
-                    found=true;
-                    break;
+        if(frList.length>0) {
+            ArrayList<MyContact> MyContacts = ((MyGlobals) getApplicationContext()).GetContacts();
+            //MyContacts.clear();
+            for (String user : frList) {
+                String[] tokens = user.split(";");
+                String firstName = tokens[1];
+                String lastName = tokens[2];
+                String userId = tokens[0];
+                boolean found = false;
+                for (int j = 0; j < MyContacts.size(); j++) {
+                    if (MyContacts.get(j).getUsername().equals(userId)) {
+                        found = true;
+                        break;
+                    }
                 }
+                if (!found)//only adding new friends
+                    MyContacts.add(new MyContact(firstName, lastName, userId, false, false, false, ""));
             }
-            if(!found)//only adding new friends
-                MyContacts.add(new MyContact(firstName,lastName,userId, false, false,false,""));
-        }
-        if(addtoshare) {
-            SharedPreferences.Editor editor = getSharedPreferences("PeerInfo", MODE_PRIVATE).edit();
-            editor.putString("allfriends", csvlist);
-            editor.commit();
+            if (addtoshare) {
+                SharedPreferences.Editor editor = getSharedPreferences("PeerInfo", MODE_PRIVATE).edit();
+                editor.putString("allfriends", csvlist);
+                editor.commit();
+            }
         }
     }
     public void CreateOnlineFriendsStatus(String csvonlinelist){
@@ -1020,7 +1022,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             contactsadapter = new contactArrayAdapter(this, 0, ((MyGlobals) getApplicationContext()).GetContacts());
             //Find list view and bind it with the custom adapter
             ListView listView = (ListView) findViewById(R.id.customListView);
-            listView.setAdapter(contactsadapter);
+            if(listView!=null) {
+                listView.setAdapter(contactsadapter);
+            }
         }
     }
     public void PopulateChatList() {
@@ -1037,7 +1041,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 }
             }
             chatList = (ListView) findViewById(R.id.chat1);
-            chatList.setAdapter(chatAdapter);
+            if(chatList!=null) {
+                chatList.setAdapter(chatAdapter);
+            }
         }
     }
     public void PopulateRequestsList() {
@@ -1053,7 +1059,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 requests.setText("Requests to be approved:");
             }
             requestList = (ListView) findViewById(R.id.requestlist);
-            requestList.setAdapter(requestAdapter);
+            if(requestList!=null) {
+                requestList.setAdapter(requestAdapter);
+            }
         }
     }
 

@@ -129,21 +129,21 @@
     </item>
     <item
         is-multidex="false"
-        jar="/Users/aj/code/dreamtalk/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.2.0/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="23.0.2"
-        sha1="810f41e5b7fd99f196ebeabe865ba2c54e7e76dc">
-        <dex dex="/Users/aj/code/dreamtalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-25.2.0_456f8ba6362e3bb9de36a915f28c0810bf065438.jar" />
-    </item>
-    <item
-        is-multidex="false"
         jar="/Users/aj/code/dreamtalk/app/build/intermediates/exploded-aar/com.android.support.constraint/constraint-layout/1.0.2/jars/classes.jar"
         jumboMode="false"
         optimize="true"
         revision="23.0.2"
         sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
         <dex dex="/Users/aj/code/dreamtalk/app/build/intermediates/pre-dexed/debug/com.android.support.constraint-constraint-layout-1.0.2_d0d0d467d3ea793cf9dcc20c3232ed41aa21d5ad.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/aj/code/dreamtalk/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.2.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.2"
+        sha1="810f41e5b7fd99f196ebeabe865ba2c54e7e76dc">
+        <dex dex="/Users/aj/code/dreamtalk/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-25.2.0_456f8ba6362e3bb9de36a915f28c0810bf065438.jar" />
     </item>
     <item
         is-multidex="false"

@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Thu May 18 12:42:38 EDT 2017
+#Thu May 18 14:00:01 EDT 2017
 210.set=ANDROID_RESOURCE
 14.set=ANDROID_RESOURCE
 180.file=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_/res/layout/costom_tab.xml

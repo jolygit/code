@@ -3,9 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion '23.0.2'
-
     defaultConfig {
-        applicationId 'com.google.sample.echo'
+        applicationId 'com.jolytech.sample.dreamtalk'
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
@@ -18,7 +17,7 @@ android {
                 // With android studio 2.2.0 +cmake, app needs to pack shared lib to
                 // into APK. Refer to CMakeLists.txt for details
                 arguments '-DANDROID_STL=c++_shared', '-DANDROID_TOOLCHAIN=clang',
-                          '-DANDROID_PLATFORM=android-21'
+                        '-DANDROID_PLATFORM=android-21'
             }
         }
     }
@@ -26,18 +25,20 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          'proguard-rules.pro'
+                    'proguard-rules.pro'
         }
     }
     externalNativeBuild {
         cmake {
-            path 'src/main/cpp/CMakeLists.txt'
+            path 'CMakeLists.txt'
         }
+    }
+    productFlavors {
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.2.0'

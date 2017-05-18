@@ -1,16 +1,6 @@
-//
-// Created by alex on 3/20/17.
-//
-
-#ifndef AUDIO_ECHO1_CLIENTPROCESSOR_H
-#define AUDIO_ECHO1_CLIENTPROCESSOR_H
-
-#endif //AUDIO_ECHO1_CLIENTPROCESSOR_H
 #include <stdio.h>
 #include <stdlib.h>
-//#include <boost/algorithm/string.hpp>
 #include <ctype.h>
-//#include "tlpi_hdr.h"
 #include        <vector>
 #include        <string>
 #include        <set>
@@ -18,7 +8,6 @@
 
 #include <iostream>
 #include <arpa/inet.h>
-//#include <ifaddrs.h>
 #include	<sys/socket.h>	/* basic socket definitions */
 #include	<sys/time.h>	/* timeval{} for select() */
 #include	<time.h>		/* timespec{} for pselect() */

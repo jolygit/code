@@ -7,14 +7,14 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.google.sample.echo.MainActivity"
+    tools:context="com.google.sample.dreamtalk.com.jolytech.sample.dreamtalk.MainActivity"
     android:weightSum="1">
 
 
     <Button
         android:text="@string/chat"
         android:onClick="goToChat"
-        android:layout_width="wrap_content"
+        android:layout_width="126dp"
         android:layout_height="wrap_content"
         android:id="@+id/chat"
         tools:layout_conversion_absoluteX="257dp"
@@ -24,7 +24,18 @@
         android:layout_marginEnd="32dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:onClick="goToVoiceChat"
+        android:text="Call"
+        android:background="@drawable/acceptrectange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/voiceCall"
+        app:layout_constraintBottom_toBottomOf="@+id/chat"
+        android:layout_marginStart="32dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <ListView
         android:divider="@android:color/transparent"
@@ -38,20 +49,11 @@
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintHorizontal_bias="0.43"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="452dp"></ListView>
-
-    <Button
-        android:onClick="goToVoiceChat"
-        android:text="Call"
-        android:background="@drawable/acceptrectange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/voiceCall"
-        app:layout_constraintBottom_toBottomOf="@+id/chat"
-        android:layout_marginStart="32dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="66dp"
+        android:layout_height="0dp"></ListView>
 
 
 </android.support.constraint.ConstraintLayout>

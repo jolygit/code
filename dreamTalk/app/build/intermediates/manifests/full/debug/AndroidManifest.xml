@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.sample.echo"
+    package="com.jolytech.sample.dreamtalk"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.google.sample.echo.MyGlobals"
+        android:name="com.jolytech.sample.dreamtalk.MyGlobals"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@drawable/dreamapp"
@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.google.sample.echo.MainActivity"
+            android:name="com.jolytech.sample.dreamtalk.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -30,13 +30,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name="com.google.sample.echo.ServerConnectionService"
-            android:enabled="true" />
-
-        <activity android:name="com.google.sample.echo.incommingCallActivity" />
-        <activity android:name="com.google.sample.echo.outgoingCallActivity" />
+        <activity android:name="com.jolytech.sample.dreamtalk.incommingCallActivity" />
+        <activity android:name="com.jolytech.sample.dreamtalk.outgoingCallActivity" />
     </application>
 
 </manifest>

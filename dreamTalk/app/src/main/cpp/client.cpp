@@ -32,10 +32,10 @@
 using namespace::std;
 extern "C" {
 JNIEXPORT int JNICALL
-Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstring ip) ;//jclass
+        Java_com_jolytech_sample_dreamtalk_MainActivity_client(JNIEnv * env , jobject obj,jstring ip) ;//jclass
 }
 JNIEXPORT int JNICALL
-Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstring ip) {//jclass
+Java_com_jolytech_sample_dreamtalk_MainActivity_client(JNIEnv * env , jobject obj,jstring ip) {//jclass
     const char * address;
     address = (*env).GetStringUTFChars(ip,NULL);
     bool uregister=false;
@@ -52,7 +52,7 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstri
         //err_sys("setsockopt of SO_REUSEADDR error");
     if (setsockopt(serversocketfd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof (on)) < 0)
         //err_sys("setsockopt of SO_REUSEPORT error");
-    bzero(&servaddr, sizeof(servaddr));
+        bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(SERV_PORT);
     inet_pton(AF_INET, address, &servaddr.sin_addr);
@@ -78,14 +78,13 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstri
     svlen = sizeof(clProcessor.udpservaddr);
     //preparing java call
     jclass cls=env->GetObjectClass(obj);
-    //jclass cls = (env)->FindClass("com/google/sample/echo/MainActivity");//make sure to change the full path if you change it in java
     jmethodID ProcessRequest = (env)->GetMethodID(cls, "ProcessRequest", "(Ljava/lang/String;)V");
 // create the pipe for stdin
-    remove("/data/data/com.google.sample.echo/infile");//files/infile
-    int in=mkfifo("/data/data/com.google.sample.echo/infile", 0777);
+    remove("/data/data/com.jolytech.sample.dreamtalk/infile");//files/infile
+    int in=mkfifo("/data/data/com.jolytech.sample.dreamtalk/infile", 0777);
     if(in)
         in=1;
-    int fdi = open("/data/data/com.google.sample.echo/infile", O_RDONLY|O_NONBLOCK);
+    int fdi = open("/data/data/com.jolytech.sample.dreamtalk/infile", O_RDONLY|O_NONBLOCK);
     dup2(fdi, 0);
     // create the pipe for stdout
     /*setbuf(stdout, NULL);
@@ -147,7 +146,7 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstri
                         clProcessor.clLogin[i]=false;
                         clProcessor.clUID[i]="";
                     } else{}
-                        //err_sys("read error");
+                    //err_sys("read error");
                 } else if (n == 0) {
                     /*4connection closed by client */
                     printf("clProcessor.client[%d] closed connection\n", i);
@@ -185,8 +184,8 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstri
                         for(int u=0;u<userids.size();u++) {// sending to all the destinations
                             string uid=userids[u];
                             if (clProcessor.udpHolePunchedForThisUid.find(uid) !=clProcessor.udpHolePunchedForThisUid.end()) { //make sure udp hole is punched for uid
-                                  struct sockaddr_in fraddress = clProcessor.fraddresses[uid];
-                                    sendto(clProcessor.client[2].fd, (void *) msg.c_str(),msg.size(), 0, (SA *) &fraddress, sizeof(fraddress));
+                                struct sockaddr_in fraddress = clProcessor.fraddresses[uid];
+                                sendto(clProcessor.client[2].fd, (void *) msg.c_str(),msg.size(), 0, (SA *) &fraddress, sizeof(fraddress));
                                 clProcessor.OutgoingvoiceCall="udp hole punch\n";//resettting it to the defauld
                             }
                         }
@@ -200,11 +199,11 @@ Java_com_google_sample_echo_MainActivity_client(JNIEnv * env , jobject obj,jstri
                     }
                     else if(clProcessor.registeredLogedin && (tmp.compare(0,14,"friendaddress:")==0 || tmp.compare(0,10,"allfriends")==0 || tmp.compare(0,13,"onlinefriends")==0 || tmp.compare(0,12,"invitefriend")==0
                                                               || tmp.compare(0,7,"accept:")==0 || tmp.compare(0,7,"reject:")==0)) {
-                            if(clProcessor.RequestToServer(nextCommand)){//in case of a wrong request function returns 1
-                                string msg="wrong request"+nextCommand;//+"AbdulmanatKhabib:"
-                                jstring jstr = (env)->NewStringUTF(msg.c_str());
-                                (env)->CallVoidMethod(obj,ProcessRequest, jstr);//let main thread handler handle the chat msg i.e print it on the screen
-                            }
+                        if(clProcessor.RequestToServer(nextCommand)){//in case of a wrong request function returns 1
+                            string msg="wrong request"+nextCommand;//+"AbdulmanatKhabib:"
+                            jstring jstr = (env)->NewStringUTF(msg.c_str());
+                            (env)->CallVoidMethod(obj,ProcessRequest, jstr);//let main thread handler handle the chat msg i.e print it on the screen
+                        }
                     }
                     else if(tmp.compare(0,5,"chat:")==0){//chat packet it has the format chat:<selfusername>:chatmsg:<destination userNames separated by eabdulmanatkhabibgivivajaalko>
                         vector<string> strs;

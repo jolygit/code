@@ -101,20 +101,21 @@ int ClientProcessor::ResponseFromServer(char* buf){
     vector<string> strs;
     split(strs,(char*)response.c_str(),(const char*)":");
     if(strs[2]==allfriends || strs[2]==onlinefriends || strs[2]==invitefriend || strs[2]==registration || strs[2]==login || strs[2]==registrationlogin){ // version:response size:responseCommand:friend1,friend2,...
-       //printf("AbdulmanatKhabib:%sAbdulmanatKhabib:\n",response.c_str());// this is done cos there is a bug that sometimes returns garbage at the begining of the sent string
+        //printf("AbdulmanatKhabib:%sAbdulmanatKhabib:\n",response.c_str());// this is done cos there is a bug that sometimes returns garbage at the begining of the sent string
         registeredLogedin=true;
     }
-    else if(strs[2]==friendaddress){// version:response size:responseCommand:friendIp:friendPort:frUid
+        //sometimes udp connection to server does not go through and server does not have the udp address and port. IN that case strs.size() will be less then 6. Probably need to make udp connection to server reliable
+    else if(strs[2]==friendaddress && strs.size()==6){// version:response size:responseCommand:friendIp:friendPort:frUid
         // printf("\n connecting to %s...\n",strs[5].c_str());
         // fflush(NULL);
         UDPHolePunch(strs[4],strs[3],strs[5]);
         //if(true)//record
-         //   pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
+        //   pthread_create(&tid, NULL, Sound_wrapper, this);//separate thread reads sound from mic and sends to udp socket
         //int sockfd=TcpSimultaneousOpen(strs[4],strs[3],strs[5]);
         return 1;
     }
     else{
-       // printf("AbdulmanatKhabib:%s AbdulmanatKhabib:\n",response.c_str());
+        // printf("AbdulmanatKhabib:%s AbdulmanatKhabib:\n",response.c_str());
     }
     return 0;
 }
@@ -208,10 +209,10 @@ int ClientProcessor::Register(string& nextCommand){
     vector<string> msgs;
     split(msgs,(char*)str.c_str(),(const char*)",");
     if(msgs.size()>2)
-     username=msgs[1];
+        username=msgs[1];
     else
     {
-       // printf("could not retreive username from %s",nextCommand.c_str());
+        // printf("could not retreive username from %s",nextCommand.c_str());
         return 1;
     }
     int sockfd=client[1].fd;
@@ -243,7 +244,7 @@ int ClientProcessor::InterfaceAddress(){
     string buf=selfTcpAddress;
     split(msgs,(char*)buf.c_str(),(const char*)":");
     if(msgs.size()==2)
-       interfaceAddress=msgs[0]; //retreiving interface address without port need for udp socket
+        interfaceAddress=msgs[0]; //retreiving interface address without port need for udp socket
     else{
         printf("could not retreve interface address");
         return 1;
@@ -285,50 +286,10 @@ typedef struct  WAV_HEADER
     uint8_t         Subchunk2ID[4]; // "data"  string
     uint32_t        Subchunk2Size;  // Sampled data length
 } wav_hdr;
-static char recording[4096*536];
+//static char recording[4096*536];
 bool start=true;
 #define RECORDER_FRAMES (800)
 string ClientProcessor::ProcessUdp() {
-    if(false) {
-        if (start) {
-            start = false;
-            wav_hdr wavHeader;
-            int headerSize = sizeof(wav_hdr);
-            FILE *wavFile = fopen("/data/data/com.google.sample.echo/files/bach.wav", "r");
-            if (wavFile == nullptr) {
-                return "";
-            }
-            //Read the header
-            size_t bytesRead = fread(&wavHeader, 1, headerSize, wavFile);
-            if (bytesRead > 0) {
-                //Read the data
-                //uint16_t bytesPerSample = wavHeader.bitsPerSample / 8;      //Number     of bytes per sample
-                //uint64_t numSamples = wavHeader.ChunkSize / bytesPerSample; //How many samples are in the wav file?
-                static const uint16_t BUFFER_SIZE = 4096;
-                int8_t *buffer = new int8_t[BUFFER_SIZE];
-                int cnt = 0;
-                while ((bytesRead = fread(buffer, sizeof buffer[0],
-                                          BUFFER_SIZE / (sizeof buffer[0]), wavFile)) > 0) {
-                    for (int i = 0; i < bytesRead; i++) {
-                        recording[BUFFER_SIZE * cnt + i] = buffer[i];
-                    }
-                    cnt++;
-                    if (cnt > 535)
-                        break;
-                }
-                delete[] buffer;
-            }
-            fclose(wavFile);
-        }
-        short *buf1 = (short *) recording;
-        for (int j = 0; j < 700; j++) {
-            short *buf2 = buf1 + j * RECORDER_FRAMES;
-            audio_Proc.Play(buf2, 0);
-            usleep(100000);
-        }
-        recvfrom(client[2].fd, buf, MAXLINE, 0, (SA *) &udpservaddr, &udpsvlen);
-        return "";
-    }
     int leng=recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
     string packet=buf;
     int l=packet.size();

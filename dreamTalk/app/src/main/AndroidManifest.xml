@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.google.sample.echo">
+    package="com.jolytech.sample.dreamtalk">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".MyGlobals"
+        android:name="com.jolytech.sample.dreamtalk.MyGlobals"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@drawable/dreamapp"
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.jolytech.sample.dreamtalk.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -24,13 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".ServerConnectionService"
-            android:enabled="true" />
-
-        <activity android:name=".incommingCallActivity"></activity>
-        <activity android:name=".outgoingCallActivity"></activity>
+        <activity android:name="com.jolytech.sample.dreamtalk.incommingCallActivity"></activity>
+        <activity android:name="com.jolytech.sample.dreamtalk.outgoingCallActivity"></activity>
     </application>
 
 </manifest>
+

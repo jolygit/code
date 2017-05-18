@@ -293,12 +293,13 @@ string ClientProcessor::ProcessUdp() {
     int leng=recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
     string packet=buf;
     int l=packet.size();
-    if(leng>100){//packet.compare(0,6,"voice:")==0){
-        audio_Proc.Play((short*)buf,0); //buf is chat* i.e l is in bytes but in short we have 2 bytes i.e /2
-        //vector<string> msgs;
-        //split(msgs,buf,(const char*)":");
-        //packet.clear();//return zero str
-        bzero(buf,leng);
+    if(leng>100){
+        int* b=(int*)buf;
+        if(b[0]>packetIndex) {//play only new packets and skip old packets. For example if multiple duplicate packets arrive play it only once
+            packetIndex=b[0];
+            audio_Proc.Play((short *) (buf+4),0); //buf is chat* first 4 bytes are for indexing tha packets
+            bzero(buf, leng);
+        }
         return "";
     }
     else if(packet.compare(0,17,"IncomingVoiceFrom")==0 || packet.compare(0,17,"CanceledVoiceFrom")==0 || packet.compare(0,17,"RejectedVoiceFrom")==0 || packet.compare(0,17,"AcceptedVoiceFrom")==0 || packet.compare(0,15,"HangupVoiceFrom")==0){

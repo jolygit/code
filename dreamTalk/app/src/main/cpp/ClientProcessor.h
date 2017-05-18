@@ -31,9 +31,8 @@ public:
         registration="registration";login="login";registrationlogin="registrationlogin";
         registeredLogedin=false;
         OutgoingvoiceCall="udp hole punch\n";//this will be overwritten
-        //voiceConverstation=_voiceConverstation;
         registrationFieldCount=0;
-        //audio_Proc.SetUp();
+        packetIndex=-1;
     }
     int InterfaceAddress();
     int ResponseFromServer(char* buf);
@@ -83,10 +82,8 @@ private:
     string comma=",";
     string colon=":";
     int    registrationFieldCount;
-    //bool   uregister;
+    int packetIndex;
     string startudp="startudp:from:";
     char			buf[MAXLINE];
     pthread_t	tid;
-    //bool  voiceConverstation;
-    //bool firstPacket=true;
 };

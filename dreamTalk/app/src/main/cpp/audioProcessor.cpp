@@ -9,8 +9,8 @@ static short voiceBuffer[BufCount][RECORDER_FRAMES];
 static short* voiceBufferPtrs[BufCount];
 static bool  voiceBufferAvailable[BufCount];
 //static char recording[4096*536];
-static short recorderBuffer[RECORDER_FRAMES];
-static short recorderBuffer1[RECORDER_FRAMES];
+static short recorderBuffer[RECORDER_FRAMES+2];//2 is for packet indexing
+static short recorderBuffer1[RECORDER_FRAMES+2];
 static short bufEmpty[RECORDER_FRAMES];
 static const SLEnvironmentalReverbSettings reverbSettings=SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
 // engine interfaces
@@ -88,29 +88,23 @@ void AudioProcessor::bqRecorderCallback(SLAndroidSimpleBufferQueueItf bq, void *
     assert(bq == recorderBufferQueue);
     assert(NULL == context);
     SLresult result;
-    //stringstream response;
     if(rcnt==0){
-        /*response << "voice:" << packetCnt << ":";
-        for(int i=0;i<RECORDER_FRAMES*2;i++)
-            response << ((char*)recorderBuffer)[i];*/
         rcnt=1;
-        result = (*recorderBufferQueue)->Enqueue(recorderBufferQueue, recorderBuffer,RECORDER_FRAMES * sizeof(short));
+        result = (*recorderBufferQueue)->Enqueue(recorderBufferQueue, recorderBuffer+2,RECORDER_FRAMES * sizeof(short));
         result = (*recorderRecord)->SetRecordState(recorderRecord, SL_RECORDSTATE_RECORDING);
-        sendto(peerSocketFd,(void*)recorderBuffer,RECORDER_FRAMES * sizeof(short),0,(SA *) &peerAddress,sizeof(peerAddress));
+        int* r=(int*)recorderBuffer;
+        r[0]=packetCnt;//indexing all the packets to avoid duplicate packet playback
+        sendto(peerSocketFd,(void*)recorderBuffer,(RECORDER_FRAMES+2) * sizeof(short),0,(SA *) &peerAddress,sizeof(peerAddress));
     }
     else if(rcnt==1){
-        /*response << "voice:" << packetCnt << ":";
-        for(int i=0;i<RECORDER_FRAMES*2;i++)
-            response << ((char*)recorderBuffer1)[i];*/
         rcnt=0;
-        result = (*recorderBufferQueue)->Enqueue(recorderBufferQueue, recorderBuffer1,RECORDER_FRAMES * sizeof(short));
+        result = (*recorderBufferQueue)->Enqueue(recorderBufferQueue, recorderBuffer1+2,RECORDER_FRAMES * sizeof(short));
         result = (*recorderRecord)->SetRecordState(recorderRecord, SL_RECORDSTATE_RECORDING);
-        sendto(peerSocketFd,(void*)recorderBuffer1,RECORDER_FRAMES * sizeof(short),0,(SA *) &peerAddress,sizeof(peerAddress));
+        int* r=(int*)recorderBuffer1;//indexing all the packets to avoid duplicate packet playback
+        r[0]=packetCnt;
+        sendto(peerSocketFd,(void*)recorderBuffer1,(RECORDER_FRAMES+2) * sizeof(short),0,(SA *) &peerAddress,sizeof(peerAddress));
     }
     packetCnt++;
-    //const char* msg=response.str().c_str();
-    //int len=response.str().length()+1;
-    //sendto(peerSocketFd,(void*)msg,len,0,(SA *) &peerAddress,sizeof(peerAddress));
 }
 
 

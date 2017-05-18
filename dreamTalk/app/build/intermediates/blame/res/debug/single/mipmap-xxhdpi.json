@@ -1,5 +1,9 @@
 [
     {
+        "merged": "/Users/aj/code/dreamtalk/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher.png",
+        "source": "/Users/aj/code/dreamtalk/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
         "merged": "/Users/aj/Documents/dreamtalk/app/build/intermediates/res/merged/debug/mipmap-xxhdpi/ic_launcher.png",
         "source": "/Users/aj/Documents/dreamtalk/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
     }

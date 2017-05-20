@@ -1,0 +1,5 @@
+1. To be able to run java program you compile it first: javac progname i.e javac SwapNodes.java
+2. To debug in emacs do:
+  M-x jdb Enter then enter the class name like SwapNodes and Enter
+3. To see how to run jdb commands type help
+  

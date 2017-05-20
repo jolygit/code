@@ -46,5 +46,7 @@ protected void onStartLoading() {
             }
 
 13. password for apk certificates are usual with one dot and with two dots respectively
+13a. keystore path is /Users/aj/code/Documents/dream.jks
+13b. If you see: You need different version code for your APK , just go to build.gradle (Module:app) and change version code and version name there
 14. when dealing with ndk if you have issues compiling or sinking native code make sure you indicate full path for the cpp files in CMakeLists.txt like so:
     src/main/cpp/audioProcessor.cpp

@@ -291,8 +291,7 @@ bool start=true;
 #define RECORDER_FRAMES (800)
 string ClientProcessor::ProcessUdp() {
     int leng=recvfrom(client[2].fd,buf,MAXLINE, 0,(SA *) &udpservaddr, &udpsvlen);
-    string packet=buf;
-    int l=packet.size();
+
     if(leng>100){
         int* b=(int*)buf;
         if(b[0]>packetIndex) {//play only new packets and skip old packets. For example if multiple duplicate packets arrive play it only once
@@ -302,7 +301,8 @@ string ClientProcessor::ProcessUdp() {
         }
         return "";
     }
-    else if(packet.compare(0,17,"IncomingVoiceFrom")==0 || packet.compare(0,17,"CanceledVoiceFrom")==0 || packet.compare(0,17,"RejectedVoiceFrom")==0 || packet.compare(0,17,"AcceptedVoiceFrom")==0 || packet.compare(0,15,"HangupVoiceFrom")==0){
+    else{// if(string(buf).compare(0,17,"IncomingVoiceFrom")==0 || string(buf).compare(0,17,"CanceledVoiceFrom")==0 || string(buf).compare(0,17,"RejectedVoiceFrom")==0 || string(buf).compare(0,17,"AcceptedVoiceFrom")==0 || string(buf).compare(0,15,"HangupVoiceFrom")==0){
+        string packet(buf,leng);
         if(packet.compare(0,17,"AcceptedVoiceFrom")==0){//when we got accepted we start recording sound and sending it over udp
             StartVoiceConversation();
         }
@@ -311,8 +311,6 @@ string ClientProcessor::ProcessUdp() {
         bzero(buf, leng);
         return packet;
     }
-    bzero(buf, l);//erasing previous data
-    return packet;//if it is a chat message return it else return empty str*/
 }
 int ClientProcessor::StopVoiceConversation(){
     //audio_Proc.stopRecording();

@@ -131,9 +131,9 @@ Java_com_jolytech_sample_dreamtalk_MainActivity_client(JNIEnv * env , jobject ob
                 continue;
             if (clProcessor.client[i].revents & (POLLIN | POLLERR)) {
                 if(i==2){// incoming udp data
-                    string msg=clProcessor.ProcessUdp();
-                    if(msg.size()>0) {//chat msg came of the form chat:<sourceUserName>:chatmsg
-                        jstring jstr = (env)->NewStringUTF(msg.c_str());
+                    string resp=clProcessor.ProcessUdp();
+                    if(resp.size()>0) {//chat msg came of the form chat:<sourceUserName>:chatmsg
+                        jstring jstr = (env)->NewStringUTF(resp.c_str());
                         (env)->CallVoidMethod(obj,ProcessRequest, jstr);//let main thread handler handle the chat msg i.e print it on the screen
                     }
                 }

@@ -327,6 +327,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             //MyContacts.clear();
             for (String user : frList) {
                 String[] tokens = user.split(";");
+                if(tokens.length!=3){
+                    continue;
+                }
                 String firstName = tokens[1];
                 String lastName = tokens[2];
                 String userId = tokens[0];
@@ -951,18 +954,22 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         EditText email = (EditText) findViewById(R.id.remailEditText);
         String emailSt = email.getText().toString();
         bundleForLoader.putString("email", emailSt);
-
-        String request = "Register::," + unameSt + "," + pswdSt + "," + fnameSt + "," + lnameSt + "," + emailSt + "\0";
-        try {
-            writeToStdin(request);//send request to client() in native code
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(!fnameSt.isEmpty() && !lnameSt.isEmpty() && !unameSt.isEmpty() && !pswdSt.isEmpty() && !emailSt.isEmpty()){
+            String request = "Register::," + unameSt + "," + pswdSt + "," + fnameSt + "," + lnameSt + "," + emailSt + "\0";
+            try {
+                writeToStdin(request);//send request to client() in native code
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            login = "Login::," + unameSt + "," + pswdSt + "\0";
+            //saving self username
+            SharedPreferences.Editor editor = getSharedPreferences("SelfInfo", MODE_PRIVATE).edit();
+            editor.putString("selfUserName", unameSt);//save login info in sharedPrefs
+            editor.commit();
         }
-        login = "Login::," + unameSt + "," + pswdSt + "\0";
-        //saving self username
-        SharedPreferences.Editor editor = getSharedPreferences("SelfInfo", MODE_PRIVATE).edit();
-        editor.putString("selfUserName",unameSt);//save login info in sharedPrefs
-        editor.commit();
+        else {
+            Toast.makeText(this, "No field can be empty! Try again...", Toast.LENGTH_SHORT).show();
+        }
     }
     public void allfriends() {
         String request = "allfriends" + "\0";

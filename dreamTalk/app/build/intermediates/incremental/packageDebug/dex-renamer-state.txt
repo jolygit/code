@@ -1,4 +1,4 @@
-#Thu May 25 12:49:48 EDT 2017
+#Tue May 30 20:24:35 EDT 2017
 base.0=/Users/aj/code/dreamtalk/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
 renamed.0=classes.dex
 file.0=/Users/aj/code/dreamtalk/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex

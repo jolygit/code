@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Thu May 25 12:49:49 EDT 2017
+#Tue May 30 20:24:35 EDT 2017
 210.set=ANDROID_RESOURCE
 14.set=ANDROID_RESOURCE
 180.file=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_/res/layout/costom_tab.xml
@@ -625,7 +625,7 @@ count=280
 2.base=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_
 252.file=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_/res/drawable/abc_list_selector_background_transition_holo_light.xml
 175.file=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_/res/drawable/abc_ic_arrow_drop_right_black_24dp.xml
-150.file=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_/res/drawable-xhdpi-v4/abc_btn_check_to_on_mtrl_015.png
+150.file=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_/res/drawable-xhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png
 127.set=ANDROID_RESOURCE
 279.set=ANDROID_RESOURCE
 30.set=ANDROID_RESOURCE
@@ -688,7 +688,7 @@ count=280
 95.base=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_
 247.base=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_
 70.base=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_
-149.file=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_/res/drawable-xhdpi-v4/abc_scrubber_control_to_pressed_mtrl_005.png
+149.file=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_/res/drawable-xhdpi-v4/abc_btn_check_to_on_mtrl_015.png
 222.base=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_
 145.base=/Users/aj/code/dreamtalk/app/build/intermediates/res/resources-debug.ap_
 170.set=ANDROID_RESOURCE

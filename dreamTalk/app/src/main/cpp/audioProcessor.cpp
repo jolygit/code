@@ -170,7 +170,7 @@ void AudioProcessor::createBufferQueueAudioPlayer(int sampleRate,int bufSize)
     SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
     SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
                                    SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
-                                   SL_SPEAKER_FRONT_CENTER , SL_BYTEORDER_LITTLEENDIAN};//SL_SPEAKER_TOP_FRONT_LEFT|SL_SPEAKER_TOP_FRONT_CENTER|SL_SPEAKER_TOP_FRONT_RIGHT|SL_SPEAKER_FRONT_CENTER
+                                   SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};//SL_SPEAKER_TOP_FRONT_LEFT|SL_SPEAKER_TOP_FRONT_CENTER|SL_SPEAKER_TOP_FRONT_RIGHT|SL_SPEAKER_FRONT_CENTER SL_SPEAKER_FRONT_LEFT
     /*
      * Enable Fast Audio when possible:  once we set the same rate to be the native, fast audio path
      * will be triggered
@@ -185,16 +185,21 @@ void AudioProcessor::createBufferQueueAudioPlayer(int sampleRate,int bufSize)
     SLDataSink audioSnk = {&loc_outmix, NULL};
 
 
-    const SLInterfaceID ids[1] = {SL_IID_BUFFERQUEUE, /*SL_IID_VOLUME, SL_IID_EFFECTSEND,
-            SL_IID_MUTESOLO,*/};
-    const SLboolean req[1] = {SL_BOOLEAN_TRUE,/* SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE,
-            SL_BOOLEAN_TRUE,*/ };
+    const SLInterfaceID ids[2] = {SL_IID_ANDROIDCONFIGURATION,SL_IID_BUFFERQUEUE};//,SL_IID_VOLUME, SL_IID_EFFECTSEND};//, /*,            SL_IID_MUTESOLO,*/};
+    const SLboolean req[2] = {SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};//,SL_BOOLEAN_TRUE,SL_BOOLEAN_TRUE};
 
     result = (*engineEngine)->CreateAudioPlayer(engineEngine, &bqPlayerObject, &audioSrc, &audioSnk,
-                                                1, ids, req);//bqPlayerSampleRate? 2 : 3
+                                                2, ids, req);//bqPlayerSampleRate? 2 : 3
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
-
+    //seting the ear speaker
+    SLAndroidConfigurationItf playerConfig;
+    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_ANDROIDCONFIGURATION, &playerConfig);
+    assert(SL_RESULT_SUCCESS == result);
+    SLint32 streamType = SL_ANDROID_STREAM_VOICE;
+    (void)result;
+    result = (*playerConfig)->SetConfiguration(playerConfig, SL_ANDROID_KEY_STREAM_TYPE, &streamType, sizeof(SLint32));
+    assert(SL_RESULT_SUCCESS == result);
     // realize the player
     result = (*bqPlayerObject)->Realize(bqPlayerObject, SL_BOOLEAN_FALSE);
     assert(SL_RESULT_SUCCESS == result);
@@ -228,8 +233,8 @@ void AudioProcessor::createBufferQueueAudioPlayer(int sampleRate,int bufSize)
     // get the volume interface
     result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_VOLUME, &bqPlayerVolume);
     assert(SL_RESULT_SUCCESS == result);
-    (void)result;
-     */
+    (void)result;*/
+
     // set the player's state to playing
     result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING);
     assert(SL_RESULT_SUCCESS == result);

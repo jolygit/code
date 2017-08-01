@@ -1,0 +1,25 @@
+1. To find an integer value of a root of a given number:
+typedef long long ll;
+ll root(ll val)
+   ll lg = 0, rg = INF;
+   while (lg < rg) {
+        ll md = (lg + rg) / 2;
+        if (md * md * md >= val) rg = md;
+        else lg = md + 1;
+   }
+   return lg;
+}
+
+2. Gratest common devisor
+ typedef long long ll;
+ ll gcd(ll a,ll b)
+    {
+        if(a == 0 || b == 0) return a+b;
+        return gcd(b,a%b);
+    }
+    
+3. Fast way to scan array of numbers
+const int MAXN = 1e5;
+int a[MAXN];
+    for (int i = 0; i < n; ++i)
+        scanf("%d", a + i), --a[i];// --a[i] is to reduce from 1...n to 0...n-1

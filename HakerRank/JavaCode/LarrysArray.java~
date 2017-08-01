@@ -1,0 +1,32 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+    Scanner in = new Scanner(System.in);
+        int T=in.nextInt();
+        for(int t=0;t<T;t++) {
+            int N=in.nextInt();
+            int[] arr=new int[N];
+            for(int n=0;n<N;n++){
+              int v=in.nextInt();
+                arr[n]=v;
+            }
+            int cntP=0;
+            for(int n=0;n<N-1;n++){
+              for(int m=n+1;m<N;m++){
+                if(arr[n]>arr[m]){
+                    cntP++;
+                }
+              }
+            }
+            if(cntP%2==1){
+                System.out.println("NO");
+            }
+            else{
+                 System.out.println("YES");
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int m = in.nextInt();
+        int[] arr=new int[n];
+        for(int i=0;i<n;i++){
+            arr[i]=-1;
+        }
+        ArrayList<Integer> space=new ArrayList<>();
+        for(int i=0;i<m;i++){
+            int val=in.nextInt();
+            space.add(val);
+            arr[val]=0;
+        }
+        Collections.sort(space);
+        for(int mm=0;mm<space.size();mm++){
+            if(mm==0){
+               for(int i=0;i<=space.get(mm);i++){
+                   arr[i]=space.get(mm)-i;
+               }
+                if(space.size()==1){
+                    for(int i=space.get(mm);i<n;i++){
+                      arr[i]=i-space.get(mm);
+                    }
+                }
+            }
+            else if(mm==space.size()-1){
+               for(int i=space.get(mm);i<n;i++){
+                   arr[i]=i-space.get(mm);
+               }
+               for(int i=space.get(mm-1);i<=space.get(mm);i++){
+                    arr[i]=Math.min(i-space.get(mm-1),space.get(mm)-i);
+                } 
+            }
+            else{
+                for(int i=space.get(mm);i<=space.get(mm+1);i++){
+                   arr[i]=Math.min(i-space.get(mm),space.get(mm+1)-i);
+               }
+            }
+        }
+       
+        int max=-1;
+        for(int i=0;i<n;i++){
+            if(arr[i]>max){
+                max=arr[i];
+            }
+        }
+        System.out.print(max);
+    }
+}

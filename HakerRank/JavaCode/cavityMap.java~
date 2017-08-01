@@ -1,0 +1,46 @@
+
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        String[] grid = new String[n];
+        
+        for(int grid_i=0; grid_i < n; grid_i++){
+            grid[grid_i] = in.next();
+        }
+        int m=grid[0].length();
+        int[][] map=new int[n][m];
+        for(int grid_i=0; grid_i < n; grid_i++){
+           String st=grid[grid_i];
+           for(int i=0;i<st.length();i++){
+               char c=st.charAt(i);
+               int v=Character.getNumericValue(c);
+               map[grid_i][i]=v;
+           }
+        }
+        for(int grid_i=1; grid_i < n-1; grid_i++){
+          for(int i=1;i<m-1;i++){
+              int v=map[grid_i][i];
+              int l=map[grid_i][i-1];
+              int r=map[grid_i][i+1];
+              int u=map[grid_i-1][i];
+              int d=map[grid_i+1][i];
+              if(v>l && v>r && v>u && v>d){
+                 String st=grid[grid_i];
+                  st=st.substring(0,i)+"X"+st.substring(i+1);
+                  grid[grid_i]=st;
+              }
+          }
+        }
+         for(int grid_i=0; grid_i < n; grid_i++){
+             System.out.println(grid[grid_i]);
+         }
+    }
+}

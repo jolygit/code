@@ -1,0 +1,130 @@
+
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+class pair implements Comparable<pair>{
+    pair(int _x,int _y){
+        x=_x;
+        y=_y;
+    }
+    @Override
+    public int compareTo(pair other){
+        if(x<other.x){
+            return -1;
+        }
+        else if(x>other.x){
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    public int x;
+    public int  y;
+}
+public class Solution {
+
+    public static void main(String[] args) {
+       // Scanner in = new Scanner(System.in);
+        Scanner in = null;
+        try {
+            in = new Scanner(new File("c:/Users/alex/code/HackerRank/JavaCode/input.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        long T = in.nextLong();
+        for(int t=0;t<T;t++){
+            long N = in.nextLong();
+            long M = in.nextLong();
+            pair start=new pair(0,0);
+            pair end=new pair(0,0);
+            pair[][] parents=new pair[(int)N][(int)M];
+            char[][] array=new char[(int)N][(int)M];
+            boolean[][] visited=new boolean[(int)N][(int)M];
+            for(int n=0;n<N;n++){
+                for(int m=0;m<M;m++){
+                    visited[n][m]=false;
+                }
+            }
+            for(int n=0;n<N;n++){
+                String st=in.next();
+                char[] chr=st.toCharArray();
+                for(int m=0;m<M;m++){
+                    array[n][m]=chr[m];
+                    if(chr[m]=='M'){
+                        start.x=n;
+                        start.y=m;
+                    }
+                    if(chr[m]=='*'){
+                        end.x=n;
+                        end.y=m;
+                    }
+                }
+            }
+            long k = in.nextLong();
+            pair val=start;
+            pair zero=null;
+            parents[start.x][start.y]=zero;
+            visited[start.x][start.y]=true;
+            Deque<pair> deque=new ArrayDeque<>();
+            deque.add(val);
+            boolean finish=false;
+            int endx=0,endy=0;
+            while(!deque.isEmpty()){
+                val=deque.removeFirst();
+                for(int v=-1;v<=1;v++){
+                    for(int h=-1;h<=1;h++){
+                        int xx=val.x+h;
+                        int yy=val.y+v;
+                        if(!finish && v*h==0 && xx>=0 && xx<N && yy>=0 && yy<M && !visited[xx][yy] && (array[xx][yy]=='.' || array[xx][yy]=='*')){
+                            pair pr=new pair(xx,yy);
+                            deque.add(pr);
+                            visited[xx][yy]=true;
+                            parents[xx][yy]=val;
+                            if(pr.x==end.x && pr.y==end.y){
+                                finish=true;
+                                endx=xx;
+                                endy=yy;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            int cnt=0;
+            boolean isEnd=false;
+            while(parents[endx][endy]!=null){
+                pair   parent=parents[endx][endy];
+                if(parents[parent.x][parent.y]==null){
+                    isEnd=true;
+                }
+                pair current=new pair(endx,endy);
+                int neibCnt=0;
+                for(int v=-1;v<=1;v++) {
+                    for (int h = -1; h <= 1; h++) {
+                        int xx = parent.x + h;
+                        int yy = parent.y + v;
+                        pair nxt=new pair(xx,yy);
+                        if (v*h==0 && xx >= 0 && xx < N && yy >= 0 && yy < M  && array[xx][yy] != 'X') {
+                            neibCnt++;
+                        }
+                    }
+                }
+                int th=isEnd?2:3;
+                if(neibCnt>th){
+                    cnt++;
+                }
+                endx=parent.x;
+                endy=parent.y;
+            }
+	    if(cnt==k) {
+                System.out.println("Impressed");
+            }
+            else{
+                System.out.println("Oops!");
+            }
+        }
+    }
+}

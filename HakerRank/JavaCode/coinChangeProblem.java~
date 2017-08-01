@@ -1,0 +1,48 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+           Scanner in = null;
+        try {
+            in = new Scanner(new File("c:/Users/alex/code/HackerRank/JavaCode/input.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //  Scanner in = new Scanner(System.in);
+        int N = in.nextInt();
+        int M = in.nextInt();
+        int[] c=new int[M];
+        long[][] ways=new long[N+1][M];
+        for (int i = 0; i < M; i++) {
+          c[i]=in.nextInt();
+          ways[0][i]=1;
+        }
+        Arrays.sort(c);
+        for(int n=1;n<N+1;n++){
+            int k=c[0];
+            if(n-k>=0){
+                ways[n][0]=ways[n-k][0];
+            }
+            else{
+                ways[n][0]=0;
+            }
+        }
+        for(int n=1;n<N+1;n++){
+            for (int m = 1; m < M; m++) {
+                int k=c[m];
+                if(n-k>=0){
+                    ways[n][m]=ways[n-k][m]+ways[n][m-1];
+                }
+                else{
+                    ways[n][m]=ways[n][m-1];
+                }
+            }
+        }
+        System.out.println(ways[N][M-1]);
+    }
+}

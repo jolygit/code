@@ -1,0 +1,40 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner in = null;
+        try {
+            in = new Scanner(new File("c:/Users/alex/code/HackerRank/JavaCode/input.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //  Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        for (int t = 0; t < T; t++) {
+            int N = in.nextInt();
+            int[] B = new int[N];
+            int[] A = new int[N];
+            long[] L=new long[N];
+            long[] H=new long[N];
+            for (int n = 0; n < N; n++) {
+                int el = in.nextInt();
+                B[n] = el;
+                if(n==0){
+                    L[0]=0;
+                    H[0]=0;
+                }
+                else{
+                    L[n]=Math.max(L[n-1],H[n-1]+Math.abs(B[n-1]-1));
+                    H[n]=Math.max(H[n-1],L[n-1]+Math.abs(el-1));
+                }
+            }
+            System.out.println(Math.max(L[N-1],H[N-1]));
+        }
+    }
+
+}

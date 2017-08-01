@@ -1,0 +1,78 @@
+
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <map>
+
+using namespace std;
+bool containsSingleOneBit(long d){
+    int cnt=0;
+    while(d>0){
+        if((d&1)==1){
+            cnt++;
+        }
+        d>>=1;
+    }
+    return cnt<=1;
+}
+int main() {
+    //freopen("c:/Users/alex/code/HackerRank/JavaCode/input.txt", "r", stdin);
+    int n;
+    cin >> n;
+    vector<unsigned long long> vc;
+    for(int i=0;i<n;i++){
+        unsigned long long v;
+        cin >> v;
+        vc.push_back(v);
+
+    }
+    int numset=pow(2,vc.size());
+    long long TotConnectedComponents=0;
+    for(int i=0;i<numset;i++){
+        vector<unsigned long long> chosen;
+        unsigned int tmp=i,cnt=0;
+        while(tmp>0){
+            if(tmp&1==1)
+                chosen.push_back(vc[cnt]);
+            tmp>>=1;
+            cnt++;
+        }
+        vector<unsigned long long> separateComponents;
+        for(int c=0;c<chosen.size();c++){
+            unsigned long long d=chosen[c];
+            if(containsSingleOneBit(d)==true){
+                continue;
+            }
+            bool intersects=false;
+            for(int s=0;s<separateComponents.size();s++){
+                unsigned long long sep=separateComponents[s];
+                if((sep&d)>0){
+                    intersects=true;
+                    separateComponents[s]=sep|d;
+                    break;
+                }
+            }
+            if(!intersects){
+                separateComponents.push_back(d);
+            }
+        }
+        unsigned long long tot=0;
+        for(int s=0;s<separateComponents.size();s++){
+            unsigned long long sep=separateComponents[s];
+            tot|=sep;
+        }
+        int cntOne=0;
+        while(tot>0){
+            if((tot&1)==1){
+                cntOne++;
+            }
+            tot>>=1;
+        }
+        int singleVert=64-cntOne;
+        TotConnectedComponents+=singleVert+separateComponents.size();
+    }
+    cout<<TotConnectedComponents;
+    return 0;
+}

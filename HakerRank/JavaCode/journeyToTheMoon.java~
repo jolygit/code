@@ -1,0 +1,129 @@
+/*
+The member states of the UN are planning to send  people to the Moon. But there is a problem. In line with their principles of global unity, they want to pair astronauts of  different countries.
+
+There are  trained astronauts numbered from  to . But those in charge of the mission did not receive information about the citizenship of each astronaut. The only information they have is that some particular pairs of astronauts belong to the same country.
+
+Your task is to compute in how many ways they can pick a pair of astronauts belonging to different countries. Assume that you are provided enough pairs to let you identify the groups of astronauts even though you might not know their country directly. For instance, if  are astronauts from the same country; it is sufficient to mention that  and  are pairs of astronauts from the same country without providing information about a third pair . 
+
+Input Format
+
+The first line contains two integers,  and , separated by a single space.  lines follow. Each line contains integers separated by a single space  and  such that
+
+
+and  and  are astronauts from the same country.
+
+Constraints
+
+Output Format
+
+An integer that denotes the number of permissible ways to choose a pair of astronauts.
+
+Sample Input 0
+
+5 3
+0 1
+2 3
+0 4
+Sample Output 0
+
+6
+Explanation 0
+
+Persons numbered ,  and  belong to the same country, and those numbered  and  belong to the same country, but different from the previous one. All in all, the UN has  ways of choosing a pair:
+
+persons  and 
+persons  and 
+persons  and 
+persons  and 
+persons  and 
+persons  and 
+Sample Input 1
+
+4 1
+0 2
+Sample Output 1
+
+5
+Explanation 1
+
+Persons numbered  and  belong to the same country, and persons  and  don't share countries with anyone else, so they belong to unique countries on their own. All in all, the UN has  ways of choosing a pair:
+ */
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+    public static int bfs(int root,int[] parent,List< List<Integer> > list){
+        Deque<Integer> deque = new ArrayDeque<Integer>();
+        Set<Integer> set = new HashSet<Integer>();
+        set.add(root);
+        deque.add(root);
+        parent[root]=-2;//this is the root
+        while(!deque.isEmpty()){
+            int nd=deque.removeFirst();
+            List<Integer> l1=list.get(nd);
+            for(int chnode:l1){
+                if(!set.contains(chnode)) {
+                    deque.add(chnode);
+                    set.add(chnode);
+                    parent[chnode]=nd;
+                }
+            }
+        }
+        return set.size();
+    }
+    public static void main(String[] args) {
+        Scanner in = null;
+        try {
+            in = new Scanner(new File("c:/Users/alex/code/HackerRank/JavaCode/input.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+	//	 Scanner in = new Scanner(System.in);
+        long n = in.nextInt();
+            int m = in.nextInt();
+            int[] parents = new int[(int)n];
+            for(int p=0;p<n;p++){
+                parents[p]=-1;
+            }
+            List< List<Integer> > edges = new ArrayList<>();
+            for(int i=0;i<n;i++){
+                List<Integer> lst=new ArrayList<>();
+                edges.add(lst);
+            }
+            int Nedges=m;
+            for(int e=0;e<Nedges;e++){
+                int c1=in.nextInt();
+                int c2=in.nextInt();
+                List<Integer> l1=edges.get(c1);
+                l1.add(c2);
+                List<Integer> l2=edges.get(c2);
+                l2.add(c1);
+            }
+            if(n==1){
+                System.out.println(n);
+            }
+            else {
+                //choose the city that does not have parent as the root and build the tree with it as a root
+                long numTrees=0;
+                ArrayList<Integer> treesize=new ArrayList<>();
+                long ways=0;
+                for(int i=0;i<n;i++){
+                    if(parents[i]==-1){
+                        int size=bfs(i,parents,edges);
+                        treesize.add(size);
+                    }
+                }
+                for(int i=0;i<treesize.size()-1;i++){
+                    for(int j=i+1;j<treesize.size();j++){
+                        int size1=treesize.get(i);
+                        int size2=treesize.get(j);
+                        ways+=size1*size2;
+                    }
+                }
+                System.out.println(ways);
+            }
+    }
+}

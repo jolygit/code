@@ -1,0 +1,56 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+    public static void main(String[] args) {
+       // Scanner in = new Scanner(System.in);
+        Scanner in = null;
+        try {
+            in = new Scanner(new File("c:/Users/alex/code/HackerRank/JavaCode/input.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        int T = in.nextInt();
+        in.nextLine();
+        for(int t=0;t<T;t++){
+            String s= in.nextLine();
+            BigInteger N=new BigInteger(s);
+            BigInteger c=new BigInteger("0");
+            c=N;
+            int cnt=0;
+            BigInteger one=new BigInteger("1");
+            BigInteger zero=new BigInteger("0");
+            while(true) {
+                BigInteger res = c.and(c.subtract(one));
+                if (res.equals(zero)) {
+                    c=c.shiftRight(1);
+                }
+                else{
+                    c=subtract(c);
+                }
+                cnt++;
+                if(c.equals(one)){
+                    break;
+                }
+            }
+            String str=(cnt%2==0)?"Richard":"Louise";
+            System.out.println(str);
+        }
+    }
+    static BigInteger subtract(BigInteger c){
+        int cnt=0;
+        BigInteger copy=new BigInteger("0");
+        copy=c;
+        BigInteger one=new BigInteger("1");
+        while (!c.equals(one)){
+            c=c.shiftRight(1);
+            cnt++;
+        }
+        BigInteger p=new BigInteger("2");
+        p=p.shiftLeft(cnt-1);
+        return copy.subtract(p);
+    }
+}

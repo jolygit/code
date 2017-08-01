@@ -1,0 +1,35 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner in = null;
+        try {
+            in = new Scanner(new File("c:/Users/alex/code/HackerRank/JavaCode/input.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //  Scanner in = new Scanner(System.in);
+        int t1 = in.nextInt();
+        int t2 = in.nextInt();
+        int N = in.nextInt();
+        ArrayList<BigInteger> fn=new ArrayList<>();
+        BigInteger bt1=new BigInteger(String.valueOf(t1));
+        BigInteger bt2=new BigInteger(String.valueOf(t2));
+        fn.add(bt1);
+        fn.add(bt2);
+        for (int n = 2; n < N; n++) {
+            BigInteger btp=fn.get(n-1);
+            BigInteger btpp=fn.get(n-2);
+            BigInteger sq=btp.multiply(btp);
+            BigInteger cv=btpp.add(sq);
+            fn.add(cv);
+        }
+             System.out.println(fn.get(N-1).toString());
+    }
+
+}

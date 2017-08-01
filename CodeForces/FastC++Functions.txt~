@@ -1,0 +1,11 @@
+1. To find an integer value of a root of a given number:
+typedef long long ll;
+ll root(ll val)
+   ll lg = 0, rg = INF;
+   while (lg < rg) {
+        ll md = (lg + rg) / 2;
+        if (md * md * md >= val) rg = md;
+        else lg = md + 1;
+   }
+   return lg;
+}

@@ -1,0 +1,54 @@
+
+    static int gcd(int a, int b)
+    {
+        if(a == 0 || b == 0) return a+b; // base case
+        return gcd(b,a%b);
+    }
+    static int[] connectedCities(int n, int g, int[] originCities, int[] destinationCities) {
+        int[][] edges=new int[n][n];
+        for(int n1=0;n1<n;n1++){
+            for(int n2=n1+1;n2<n;n2++){
+                int w=0;
+                if(gcd(n1+1,n2+1)>g){
+                    w=1;
+                }
+                edges[n1][n2]=w;
+                edges[n2][n1]=w;
+            }
+        }
+        int[] q=new int[originCities.length];
+        for(int i=0;i<originCities.length;i++){
+            int or=originCities[i]-1;
+            int dst=destinationCities[i]-1;
+            int[] parents=new int[n];
+            for(int j=0;j<n;j++){
+                parents[j]=-1;
+            }
+            bfs(or,parents,edges);
+            if(parents[dst]!=-1){
+                q[i]=1;
+            }
+            else {
+                q[i]=0;
+            }
+        }
+        return q;
+    }
+    static void bfs(int root,int[] parents,int[][] edges){
+        Set<Integer> set=new HashSet<>();
+        Deque<Integer> deque=new ArrayDeque<>();
+        deque.add(root);
+        set.add(root);
+        parents[root]=-1;
+        while(!deque.isEmpty()){
+            int nd=deque.removeFirst();
+            int[] lst=edges[nd];
+            for(int neib=0;neib<lst.length;neib++){
+                if(lst[neib]==1 &&  !set.contains(neib)) {
+                    deque.add(neib);
+                    set.add(neib);
+                    parents[neib]=nd;
+                }
+            }
+        }
+    }
